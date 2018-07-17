@@ -1768,6 +1768,12 @@ namespace stock
             returnText = returnText + "\t每股淨值：" + companyInformation.bookValuePerShare + " 元\r\n" +
                 "\t目前股價/每股淨值：" +
                 (todayPrice / companyInformation.bookValuePerShare).ToString("f2") + " 倍\r\n";
+            returnText = returnText + "\t歷史 ROA 及 ROE：\r\n";
+            for (int j = 0; j < companyInformationArray.Length; j++)
+            {
+                returnText = returnText + "\t\t" + companyInformationArray[j].ROA +
+                    "\t" + companyInformationArray[j].ROE + "\r\n";
+            }
             information = returnText;
             timeInformation = DateTime.Now;
             return returnText;
