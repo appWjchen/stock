@@ -407,7 +407,8 @@ namespace stock
                 printText = printText + stockDatabase.companies[i].name + "\r\n";
             }
              * */
-            CompanyInformation companyInformation = stockDatabase.companies[0].getMarginInformation();
+            CompanyInformation[] companyInformationArray = stockDatabase.companies[0].getMarginInformation();
+            CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
             printText = printText + stockDatabase.companies[0].name + "\r\n" +
                 stockDatabase.companies[0].id + "\r\n" +
                 companyInformation.bookValuePerShare;

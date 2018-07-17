@@ -2800,7 +2800,8 @@ namespace stock
                                             }
                                             company.getDividend();
                                             Double dividend = company.dividend[company.dividend.Length - 1];
-                                            CompanyInformation companyInformation = company.getMarginInformation();
+                                            CompanyInformation[] companyInformationArray = company.getMarginInformation();
+                                            CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
                                             Double shareRate = dayHistoryDataArray[k].c / companyInformation.bookValuePerShare;
                                             if ((dividend > 0) && (totalSeasonEPS > 0) && (shareRate < 1))
                                             {
@@ -2933,7 +2934,8 @@ namespace stock
                                             }
                                             company.getDividend();
                                             Double dividend = company.dividend[company.dividend.Length - 1];
-                                            CompanyInformation companyInformation = company.getMarginInformation();
+                                            CompanyInformation[] companyInformationArray = company.getMarginInformation();
+                                            CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
                                             Double shareRate = dayHistoryDataArray[k].c / companyInformation.bookValuePerShare;
                                             if ((dividend > 0) && (totalSeasonEPS > 0) && (shareRate < 1))
                                             {

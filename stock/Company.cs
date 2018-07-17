@@ -658,7 +658,7 @@ namespace stock
                         writeHistoryDataFile("company/" + id + "/month.dat", monthHistoryData, false);
                         monthRealHistoryData = monthHistoryData;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                     createHistoryDatabaseCallback();
@@ -693,7 +693,7 @@ namespace stock
                         writeHistoryDataFile("company/" + id + "/week.dat", weekHistoryData, false);
                         weeRealkHistoryData = weekHistoryData;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                     createMonthHistoryDatabase();
@@ -727,7 +727,7 @@ namespace stock
                         writeHistoryDataFile("company/" + id + "/day.dat", dayHistoryData, true);
                         dayRealHistoryData = dayHistoryData;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                     createWeekHistoryDatabase();
@@ -797,7 +797,7 @@ namespace stock
             {
                 companyInformation.capital = Convert.ToDouble(tdStrings[26].Substring(0, tdStrings[26].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.capital = 0;
             }
@@ -807,7 +807,7 @@ namespace stock
             {
                 companyInformation.grossMargin = Convert.ToDouble(tdStrings[41].Substring(0, tdStrings[41].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.grossMargin = 0;
             }
@@ -815,7 +815,7 @@ namespace stock
             {
                 companyInformation.operatingProfitMargin = Convert.ToDouble(tdStrings[47].Substring(0, tdStrings[47].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.operatingProfitMargin = 0;
             }
@@ -823,7 +823,7 @@ namespace stock
             {
                 companyInformation.earningBeforeTaxMargin = Convert.ToDouble(tdStrings[53].Substring(0, tdStrings[53].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.earningBeforeTaxMargin = 0;
             }
@@ -831,7 +831,7 @@ namespace stock
             {
                 companyInformation.ROA = Convert.ToDouble(tdStrings[59].Substring(0, tdStrings[59].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.ROA = 0;
             }
@@ -839,7 +839,7 @@ namespace stock
             {
                 companyInformation.ROE = Convert.ToDouble(tdStrings[65].Substring(0, tdStrings[65].Length - 1));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 companyInformation.ROE = 0;
             }
@@ -1586,37 +1586,48 @@ namespace stock
                 股東權益報酬率   ROE
                 每股淨值         bookValuePerShare
          */
-        public CompanyInformation getMarginInformation()
+        public CompanyInformation[] getMarginInformation()
         {
             var filename = "company/" + id + "/marginInformation.dat";
             var oldMarginInformationString = new FileHelper().ReadText(filename);
             String[] oldMarginInformationStringSplit =
                 oldMarginInformationString.Split(new string[] { "\n" },
                 StringSplitOptions.RemoveEmptyEntries);
-            var lastMarginInformationStringSplit =
-                oldMarginInformationStringSplit[oldMarginInformationStringSplit.Length - 1].
-                Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            CompanyInformation companyInformation = new CompanyInformation();
-            companyInformation.marginYear = lastMarginInformationStringSplit[0];
-            companyInformation.grossMargin = Convert.ToDouble(
-                lastMarginInformationStringSplit[1].Substring(0, lastMarginInformationStringSplit[1].Length - 1)
-                );
-            companyInformation.operatingProfitMargin = Convert.ToDouble(
-                lastMarginInformationStringSplit[2].Substring(0, lastMarginInformationStringSplit[2].Length - 1)
-                );
-            companyInformation.earningBeforeTaxMargin = Convert.ToDouble(
-                lastMarginInformationStringSplit[3].Substring(0, lastMarginInformationStringSplit[3].Length - 1)
-                );
-            companyInformation.ROA = Convert.ToDouble(
-                lastMarginInformationStringSplit[4].Substring(0, lastMarginInformationStringSplit[4].Length - 1)
-                );
-            companyInformation.ROE = Convert.ToDouble(
-                lastMarginInformationStringSplit[5].Substring(0, lastMarginInformationStringSplit[5].Length - 1)
-                );
-            companyInformation.bookValuePerShare = Convert.ToDouble(
-                lastMarginInformationStringSplit[6].Substring(0, lastMarginInformationStringSplit[6].Length - 1)
-                );
-            return companyInformation;
+            List<CompanyInformation> companyInformationList = new List<CompanyInformation>();
+            for (int i = 0; i < oldMarginInformationStringSplit.Length; i++)
+            {
+                var lastMarginInformationStringSplit =
+                    oldMarginInformationStringSplit[i].
+                    Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                CompanyInformation companyInformation = new CompanyInformation();
+                companyInformation.marginYear = lastMarginInformationStringSplit[0];
+                companyInformation.grossMargin = Convert.ToDouble(
+                    lastMarginInformationStringSplit[1].Substring(0, lastMarginInformationStringSplit[1].Length - 1)
+                    );
+                companyInformation.operatingProfitMargin = Convert.ToDouble(
+                    lastMarginInformationStringSplit[2].Substring(0, lastMarginInformationStringSplit[2].Length - 1)
+                    );
+                companyInformation.earningBeforeTaxMargin = Convert.ToDouble(
+                    lastMarginInformationStringSplit[3].Substring(0, lastMarginInformationStringSplit[3].Length - 1)
+                    );
+                companyInformation.ROA = Convert.ToDouble(
+                    lastMarginInformationStringSplit[4].Substring(0, lastMarginInformationStringSplit[4].Length - 1)
+                    );
+                companyInformation.ROE = Convert.ToDouble(
+                    lastMarginInformationStringSplit[5].Substring(0, lastMarginInformationStringSplit[5].Length - 1)
+                    );
+                try
+                {
+                    companyInformation.bookValuePerShare = Convert.ToDouble(
+                        lastMarginInformationStringSplit[6].Substring(0, lastMarginInformationStringSplit[6].Length - 1)
+                        );
+                } catch (Exception) {
+                    companyInformation.bookValuePerShare = -1;
+                }
+                companyInformationList.Add(companyInformation);
+            }
+
+            return companyInformationList.ToArray();
         }
         /*
          * getInformatioon() 用來取得股票的簡單描述資訊
@@ -1752,7 +1763,8 @@ namespace stock
                 }
             }
             returnText = returnText + "\t目前股價：" + todayPrice + " 元\r\n";
-            CompanyInformation companyInformation = getMarginInformation();
+            CompanyInformation[] companyInformationArray = getMarginInformation();
+            CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
             returnText = returnText + "\t每股淨值：" + companyInformation.bookValuePerShare + " 元\r\n" +
                 "\t目前股價/每股淨值：" +
                 (todayPrice / companyInformation.bookValuePerShare).ToString("f2") + " 倍\r\n";
