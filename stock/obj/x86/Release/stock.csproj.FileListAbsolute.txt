@@ -1,0 +1,14 @@
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\obj\x86\Release\stock.Form1.resources
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\obj\x86\Release\stock.Properties.Resources.resources
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\obj\x86\Release\stock.csproj.GenerateResource.Cache
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\bin\Release\stock.exe
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\bin\Release\stock.pdb
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\obj\x86\Release\stock.exe
+C:\Users\WjChen\documents\visual studio 2010\Projects\stock\stock\obj\x86\Release\stock.pdb
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\bin\Release\stock.exe
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\bin\Release\stock.pdb
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.Form1.resources
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.Properties.Resources.resources
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.csproj.GenerateResource.Cache
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.exe
+C:\Users\weijy\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.pdb
