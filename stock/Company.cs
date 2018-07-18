@@ -1621,7 +1621,9 @@ namespace stock
                     companyInformation.bookValuePerShare = Convert.ToDouble(
                         lastMarginInformationStringSplit[6].Substring(0, lastMarginInformationStringSplit[6].Length - 1)
                         );
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     companyInformation.bookValuePerShare = -1;
                 }
                 companyInformationList.Add(companyInformation);
@@ -1707,15 +1709,15 @@ namespace stock
                 kValueMonth = kValue(historyData80);
             }
             returnText = returnText + "個股：\r\n";
-            if (kValueDay.Length > 0)
+            if ((kValueDay != null) && (kValueDay.Length > 0))
             {
                 returnText = returnText + "\t日k： " + kValueDay[kValueDay.Length - 1].K.ToString("f2") + "\r\n";
             }
-            if (kValueWeek.Length > 0)
+            if ((kValueWeek != null) && (kValueWeek.Length > 0))
             {
                 returnText = returnText + "\t週k： " + kValueWeek[kValueWeek.Length - 1].K.ToString("f2") + "\r\n";
             }
-            if (kValueMonth.Length > 0)
+            if ((kValueMonth != null) && (kValueMonth.Length > 0))
             {
                 returnText = returnText + "\t月k： " + kValueMonth[kValueWeek.Length - 1].K.ToString("f2") + "\r\n";
             }
