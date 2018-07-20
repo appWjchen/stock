@@ -3012,7 +3012,8 @@ namespace stock
             /*
              * 印出二次攻擊結果 
              */
-            var returnText = "請關注：\r\n";
+            var returnText = "請關注：\r\n\r\n";
+            /*
             returnText = returnText +
               "\t(A) 過去 5 年中，最高點股價至今下跌至少 50% 以上\r\n" +
               "\t(B) 股利推估有 5% 以上\r\n" +
@@ -3021,8 +3022,18 @@ namespace stock
               "\t(E) 一個月內多頭主力發動二次攻擊(無過濾)。\r\n" +
               "\t(F) 一個月內多頭主力發動二次攻擊(有過濾)。\r\n" +
               "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n\r\n";
+             */
+            returnText = returnText +
+                "分析及篩選主要是以搜尋主力攻擊為主，亦即籌碼作用為主，\r\n" +
+                "所謂主力攻擊是指下列二項事件發生時：\r\n" +
+                "\t(1) 爆量上漲(單日上漲超過 3% ，成交量超過前 100 天平均 3 倍)\r\n" +
+                "\t(2) 法人買超 2 日，且當日買超量大於成交量 10%\r\n\r\n" +
+                "篩選的條件是如下列：\r\n" +
+                "\t(A) 一個月內多頭主力發動二次主力攻擊(無過濾)。\r\n" +
+                "\t(B) 一個月內多頭主力發動二次主力攻擊(有過濾)。\r\n" +
+                "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n\r\n";
             int attackCount = 0;
-            var printMatchE = "滿足條件 (E) 的股票：\r\n";
+            var printMatchE = "滿足條件 (A) 的股票：\r\n";
             for (int i = 0; i < stockDatabase.companies.Length; i++)
             {
                 Company company = stockDatabase.companies[i];
@@ -3036,13 +3047,13 @@ namespace stock
             if (attackCount == 0)
             {
                 printMatchE = printMatchE +
-                    "\t沒有滿足 (E) 的股票。\r\n";
+                    "\t沒有滿足 (A) 的股票。\r\n";
             }
             printMatchE = printMatchE +
                     "\r\n";
             // returnText = returnText + printMatchE;
             attackCount = 0;
-            var printMatchF = "滿足條件 (F) 的股票：\r\n";
+            var printMatchF = "滿足條件 (B) 的股票：\r\n";
             for (int i = 0; i < stockDatabase.companies.Length; i++)
             {
                 Company company = stockDatabase.companies[i];
@@ -3058,7 +3069,7 @@ namespace stock
             if (attackCount == 0)
             {
                 printMatchF = printMatchF +
-                    "\t沒有滿足 (F) 的股票。\r\n";
+                    "\t沒有滿足 (B) 的股票。\r\n";
             }
             else
             {
@@ -3066,6 +3077,8 @@ namespace stock
             }
             printMatchF = printMatchF +
                     "\r\n";
+            returnText = returnText + printMatchF + printMatchE + "\r\n";
+            /*
             returnText = returnText + printMatchF + printMatchE + printMatch4 + printMatch3 +
                 printMatch2 + printMatch1;
 
@@ -3085,7 +3098,7 @@ namespace stock
               printCandidateC + "\r\n";
             returnText = returnText + "滿足條件 (D) 的股票：\r\n" +
               printCandidateD + "\r\n";
-
+            */
             return returnText;
         }
         /* 
