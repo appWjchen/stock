@@ -18,6 +18,7 @@ namespace stock
         CompanyCategories companyCategories = new CompanyCategories(); */
         StockDatabase stockDatabase = null;
         Boolean createTwiceAttackFiles;
+        Boolean isDebug = false;
 
         public void showTextBoxWarning(String text)
         {
@@ -95,6 +96,7 @@ namespace stock
             button10.Enabled = false;
             button11.Enabled = false;
             button12.Enabled = false;
+            button13.Enabled = false;
         }
         private void enableAllButtons()
         {
@@ -110,6 +112,7 @@ namespace stock
             button10.Enabled = true;
             button11.Enabled = true;
             button12.Enabled = true;
+            button13.Enabled = true;
         }
         public void stockDatabaseCreateDatabaseCallback()
         {
@@ -181,7 +184,17 @@ namespace stock
         }
         public Form1()
         {
+#if DEBUG
+            isDebug = true;
+#endif
             InitializeComponent();
+            if (!isDebug)
+            {
+                button7.Hide();
+                button9.Hide();
+                button10.Hide();
+                button13.Hide();
+            }
             /* 檢查資料庫路徑是否設定 */
             createTwiceAttackFiles = false;
             if (FileHelper.databasePath == null)
@@ -528,6 +541,21 @@ namespace stock
             {
                 new MessageWriter().showMessage("找不到公司代號是 " + id + " 的股票!\r\n");
             }
+            enableAllButtons();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            disableAllButtons();
+            new MessageWriter().showMessage("重置二次攻擊資料，請耐心等候。");
+            System.Windows.Forms.Application.DoEvents();
+            var analysisObj = new analysis(stockDatabase);
+            new MessageWriter().showMessage("");
+            analysisObj.doAttackAnalysis(300, false);
+            new MessageWriter().appendMessage(
+                    "\r\n",
+                    true
+                    );
             enableAllButtons();
         }
     }
