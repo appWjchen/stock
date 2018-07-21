@@ -331,7 +331,7 @@ namespace stock
 
                         var analysisObj = new analysis(stockDatabase);
                         new MessageWriter().showMessage("建立二次攻擊檔案中，請稍等。\r\n\r\n");
-                        analysisObj.doAttackAnalysis(300, true);
+                        analysisObj.doAttackAnalysis(300, 1, true);
 
                     }
                     new MessageWriter().showMessage("更新所有公司的各項資料庫完畢。");
@@ -449,7 +449,7 @@ namespace stock
             System.Windows.Forms.Application.DoEvents();
             var analysisObj = new analysis(stockDatabase);
             new MessageWriter().showMessage("");
-            analysisObj.doAttackAnalysis(300, false);
+            analysisObj.doAttackAnalysis(300, 300, false);
             new MessageWriter().appendMessage(
                     "\r\n",
                     true
@@ -551,7 +551,7 @@ namespace stock
             System.Windows.Forms.Application.DoEvents();
             var analysisObj = new analysis(stockDatabase);
             new MessageWriter().showMessage("");
-            analysisObj.doAttackAnalysis(300, false);
+            analysisObj.doAttackAnalysis(300, 1, false);
             new MessageWriter().appendMessage(
                     "\r\n",
                     true

@@ -3219,7 +3219,7 @@ namespace stock
          * 最後用 advCount 及 decCount 計算上漲機率。
          * 
          */
-        public void doAttackAnalysis(int afterDay, Boolean noMessage)
+        public void doAttackAnalysis(int beforeDay, int afterDay, Boolean noMessage)
         {
             FileHelper fileHelper = new FileHelper();
             /*
@@ -3255,7 +3255,7 @@ namespace stock
                 int dataLength = dayHistoryDataArray.Length;
                 Double middleRate = 0.4;
                 // int testYear = 2011;
-                for (int k = 2; k < dataLength; k++)
+                for (int k = 2; k < dataLength - 1; k++)
                 {
                     if (checkCCompany(company, k))
                     {
@@ -3325,7 +3325,7 @@ namespace stock
                                      */
                                     Double highestPrice = 0;
                                     Double lowestPrice = Double.MaxValue;
-                                    for (var d = k; d >= (k - afterDay); d--)
+                                    for (var d = k; d >= (k - beforeDay); d--)
                                     {
                                         if (d >= 0)
                                         {
@@ -3487,7 +3487,7 @@ namespace stock
                                      */
                                     Double highestPrice = 0;
                                     Double lowestPrice = Double.MaxValue;
-                                    for (var d = k; d >= (k - afterDay); d--)
+                                    for (var d = k; d >= (k - beforeDay); d--)
                                     {
                                         if (d >= 0)
                                         {
