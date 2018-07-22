@@ -193,7 +193,6 @@ namespace stock
                 button7.Hide();
                 button9.Hide();
                 button10.Hide();
-                button13.Hide();
             }
             /* 檢查資料庫路徑是否設定 */
             createTwiceAttackFiles = false;

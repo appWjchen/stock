@@ -9,3 +9,4 @@ C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\s
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.application
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.exe
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.pdb
+C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.csprojResolveAssemblyReference.cache
