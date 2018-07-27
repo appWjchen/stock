@@ -114,6 +114,12 @@ namespace stock
             button12.Enabled = true;
             button13.Enabled = true;
         }
+        private void clearMessage()
+        {
+            new MessageWriter().showMessage("");
+            new WarningWriter().showMessage("");
+        }
+
         public void stockDatabaseCreateDatabaseCallback()
         {
             if (this.button1.InvokeRequired)
@@ -136,6 +142,7 @@ namespace stock
                 else
                 {
                     enableAllButtons();
+                    clearMessage();
                     textBox1.Text = "更新大盤資料庫完畢，可開始使用。\r\n\r\n";
                     var mesg = "資料庫更新週期：\r\n" +
                         "\t各公司歷史資料庫 => 每天一次\r\n" +
@@ -248,6 +255,7 @@ namespace stock
             stockDatabase.createAllCompanyHistoryDatabase(startIndex,
                 () =>
                 {
+                    clearMessage();
                     new MessageWriter().showMessage("更新各公司歷史資料庫完畢。");
                     emptyCallback();
                 }
@@ -262,6 +270,7 @@ namespace stock
             stockDatabase.createAllCompanyInformationDatabase(startIndex,
                 () =>
                 {
+                    clearMessage();
                     new MessageWriter().showMessage("更新各公司基本資料庫完畢。");
                     emptyCallback();
                 }
@@ -276,6 +285,7 @@ namespace stock
             stockDatabase.createAllCompanyMonthEarningDatabase(startIndex,
                 () =>
                 {
+                    clearMessage();
                     new MessageWriter().showMessage("更新各公司每月營收資料庫完畢。");
                     emptyCallback();
                 }
@@ -290,6 +300,7 @@ namespace stock
             stockDatabase.createAllCompanyDevidendDatabase(startIndex,
                 () =>
                 {
+                    clearMessage();
                     new MessageWriter().showMessage("更新各公司每年股利資料庫完畢。");
                     emptyCallback();
                 }
@@ -327,12 +338,13 @@ namespace stock
                 {
                     if (createTwiceAttackFiles)
                     {
-
+                        clearMessage();
                         var analysisObj = new analysis(stockDatabase);
                         new MessageWriter().showMessage("建立二次攻擊檔案中，請稍等。\r\n\r\n");
                         analysisObj.doAttackAnalysis(300, 1, true);
 
                     }
+                    clearMessage();
                     new MessageWriter().showMessage("更新所有公司的各項資料庫完畢。");
                     emptyCallback();
                 }
@@ -433,6 +445,7 @@ namespace stock
             new MessageWriter().showMessage("開始進行分析及篩選，請耐心等候。");
             System.Windows.Forms.Application.DoEvents();
             var analysisObj = new analysis(stockDatabase);
+            clearMessage();
             var printText = "";
             printText = analysisObj.doShort1ScoreAnalysis(80);
             printText = analysisObj.getSavedAnalysisScore(20) + "\r\n\r\n" + printText;
@@ -530,7 +543,7 @@ namespace stock
             Company company = stockDatabase.getCompany(id);
             if (company != null)
             {
-                new MessageWriter().showMessage("");
+                clearMessage();
                 String information = company.getInformatioon(stockDatabase);
                 new MessageWriter().appendMessage(information + "\r\n", true);
                 information = stockDatabase.getInformation();
@@ -551,6 +564,7 @@ namespace stock
             var analysisObj = new analysis(stockDatabase);
             new MessageWriter().showMessage("");
             analysisObj.doAttackAnalysis(300, 1, false);
+            clearMessage();
             new MessageWriter().appendMessage(
                     "\r\n",
                     true
