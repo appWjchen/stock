@@ -71,6 +71,11 @@ namespace stock
     public delegate void CreateInformationDatabaseCallback();
     public delegate void CreateMonthEarningDatabaseCallback();
     public delegate void CreateYearDividendDatabaseCallback();
+    class EarningInformation
+    {
+        public int year;
+        public String[] earning;
+    }
     class CompanyInformation
     {
         public String presidentName;
@@ -1659,6 +1664,42 @@ namespace stock
             Double[] rsvArray = indicator.calcRsvArray(9);
             KDJ[] kdjArray = indicator.calcKDJArray(rsvArray);
             return kdjArray;
+        }
+        public EarningInformation[] getEarning()
+        {
+            String earningDatabaseString = "";
+            String[] earningDatabaseStringSplit;
+            List<String> earningDatabaseStringList = new List<string>();
+            List<EarningInformation> earningInformationList = new List<EarningInformation>();
+            if (fileHelper.Exists("company/" + id + "/earning.dat"))
+            {
+                earningDatabaseString = fileHelper.ReadText(
+                    "company/" + id + "/earning.dat");
+                earningDatabaseStringSplit = earningDatabaseString.Split(new string[] { "\n" },
+                    StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < earningDatabaseStringSplit.Length; i++)
+                {
+                    earningDatabaseStringList.Add(earningDatabaseStringSplit[i]);
+                }
+                for (int i = 0; i < earningDatabaseStringSplit.Length; i++)
+                {
+                    var oneEarning = earningDatabaseStringSplit[i];
+                    var oneEarningSplit = oneEarning.Split(new string[] { " " },
+                        StringSplitOptions.RemoveEmptyEntries);
+                    var earingYear = Convert.ToInt32(oneEarningSplit[0]);
+                    EarningInformation earingInformation = new EarningInformation();
+                    earingInformation.year = earingYear;
+                    List<String> earningList = new List<String>();
+                    for (int k = 1; k < oneEarningSplit.Length; k++)
+                    {
+                        String oneMonthEarning = oneEarningSplit[k];
+                        earningList.Add(oneMonthEarning);
+                    }
+                    earingInformation.earning = earningList.ToArray();
+                    earningInformationList.Add(earingInformation);
+                }
+            }
+            return earningInformationList.ToArray();
         }
         private DateTime timeInformation;
         private String information = null;

@@ -431,12 +431,28 @@ namespace stock
                 printText = printText + stockDatabase.companies[i].name + "\r\n";
             }
              * */
+            /*
             CompanyInformation[] companyInformationArray = stockDatabase.companies[0].getMarginInformation();
             CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
             printText = printText + stockDatabase.companies[0].name + "\r\n" +
                 stockDatabase.companies[0].id + "\r\n" +
                 companyInformation.bookValuePerShare;
-            new MessageWriter().showMessage(printText);
+             * */
+            EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
+            if (earningInformation.Length > 0)
+            {
+                EarningInformation lastEaringInformation = earningInformation[earningInformation.Length - 1];
+                printText = printText + lastEaringInformation.year + " 年度每月營收：\r\n";
+                for (var i = 0; i < lastEaringInformation.earning.Length; i++)
+                {
+                    if (lastEaringInformation.earning[i]!="-")
+                    {
+                        printText = printText + "\t" + (i + 1) + "月\t" 
+                            + lastEaringInformation.earning[i] + "\r\n";
+                    }
+                }
+                new MessageWriter().showMessage(printText);
+            }
         }
         // analysis analysisObj = null;
         private void button8_Click(object sender, EventArgs e)
