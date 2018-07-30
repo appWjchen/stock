@@ -445,6 +445,7 @@ namespace stock
                 printText = printText + lastEaringInformation.year + " 年度每月營收：\r\n";
                 for (var i = 0; i < lastEaringInformation.earning.Length; i++)
                 {
+                    if (i >= 12) break;
                     if (lastEaringInformation.earning[i]!="-")
                     {
                         printText = printText + "\t" + (i + 1) + "月\t" 
