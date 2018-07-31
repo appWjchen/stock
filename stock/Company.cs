@@ -242,7 +242,7 @@ namespace stock
                     // new MessageWriter().showMessage(oneOldHistoryDataStringArray.Length.ToString());
                     bool longDataFormat = false;
                     HistoryData oneHistoryData = new HistoryData();
-                    if (oneOldHistoryDataStringArray.Length == 15)
+                    if (oneOldHistoryDataStringArray.Length >= 15)
                     {
                         oneHistoryData.t = oneOldHistoryDataStringArray[0];
                         oneHistoryData.o = Convert.ToDouble(oneOldHistoryDataStringArray[1]);

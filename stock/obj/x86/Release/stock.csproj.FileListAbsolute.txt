@@ -10,3 +10,15 @@ C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\s
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.exe
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.pdb
 C:\Users\陳維志\Documents\stockApp\Windows.Form\stock\stock\obj\x86\Release\stock.csprojResolveAssemblyReference.cache
+C:\Users\weijy\Documents\GitHub\stock\stock\bin\Release\stock.exe.manifest
+C:\Users\weijy\Documents\GitHub\stock\stock\bin\Release\stock.application
+C:\Users\weijy\Documents\GitHub\stock\stock\bin\Release\stock.exe
+C:\Users\weijy\Documents\GitHub\stock\stock\bin\Release\stock.pdb
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.csprojResolveAssemblyReference.cache
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.Form1.resources
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.Properties.Resources.resources
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.csproj.GenerateResource.Cache
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.exe.manifest
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.application
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.exe
+C:\Users\weijy\Documents\GitHub\stock\stock\obj\x86\Release\stock.pdb
