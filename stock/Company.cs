@@ -146,6 +146,10 @@ namespace stock
             id = idParam;
             name = nameParam;
             category = categoryParam;
+            if (category.Substring(category.Length - 1, 1) == "\r")
+            {
+                category = category.Substring(0, category.Length - 1);
+            }
             dayHistoryDataList = new List<HistoryData>();
             weekHistoryDataList = new List<HistoryData>();
             monthHistoryDataList = new List<HistoryData>();
@@ -1604,6 +1608,10 @@ namespace stock
                 var lastMarginInformationStringSplit =
                     oldMarginInformationStringSplit[i].
                     Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                if (lastMarginInformationStringSplit.Length < 7)
+                {
+                    continue;
+                }
                 CompanyInformation companyInformation = new CompanyInformation();
                 companyInformation.marginYear = lastMarginInformationStringSplit[0];
                 companyInformation.grossMargin = Convert.ToDouble(

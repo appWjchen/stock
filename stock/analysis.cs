@@ -1621,7 +1621,8 @@ namespace stock
             var day = today.Day;
             // var dataArray = [];
             var count = 0;
-            var printText = "日期：" + year + "/" + month + "/" + day + "\n";
+            var printText = "\n<END>\n";
+            printText = printText + "日期：" + year + "/" + month + "/" + day + "\n";
             printText = printText + "所有評分總合為 " + totalScore + " 分。\n";
             printText = printText + "不含大盤評分總合為 " + totalCompanyScore + " 分)。\n";
             printText = printText + "評分大於 20 以上的公司數：" + companyCount + "\n";
@@ -1647,7 +1648,7 @@ namespace stock
                     count++;
                 }
             }
-            printText = printText + "\n";
+            printText = printText + "\n<END>\n";
             FileHelper fileHelper = new FileHelper();
             if (fileHelper.Exists("twStock/everyDayScore.dat"))
             {
@@ -2147,7 +2148,7 @@ namespace stock
             // 載入評分排行記錄檔案
             var filename = "twStock/everyDayScore.dat";
             var saveString = fileHelper.ReadText(filename);
-            var saveStringSplit = saveString.Split(new string[] { "\n\n" },
+            var saveStringSplit = saveString.Split(new string[] { "\n<END>\n" },
                     StringSplitOptions.RemoveEmptyEntries);
             String rankLastDay;
             if (saveStringSplit.Length < 1)
