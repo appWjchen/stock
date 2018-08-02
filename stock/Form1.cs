@@ -443,13 +443,16 @@ namespace stock
             {
                 EarningInformation lastEaringInformation = earningInformation[earningInformation.Length - 1];
                 printText = printText + lastEaringInformation.year + " 年度每月營收：\r\n";
+                printText = printText + "\t月份\t營收(元)\t\t與去年比較營收增長(%)\r\n";
                 for (var i = 0; i < lastEaringInformation.earningString.Length; i++)
                 {
                     if (i >= 12) break;
-                    if (lastEaringInformation.earningString[i]!="-")
+                    if (lastEaringInformation.earningString[i] != "-")
                     {
                         printText = printText + "\t" + (i + 1) + "月\t"
-                            + lastEaringInformation.earningString[i] + "\r\n";
+                            + lastEaringInformation.earningString[i] +
+                            "\t\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
+                            "\r\n";
                     }
                 }
                 new MessageWriter().showMessage(printText);

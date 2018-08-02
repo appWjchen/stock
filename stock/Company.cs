@@ -76,6 +76,7 @@ namespace stock
         public int year;
         public String[] earningString;
         public Double[] earning;
+        public Double[] increasePercentCompareToLastYear;
     }
     class CompanyInformation
     {
@@ -1683,7 +1684,7 @@ namespace stock
                 List<String> tempStringList = new List<string>();
                 for (var k = 0; k < oneEarning.Length; k++)
                 {
-                    if (oneEarning.Substring(k,1) != ",")
+                    if (oneEarning.Substring(k, 1) != ",")
                     {
                         tempStringList.Add(oneEarning.Substring(k, 1));
                     }
@@ -1738,10 +1739,30 @@ namespace stock
                     }
                     earingInformation.earningString = earningList.ToArray();
                     earingInformation.earning = earningStringToDoubleEarning(earingInformation.earningString);
+                    earingInformation.increasePercentCompareToLastYear = new Double[earingInformation.earning.Length];
                     earningInformationList.Add(earingInformation);
                 }
             }
-            return earningInformationList.ToArray();
+            EarningInformation[] earningInformationArray = earningInformationList.ToArray();
+            for (int i = 1; i < earningInformationArray.Length; i++)
+            {
+                EarningInformation thisYearEarningInformation = earningInformationArray[i];
+                EarningInformation lastYearEarningInformation = earningInformationArray[i - 1];
+                for (var k = 0; k < thisYearEarningInformation.earning.Length; k++)
+                {
+                    if (thisYearEarningInformation.earning[k] > 0)
+                    {
+                        thisYearEarningInformation.increasePercentCompareToLastYear[k] =
+                            (thisYearEarningInformation.earning[k] - lastYearEarningInformation.earning[k]) /
+                            lastYearEarningInformation.earning[k] * 100.0;
+                    }
+                    else
+                    {
+                        thisYearEarningInformation.increasePercentCompareToLastYear[k] = 0.0;
+                    }
+                }
+            }
+            return earningInformationArray;
         }
         private DateTime timeInformation;
         private String information = null;
@@ -1858,6 +1879,24 @@ namespace stock
             {
                 returnText = returnText + "\t\t" + companyInformationArray[j].ROA +
                     "\t" + companyInformationArray[j].ROE + "\r\n";
+            }
+            EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
+            if (earningInformation.Length > 0)
+            {
+                EarningInformation lastEaringInformation = earningInformation[earningInformation.Length - 1];
+                returnText = returnText + "\t" + lastEaringInformation.year + " 年度每月營收：\r\n";
+                returnText = returnText + "\t\t月份\t營收(元)\t\t與去年比較營收增長(%)\r\n";
+                for (var i = 0; i < lastEaringInformation.earningString.Length; i++)
+                {
+                    if (i >= 12) break;
+                    if (lastEaringInformation.earningString[i] != "-")
+                    {
+                        returnText = returnText + "\t\t" + (i + 1) + "月\t"
+                            + lastEaringInformation.earningString[i] +
+                            "\t\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
+                            "\r\n";
+                    }
+                }
             }
             information = returnText;
             timeInformation = DateTime.Now;
