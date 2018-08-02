@@ -1487,12 +1487,25 @@ namespace stock
             for (var i = 1; i < seasonEPSSplit.Length; i++)
             {
                 var oneSeasonEPS = seasonEPSSplit[i];
+                if (oneSeasonEPS == "\r")
+                {
+                    continue;
+                }
                 var oneSeasonEPSSplit = oneSeasonEPS.Split(new string[] { " " },
                                 StringSplitOptions.RemoveEmptyEntries);
                 Double oneSeasonEPSValue = 0;
                 try
                 {
-                    String seasonValue = oneSeasonEPSSplit[1].Substring(0, oneSeasonEPSSplit[1].Length - 1);
+                    String seasonValue;
+                    /* 若最後一個字元是 \r ，則要去掉最後二個字元，即 "元\r" */
+                    if (oneSeasonEPSSplit[1].Substring(oneSeasonEPSSplit[1].Length - 1, 1) == "\r")
+                    {
+                        seasonValue = oneSeasonEPSSplit[1].Substring(0, oneSeasonEPSSplit[1].Length - 2);
+                    }
+                    else
+                    {
+                        seasonValue = oneSeasonEPSSplit[1].Substring(0, oneSeasonEPSSplit[1].Length - 1);
+                    }
                     oneSeasonEPSValue = Convert.ToDouble(seasonValue);
                 }
                 catch (Exception error)
@@ -1528,12 +1541,26 @@ namespace stock
             for (var i = 1; i < yearEPSSplit.Length; i++)
             {
                 var oneyearEPS = yearEPSSplit[i];
+                if (oneyearEPS == "\r")
+                {
+                    continue;
+                }
                 var oneyearEPSSplit = oneyearEPS.Split(new string[] { " " },
                                 StringSplitOptions.RemoveEmptyEntries);
                 Double oneyearEPSValue = 0;
                 try
                 {
-                    oneyearEPSValue = Convert.ToDouble(oneyearEPSSplit[1].Substring(0, oneyearEPSSplit[1].Length - 1));
+                    String yearValue;
+                    /* 若最後一個字元是 \r ，則要去掉最後二個字元，即 "元\r" */
+                    if (oneyearEPSSplit[1].Substring(oneyearEPSSplit[1].Length - 1, 1) == "\r")
+                    {
+                        yearValue = oneyearEPSSplit[1].Substring(0, oneyearEPSSplit[1].Length - 2);
+                    }
+                    else
+                    {
+                        yearValue = oneyearEPSSplit[1].Substring(0, oneyearEPSSplit[1].Length - 1);
+                    }
+                    oneyearEPSValue = Convert.ToDouble(yearValue);
                 }
                 catch (Exception error)
                 {
