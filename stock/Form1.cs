@@ -443,13 +443,13 @@ namespace stock
             {
                 EarningInformation lastEaringInformation = earningInformation[earningInformation.Length - 1];
                 printText = printText + lastEaringInformation.year + " 年度每月營收：\r\n";
-                for (var i = 0; i < lastEaringInformation.earning.Length; i++)
+                for (var i = 0; i < lastEaringInformation.earningString.Length; i++)
                 {
                     if (i >= 12) break;
-                    if (lastEaringInformation.earning[i]!="-")
+                    if (lastEaringInformation.earningString[i]!="-")
                     {
-                        printText = printText + "\t" + (i + 1) + "月\t" 
-                            + lastEaringInformation.earning[i] + "\r\n";
+                        printText = printText + "\t" + (i + 1) + "月\t"
+                            + lastEaringInformation.earningString[i] + "\r\n";
                     }
                 }
                 new MessageWriter().showMessage(printText);

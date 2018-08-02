@@ -74,7 +74,8 @@ namespace stock
     class EarningInformation
     {
         public int year;
-        public String[] earning;
+        public String[] earningString;
+        public Double[] earning;
     }
     class CompanyInformation
     {
@@ -1673,6 +1674,35 @@ namespace stock
             KDJ[] kdjArray = indicator.calcKDJArray(rsvArray);
             return kdjArray;
         }
+        private Double[] earningStringToDoubleEarning(String[] earningString)
+        {
+            List<Double> earningList = new List<Double>();
+            for (var i = 0; i < earningString.Length; i++)
+            {
+                String oneEarning = earningString[i];
+                List<String> tempStringList = new List<string>();
+                for (var k = 0; k < oneEarning.Length; k++)
+                {
+                    if (oneEarning.Substring(k,1) != ",")
+                    {
+                        tempStringList.Add(oneEarning.Substring(k, 1));
+                    }
+                }
+                String[] tempStringArray = tempStringList.ToArray();
+                var doubleEaringString = String.Concat(tempStringArray);
+                Double earning;
+                try
+                {
+                    earning = Convert.ToDouble(doubleEaringString);
+                }
+                catch (Exception)
+                {
+                    earning = 0;
+                }
+                earningList.Add(earning);
+            }
+            return earningList.ToArray();
+        }
         public EarningInformation[] getEarning()
         {
             String earningDatabaseString = "";
@@ -1701,9 +1731,13 @@ namespace stock
                     for (int k = 1; k < oneEarningSplit.Length; k++)
                     {
                         String oneMonthEarning = oneEarningSplit[k];
-                        earningList.Add(oneMonthEarning);
+                        if (oneMonthEarning != "\r")
+                        {
+                            earningList.Add(oneMonthEarning);
+                        }
                     }
-                    earingInformation.earning = earningList.ToArray();
+                    earingInformation.earningString = earningList.ToArray();
+                    earingInformation.earning = earningStringToDoubleEarning(earingInformation.earningString);
                     earningInformationList.Add(earingInformation);
                 }
             }
