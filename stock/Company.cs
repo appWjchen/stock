@@ -1325,7 +1325,7 @@ namespace stock
                 dividendDatabaseString = fileHelper.ReadText("company/" + id + "/dividend.dat");
                 var dividendDatabaseStringSplit = dividendDatabaseString.Split(new string[] { "\n" },
                     StringSplitOptions.RemoveEmptyEntries);
-                if (dividendDatabaseStringSplit.Length > 1)
+                if (dividendDatabaseStringSplit.Length >= 1)
                 {
                     var lastDividend = dividendDatabaseStringSplit[dividendDatabaseStringSplit.Length - 1];
                     var lastDividendSplit = lastDividend.Split(new string[] { " " },
