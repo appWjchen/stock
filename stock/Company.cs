@@ -53,6 +53,24 @@
       13. checkDatabase()
           此方法用來檢查資料庫的完整性，包含歷史資料庫、基本資料庫、營收資料庫、股利資料庫。
           若檢查失敗，則標示為不做分析及篩選。
+      14. getEarning()
+          此方法用來取得過去幾年每月營收的資訊，以陣列形式傳回，每個元素是 EarningInformation 型態的值，
+          代表某一年的每月營收值。EarningInformation 中成員解釋如下：
+            year            哪一年度
+            earningString   檔案中讀出的各月營收值(字串)，其中數值格式為 xxx,xxx,xxx 含有逗號
+            earning         各月營收值(Double)，由上面字串轉換而來
+            increasePercentCompareToLastYear
+                            和前一年比較的增減百分比
+      15. getMarketMaker()
+          此方法用來取得過去 10 天主力的量能，以陣列形式傳回，每個元素是 MarketMakerInformation 型態的值。
+          MarketMakerInformation 中成員解釋如下：
+            date            日期
+            fValue;         外資持股(張)
+            pValue;         投信持股(張)
+            iValue;         自營商持股(張)
+            value           主力籌碼大小
+            increase        和前一交易日比較的增減值(買賣超值)
+            increasePercent 和前一交易日比較的增減百分比
   注意事項：
     2017/03/28 此類別中的方法，一開始設計時，要傳入 id, name, category
                等參數，後來變更 Company 建構式以接受這些參數，因此
@@ -71,6 +89,16 @@ namespace stock
     public delegate void CreateInformationDatabaseCallback();
     public delegate void CreateMonthEarningDatabaseCallback();
     public delegate void CreateYearDividendDatabaseCallback();
+    class MarketMakerInformation
+    {
+        public DateTime date;
+        public Double fValue;  // 外資持股(張)
+        public Double pValue;  // 投信持股(張)
+        public Double iValue;  // 自營商持股(張)
+        public Double value;
+        public Double increase;
+        public Double increasePercent;
+    }
     class EarningInformation
     {
         public int year;
@@ -1674,7 +1702,8 @@ namespace stock
             return companyInformationList.ToArray();
         }
         /*
-         * getInformatioon() 用來取得股票的簡單描述資訊
+         * getHistoryData80 由傳入的歷史資料陣列中取最後 80 筆資料傳回。
+         * 如果不足 80 筆則全數傳回。
          */
         private HistoryData[] getHistoryData80(HistoryData[] historyData)
         {
@@ -1695,6 +1724,9 @@ namespace stock
             HistoryData[] historyData80 = historyData80List.ToArray();
             return historyData80;
         }
+        /*
+         * kValue 計算傳入歷史資料 historyData80 的 KDJ 值陣列。
+         */
         private KDJ[] kValue(HistoryData[] historyData80)
         {
             Indicator indicator = new Indicator(historyData80);
@@ -1702,6 +1734,9 @@ namespace stock
             KDJ[] kdjArray = indicator.calcKDJArray(rsvArray);
             return kdjArray;
         }
+        /*
+         * earningStringToDoubleEarning 函式用來將每月營收字串轉換成數值 Double 型態。
+         */
         private Double[] earningStringToDoubleEarning(String[] earningString)
         {
             List<Double> earningList = new List<Double>();
@@ -1731,6 +1766,9 @@ namespace stock
             }
             return earningList.ToArray();
         }
+        /*
+         * getEarning 傳回歷年的每月營收資訊。
+         */
         public EarningInformation[] getEarning()
         {
             String earningDatabaseString = "";
@@ -1791,6 +1829,65 @@ namespace stock
             }
             return earningInformationArray;
         }
+        /*
+         * getMarketMaker()
+         * 此方法用來取得過去 10 天主力的量能，以陣列形式傳回，每個元素是 MarketMakerInformation 型態的值。
+         * MarketMakerInformation 中成員解釋如下：
+         *  date            日期
+         *  fValue;         外資持股(張)
+         *  pValue;         投信持股(張)
+         *  iValue;         自營商持股(張)
+         *  value           主力籌碼大小
+         *  increase        和前一交易日比較的增減值(買賣超值)
+         *  increasePercent 和前一交易日比較的增減百分比
+         */
+        public MarketMakerInformation[] getMarketMaker(HistoryData[] historyData80)
+        {
+            List<MarketMakerInformation> marketMakerInformationList = new List<MarketMakerInformation>();
+            int endIndex = historyData80.Length - 1;
+            int startIndex = endIndex - 10;
+            if (startIndex < 0)
+            {
+                startIndex = 0;
+            }
+            MarketMakerInformation previousInfo = null;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                HistoryData oneHistoryData = historyData80[i];
+                MarketMakerInformation marketMakerInfo = new MarketMakerInformation();
+                int Year = Convert.ToInt32(oneHistoryData.t.Substring(0, 4));
+                int Month = Convert.ToInt32(oneHistoryData.t.Substring(5, 2));
+                int Day = Convert.ToInt32(oneHistoryData.t.Substring(8, 2));
+                marketMakerInfo.date = new DateTime(Year, Month, Day);
+                marketMakerInfo.fValue = oneHistoryData.f;
+                marketMakerInfo.pValue = oneHistoryData.p;
+                marketMakerInfo.iValue = oneHistoryData.i;
+                marketMakerInfo.value = oneHistoryData.s;
+                if (i == startIndex)
+                {
+                    marketMakerInfo.increase = 0;
+                    marketMakerInfo.increasePercent = 0;
+                }
+                else
+                {
+                    marketMakerInfo.increase = marketMakerInfo.value - previousInfo.value;
+                    try
+                    {
+                        marketMakerInfo.increasePercent = marketMakerInfo.increase * 100 / previousInfo.value;
+                    }
+                    catch (Exception)
+                    {
+                        marketMakerInfo.increasePercent = 0;
+                    }
+                }
+                previousInfo = marketMakerInfo;
+                marketMakerInformationList.Add(marketMakerInfo);
+            }
+            return marketMakerInformationList.ToArray();
+        }
+        /*
+         * getInformatioon() 用來取得股票的簡單描述資訊
+         */
         private DateTime timeInformation;
         private String information = null;
         public String getInformatioon(StockDatabase stockDatabase)
@@ -1808,6 +1905,7 @@ namespace stock
             String returnText = "";
             returnText = returnText + name + "(" + id + ") 類別：" + this.category + "\r\n";
             var historyData80 = getHistoryData80(getRealHistoryDataArray("d"));
+            var dayHistoryData80 = historyData80;
             Double todayPrice = 0;
             KDJ[] kValueDay = null;
             KDJ[] kValueWeek = null;
@@ -1907,7 +2005,7 @@ namespace stock
                 returnText = returnText + "\t\t" + companyInformationArray[j].ROA +
                     "\t" + companyInformationArray[j].ROE + "\r\n";
             }
-            EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
+            EarningInformation[] earningInformation = getEarning();
             if (earningInformation.Length > 0)
             {
                 EarningInformation lastEaringInformation = earningInformation[earningInformation.Length - 1];
@@ -1920,10 +2018,49 @@ namespace stock
                     {
                         returnText = returnText + "\t\t" + (i + 1) + "月\t"
                             + lastEaringInformation.earningString[i] +
-                            "\t\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
+                            "\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
                             "\r\n";
                     }
                 }
+            }
+            MarketMakerInformation[] marketMakerInfomationArray = getMarketMaker(dayHistoryData80);
+            returnText = returnText + "\t" + "近十日法人籌碼狀況(單位:張)：\r\n";
+            returnText = returnText + "\t\t日期\t外資\t投信\t自營商\t法人總持股\t總持股增減\t增減百分比\r\n";
+            MarketMakerInformation oneMarketMakerInfomation = null;
+            for (int i = 0; i < marketMakerInfomationArray.Length; i++)
+            {
+                oneMarketMakerInfomation=marketMakerInfomationArray[i];
+                returnText = returnText + "\t\t" + oneMarketMakerInfomation.date.Month +
+                    "/" + oneMarketMakerInfomation.date.Day +
+                    "\t" + oneMarketMakerInfomation.fValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.pValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.iValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.value.ToString("f0") +
+                    "\t\t" + oneMarketMakerInfomation.increase.ToString("f0") +
+                    "\t\t" + oneMarketMakerInfomation.increasePercent.ToString("f2") + "%" +
+                    "\r\n";
+            }
+            if (oneMarketMakerInfomation != null)
+            {
+                Double increase = oneMarketMakerInfomation.value - marketMakerInfomationArray[0].value;
+                Double increasePercent;
+                try
+                {
+                    increasePercent = increase * 100 / marketMakerInfomationArray[0].value;
+                }
+                catch (Exception)
+                {
+                    increasePercent = 0;
+                }
+                returnText = returnText + "\t\t------------------------------------------------------------------------------------------------------------------------------\r\n";
+                returnText = returnText + "\t\t" + "合計" +
+                    "\t" + oneMarketMakerInfomation.fValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.pValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.iValue.ToString("f0") +
+                    "\t" + oneMarketMakerInfomation.value.ToString("f0") +
+                    "\t\t" + increase.ToString("f0") +
+                    "\t\t" + increasePercent.ToString("f2") + "%" +
+                    "\r\n";
             }
             information = returnText;
             timeInformation = DateTime.Now;
