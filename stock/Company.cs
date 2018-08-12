@@ -1886,6 +1886,43 @@ namespace stock
             return marketMakerInformationList.ToArray();
         }
         /*
+         * getPrevHighAndLow 函式用來取得股價在六年最高及最低價。
+         */
+        private Double highestIndex = 0;
+        private Double lowestIndex = 0;
+        private String getPrevHighAndLow()
+        {
+            HistoryData[] monthHistoryData = getRealHistoryDataArray("m");
+            Double highestPrice = 0;
+            Double lowestPrice = Double.MaxValue;
+            int lastIndex = monthHistoryData.Length - 1;
+            for (int i = lastIndex; i >= 0; i--)
+            {
+                HistoryData historyData = monthHistoryData[i];
+                String time = historyData.t;
+                int Year = Convert.ToInt32(time.Substring(0, 4));
+                int Month = Convert.ToInt32(time.Substring(5, 2));
+                int Day = Convert.ToInt32(time.Substring(8, 2));
+                var dataDate = new DateTime(Year, Month, Day);
+                var diff = (DateTime.Now - dataDate).TotalDays;
+                if (diff > (6 * 365))
+                {   /* 比較 6 年中的歷史資料 */
+                    break;
+                }
+                if (historyData.h > highestPrice)
+                {
+                    highestPrice = historyData.h;
+                }
+                if (historyData.l < lowestPrice)
+                {
+                    lowestPrice = historyData.l;
+                }
+            }
+            highestIndex = highestPrice;
+            lowestIndex = lowestPrice;
+            return "\t六年內股價最高是 " + highestPrice + " ，最低是 " + lowestPrice + "\r\n";
+        }
+        /*
          * getInformatioon() 用來取得股票的簡單描述資訊
          */
         private DateTime timeInformation;
@@ -1952,6 +1989,7 @@ namespace stock
             }
             getYearEPS();
             Double oneYearEPS = yearEPS[yearEPS.Length - 1];
+            returnText = returnText + getPrevHighAndLow() + "\r\n";
             returnText = returnText + "\t上一年 EPS：" + oneYearEPS +
                 " 元，利率約： " + (oneYearEPS * 100.0 / todayPrice).ToString("f2") + "%\r\n";
             if (yearEPS.Length > 0)
