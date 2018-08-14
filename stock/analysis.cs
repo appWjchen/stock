@@ -2480,7 +2480,7 @@ namespace stock
         List<AccumulateData> allCandidateArrayC = new List<AccumulateData>();
         /*
          * 函式 checkCCompany 用來檢查 company 公司是否符合
-         *      (c) 爆量上漲(單日上漲超過 3% ，成交量超過前 100 天平均 3 倍)
+         *      (c) 爆量上漲(單日上漲超過 3% ，成交量超過前 100 天平均 3 倍，最少要 500 張)
          */
         public Boolean checkCCompany(Company company, int indexParam)
         {
@@ -2513,12 +2513,15 @@ namespace stock
             volume100Average = volume100Average / count;
             /* 以上計算 100 天平均交易量 */
             var volumeToday = historyDataArray[indexParam].v;
-            // var volumeYesterday = historyDataArray[historyDataArray.Length - 2].v;
-            var priceRate = (priceToday - priceYesterday) / priceYesterday;
-            var volumeRate = (volumeToday - volume100Average) / volume100Average;
-            if ((priceRate > 0.03) && (volumeRate > 3))
+            if (volumeToday >= 500)
             {
-                returnValue = true;
+                // var volumeYesterday = historyDataArray[historyDataArray.Length - 2].v;
+                var priceRate = (priceToday - priceYesterday) / priceYesterday;
+                var volumeRate = (volumeToday - volume100Average) / volume100Average;
+                if ((priceRate > 0.03) && (volumeRate > 3))
+                {
+                    returnValue = true;
+                }
             }
             return returnValue;
         }
@@ -2560,7 +2563,7 @@ namespace stock
         List<AccumulateData> allCandidateArrayD = new List<AccumulateData>();
         /*
          * 函式 checkDCompany 用來檢查 company 公司是否符合
-         *      (d) 法人買超 2 日，且當日買超量大於成交量 10%
+         *      (d) 法人買超 2 日，且當日買超量大於成交量 10% (2 天都超過 50 張)
          */
         public Boolean checkDCompany(Company company, int index)
         {
@@ -2578,7 +2581,7 @@ namespace stock
             var sDiff1 = sVolumeToday - sVolumeYestoday;
             var sDiff2 = sVolumeYestoday - sVolumeDayBeforeYestoday;
             var rate = sDiff1 / volumeToday;
-            if ((sDiff1 > 0) && (sDiff2 > 0) && (rate > compareRate))
+            if ((sDiff1 >= 50) && (sDiff2 >= 50) && (rate > compareRate))
             {
                 returnValue = true;
             }
@@ -3027,8 +3030,8 @@ namespace stock
             returnText = returnText +
                 "分析及篩選主要是以搜尋主力攻擊為主，亦即籌碼作用為主，\r\n" +
                 "所謂主力攻擊是指下列二項事件發生時：\r\n" +
-                "\t(1) 爆量上漲(單日上漲超過 3% ，成交量超過前 100 天平均 3 倍)\r\n" +
-                "\t(2) 法人買超 2 日，且當日買超量大於成交量 10%\r\n\r\n" +
+                "\t(1) 爆量上漲 (單日上漲超過 3% ，成交量超過前 100 天平均 3 倍，最少要 500 張)\r\n" +
+                "\t(2) 法人買超 2 日，且當日買超量大於成交量 10% (2天都要超過 50 張)\r\n\r\n" +
                 "篩選的條件是如下列：\r\n" +
                 "\t(A) 一個月內多頭主力發動二次主力攻擊(無過濾)。\r\n" +
                 "\t(B) 一個月內多頭主力發動二次主力攻擊(有過濾)。\r\n" +
