@@ -1920,7 +1920,15 @@ namespace stock
             }
             highestIndex = highestPrice;
             lowestIndex = lowestPrice;
-            return "\t六年內股價最高是 " + highestPrice + " ，最低是 " + lowestPrice + "\r\n";
+            HistoryData[] dayHistoryData = getRealHistoryDataArray("d");
+            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+            Double indexDiff = highestIndex - lowestIndex;
+            String returnText = "\t六年內股價最高是 " + highestPrice + " ，最低是 " + lowestPrice + "\r\n";
+            returnText = returnText + "\t目前股價： " + todayPrice +
+                " (比前高少 " + ((highestIndex - todayPrice) * 100 / indexDiff).ToString("f2") + "%)" +
+                " (比前低多 " + ((todayPrice - lowestIndex) * 100 / indexDiff).ToString("f2") + "%)" +
+                "\r\n";
+            return returnText;
         }
         /*
          * getInformatioon() 用來取得股票的簡單描述資訊
