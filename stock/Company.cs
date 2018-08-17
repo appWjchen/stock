@@ -218,7 +218,7 @@ namespace stock
                         StringSplitOptions.RemoveEmptyEntries);
                     bool longDataFormat = false;
                     HistoryData oneHistoryData = new HistoryData();
-                    if (oneOldHistoryDataStringArray.Length == 15)
+                    if (oneOldHistoryDataStringArray.Length >= 15)
                     {
                         oneHistoryData.t = oneOldHistoryDataStringArray[0];
                         oneHistoryData.o = Convert.ToDouble(oneOldHistoryDataStringArray[1]);
@@ -1950,7 +1950,7 @@ namespace stock
             String returnText = "";
             returnText = returnText + name + "(" + id + ") 類別：" + this.category + "\r\n";
             var historyData80 = getHistoryData80(getRealHistoryDataArray("d"));
-            var dayHistoryData80 = historyData80;
+            var dayHistoryData80 = getHistoryData80(getRealHistoryDataArray("d"));
             Double todayPrice = 0;
             KDJ[] kValueDay = null;
             KDJ[] kValueWeek = null;
