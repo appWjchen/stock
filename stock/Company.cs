@@ -166,6 +166,7 @@ namespace stock
         public int candidateMatchCount;
         public Boolean matchE;
         public Boolean matchF;
+        public Boolean matchG;
         public Boolean passCheckDatabase;
 
         /*
@@ -1890,7 +1891,7 @@ namespace stock
          */
         private Double highestIndex = 0;
         private Double lowestIndex = 0;
-        private String getPrevHighAndLow()
+        private void getPrevHighANdLowIndex()
         {
             HistoryData[] monthHistoryData = getRealHistoryDataArray("m");
             Double highestPrice = 0;
@@ -1920,10 +1921,14 @@ namespace stock
             }
             highestIndex = highestPrice;
             lowestIndex = lowestPrice;
+        }
+        private String getPrevHighAndLow()
+        {
+            getPrevHighANdLowIndex();
             HistoryData[] dayHistoryData = getRealHistoryDataArray("d");
             Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
             Double indexDiff = highestIndex - lowestIndex;
-            String returnText = "\t六年內股價最高是 " + highestPrice + " ，最低是 " + lowestPrice + "\r\n";
+            String returnText = "\t六年內股價最高是 " + highestIndex + " ，最低是 " + lowestIndex + "\r\n";
             returnText = returnText + "\t目前股價： " + todayPrice +
                 " (比前高少 " + ((highestIndex - todayPrice) * 100 / indexDiff).ToString("f2") + "%)" +
                 " (比前低多 " + ((todayPrice - lowestIndex) * 100 / indexDiff).ToString("f2") + "%)" +
@@ -2075,7 +2080,7 @@ namespace stock
             MarketMakerInformation oneMarketMakerInfomation = null;
             for (int i = 0; i < marketMakerInfomationArray.Length; i++)
             {
-                oneMarketMakerInfomation=marketMakerInfomationArray[i];
+                oneMarketMakerInfomation = marketMakerInfomationArray[i];
                 returnText = returnText + "\t\t" + oneMarketMakerInfomation.date.Month +
                     "/" + oneMarketMakerInfomation.date.Day +
                     "\t" + oneMarketMakerInfomation.fValue.ToString("f0") +
@@ -2112,6 +2117,127 @@ namespace stock
             timeInformation = DateTime.Now;
             return returnText;
         }
+        /*
+         * checkMatchG 函式用來檢查該公司是否通過下列條件：
+         *      (1) 每年股利無負值(含零值)
+         *      (2) 每季 EPS 無負值(含零值)
+         *      (3) 每年 EPS 無負值(含零值)
+         *      (4) 日k、週k、月k值都小於20
+         *      (5) 法人十日內買超 0.2% 以上
+         *      (6) 低檔(比前高少70%)以上
+         */
+        public void checkMatchG()
+        {
+            this.matchG = true;
+            /* check (1) */
+            getDividend();
+            for (var i = 0; i < this.dividend.Length; i++)
+            {
+                if (dividend[i] <= 0)
+                {
+                    this.matchG = false;
+                }
+            }
+            /* check (2) */
+            getSeasonEPS();
+            for (var i = 0; i < this.seasonEPS.Length; i++)
+            {
+                if (seasonEPS[i] <= 0)
+                {
+                    this.matchG = false;
+                }
+            }
+            /* check (3) */
+            getYearEPS();
+            for (var i = 0; i < this.yearEPS.Length; i++)
+            {
+                if (yearEPS[i] <= 0)
+                {
+                    this.matchG = false;
+                }
+            }
+            /* check (4) */
+            var historyData80 = getHistoryData80(getRealHistoryDataArray("d"));
+            var dayHistoryData80 = historyData80;
+            KDJ[] kValueDay = null;
+            KDJ[] kValueWeek = null;
+            KDJ[] kValueMonth = null;
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每日歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueDay = kValue(historyData80);
+            }
+            historyData80 = getHistoryData80(getRealHistoryDataArray("w"));
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每周歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueWeek = kValue(historyData80);
+            }
+            historyData80 = getHistoryData80(getRealHistoryDataArray("m"));
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每月歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueMonth = kValue(historyData80);
+            }
+            Double kValueDayToday = 100;
+            Double kValueWeekToday = 100;
+            Double kValueMonthToday = 100;
+            if ((kValueDay != null) && (kValueDay.Length > 0))
+            {
+                kValueDayToday = kValueDay[kValueDay.Length - 1].K;
+            }
+            if ((kValueWeek != null) && (kValueWeek.Length > 0))
+            {
+                kValueWeekToday = kValueWeek[kValueWeek.Length - 1].K;
+            }
+            if ((kValueMonth != null) && (kValueMonth.Length > 0))
+            {
+                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+            }
+            if (!((kValueDayToday < 20) && (kValueMonthToday < 20) && (kValueWeekToday < 20)))
+            {
+                this.matchG = false;
+            }
+            /* check (5) */
+            MarketMakerInformation[] marketMakerInfomationArray = getMarketMaker(dayHistoryData80);
+            MarketMakerInformation oneMarketMakerInfomation = marketMakerInfomationArray[marketMakerInfomationArray.Length - 1];
+            Double increasePercent = 0;
+            if (oneMarketMakerInfomation != null)
+            {
+                Double increase = oneMarketMakerInfomation.value - marketMakerInfomationArray[0].value;
+                try
+                {
+                    increasePercent = increase * 100 / marketMakerInfomationArray[0].value;
+                }
+                catch (Exception)
+                {
+                    increasePercent = 0;
+                }
+            }
+            if (increasePercent <= 0.2)
+            {
+                this.matchG = false;
+            }
+            /* check (6) */
+            getPrevHighANdLowIndex();
+            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+            if (((highestIndex - todayPrice) / (highestIndex - lowestIndex)) <= 0.7)
+            {
+                this.matchG = false;
+            }
+        }
+        /*
+         * checkDatabase 函式用來檢查公司的資料庫檔案是否存在。
+         */
         public void checkDatabase()
         {
             FileHelper fileHelper = new FileHelper();

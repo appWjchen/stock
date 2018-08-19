@@ -2976,13 +2976,40 @@ namespace stock
             }
         }
         /*
+         * strongFilter 函式用來把通過連續二次主力攻撀篩選的股票，再
+         * 強力篩選一次，篩選的條件是：
+         *      (1) 每年股利無負值(含零值)
+         *      (2) 每季 EPS 無負值(含零值)
+         *      (3) 每年 EPS 無負值(含零值)
+         *      (4) 日k、週k、月k值都小於20
+         *      (5) 法人十日內買超 0.2% 以上
+         *      (6) 低檔(比前高少70%)以上
+         */
+        private void strongFilter()
+        {
+            for (var i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                if (company.matchF)
+                {
+                    company.checkMatchG();
+                }
+            }
+        }
+        /*
          * 函式 filterCandidateArray 從各個 candidateArrayX 中，取出
          * 股票資料，過濾出符合下列條件的股票：
-         *      (a) 過去 5 年中，最高點股價至今下跌至少 50% 以上
-         *      (b) 股利推估有 5% 以上
-         *      (c) 爆量上漲
-         *      (d) 法人買超 2 日，且當日買超量大於成交量 10%
+         *      (A) 過去 5 年中，最高點股價至今下跌至少 50% 以上
+         *      (B) 股利推估有 5% 以上
+         *      (C) 爆量上漲
+         *      (D) 法人買超 2 日，且當日買超量大於成交量 10%
          *      (E) 一個月內主力發動二次攻擊。
+         *      
+         *  20180818
+         *      目前已不使用 (A)-(E) 過濾的資訊，改用純粹二次攻擊的
+         *      分析，一次主力攻擊是表示出現 (C) (D) 其中之一的情形，
+         *      二次攻擊是指一個月內出現二次主力攻擊的意思。
+         *      連續二次攻擊是指二月內出現二次的二次主力攻擊的意思。
          */
         public String filterCandidateArray()
         {
@@ -3005,8 +3032,13 @@ namespace stock
             var printABCD = printCandidate(allCandidateArray);
             /*
              * 二次攻擊篩選
+             * (A) 各公司的 matchE 表示一個月內多頭主力發動連續二次攻擊(無過濾)。
+             * (B) 各公司的 matchF 一個月內多頭主力發動連續二次攻擊(有過濾)。
+             *      過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。
+             * 在顯示給使用者看時，分別變成滿足 (A) 及 (B) 條件。
              */
             filterCandidateE(300);
+            strongFilter();
 
             var printMatch4 = printCandidateMatchCountString(4);
             var printMatch3 = printCandidateMatchCountString(3);
@@ -3023,8 +3055,8 @@ namespace stock
               "\t(B) 股利推估有 5% 以上\r\n" +
               "\t(C) 爆量上漲(單日上漲超過 3% ，成交量超過前 100 天平均 3 倍)\r\n" +
               "\t(D) 法人買超 2 日，且當日買超量大於成交量 10%\r\n" +
-              "\t(E) 一個月內多頭主力發動二次攻擊(無過濾)。\r\n" +
-              "\t(F) 一個月內多頭主力發動二次攻擊(有過濾)。\r\n" +
+              "\t(E) 一個月內多頭主力發動連續二次攻擊(無過濾)。\r\n" +
+              "\t(F) 一個月內多頭主力發動連續二次攻擊(有過濾)。\r\n" +
               "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n\r\n";
              */
             returnText = returnText +
@@ -3032,9 +3064,10 @@ namespace stock
                 "所謂主力攻擊是指下列二項事件發生時：\r\n" +
                 "\t(1) 爆量上漲 (單日上漲超過 3% ，成交量超過前 100 天平均 3 倍，最少要 500 張)\r\n" +
                 "\t(2) 法人買超 2 日，且當日買超量大於成交量 10% (2天都要超過 50 張)\r\n\r\n" +
+                "\t    連續二次攻擊是指二月內出現二次的二次主力攻擊的意思。\r\n\r\n" +
                 "篩選的條件是如下列：\r\n" +
-                "\t(A) 一個月內多頭主力發動二次主力攻擊(無過濾)。\r\n" +
-                "\t(B) 一個月內多頭主力發動二次主力攻擊(有過濾)。\r\n" +
+                "\t(A) 一個月內多頭主力發動連續二次主力攻擊(無過濾)。\r\n" +
+                "\t(B) 一個月內多頭主力發動連續二次主力攻擊(有過濾)。\r\n" +
                 "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n\r\n";
             int attackCount = 0;
             var printMatchE = "滿足條件 (A) 的股票：\r\n";
