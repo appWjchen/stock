@@ -2122,10 +2122,11 @@ namespace stock
          *      (1) 每年股利無負值(含零值)
          *      (2) 每季 EPS 無負值(含零值)
          *      (3) 每年 EPS 無負值(含零值)
-         *      (4) 日k、週k、月k值都小於20
+         *      (4) 日k、週k、月k值都小於 minKValue
          *      (5) 法人十日內買超 0.2% 以上
          *      (6) 低檔(比前高少70%)以上
          */
+        private Double minKValue = 25;
         public void checkMatchG()
         {
             this.matchG = true;
@@ -2203,7 +2204,7 @@ namespace stock
             {
                 kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
             }
-            if (!((kValueDayToday < 20) && (kValueMonthToday < 20) && (kValueWeekToday < 20)))
+            if (!((kValueDayToday < minKValue) && (kValueMonthToday < minKValue) && (kValueWeekToday < minKValue)))
             {
                 this.matchG = false;
             }

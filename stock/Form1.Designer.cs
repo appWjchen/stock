@@ -50,14 +50,22 @@
             this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.score = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.startScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // button1
             // 
             this.button1.AutoSize = true;
-            this.button1.Location = new System.Drawing.Point(109, 4);
+            this.button1.Location = new System.Drawing.Point(145, 5);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(135, 23);
+            this.button1.Size = new System.Drawing.Size(180, 29);
             this.button1.TabIndex = 0;
             this.button1.Text = "更新各公司歷史資料庫";
             this.button1.UseVisualStyleBackColor = true;
@@ -66,48 +74,49 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("新細明體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.textBox1.Location = new System.Drawing.Point(7, 88);
+            this.textBox1.Location = new System.Drawing.Point(9, 110);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(1123, 337);
+            this.textBox1.Size = new System.Drawing.Size(1098, 420);
             this.textBox1.TabIndex = 1;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(6, 463);
+            this.textBox2.Location = new System.Drawing.Point(8, 579);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox2.Size = new System.Drawing.Size(1124, 112);
+            this.textBox2.Size = new System.Drawing.Size(1099, 139);
             this.textBox2.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 438);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(15, 548);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 12);
+            this.label1.Size = new System.Drawing.Size(82, 15);
             this.label1.TabIndex = 3;
             this.label1.Text = "警示訊息：";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 66);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(7, 82);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
+            this.label2.Size = new System.Drawing.Size(82, 15);
             this.label2.TabIndex = 4;
             this.label2.Text = "輸出訊息：";
             // 
             // button2
             // 
             this.button2.AutoSize = true;
-            this.button2.Location = new System.Drawing.Point(248, 4);
+            this.button2.Location = new System.Drawing.Point(331, 5);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(135, 23);
+            this.button2.Size = new System.Drawing.Size(180, 29);
             this.button2.TabIndex = 5;
             this.button2.Text = "更新各公司基本資料庫";
             this.button2.UseVisualStyleBackColor = true;
@@ -116,10 +125,10 @@
             // button3
             // 
             this.button3.AutoSize = true;
-            this.button3.Location = new System.Drawing.Point(387, 4);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Location = new System.Drawing.Point(516, 5);
+            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(159, 22);
+            this.button3.Size = new System.Drawing.Size(212, 28);
             this.button3.TabIndex = 6;
             this.button3.Text = "更新各公司每月營收資料庫";
             this.button3.UseVisualStyleBackColor = true;
@@ -130,18 +139,20 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(80, 66);
+            this.label3.Location = new System.Drawing.Point(107, 82);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(458, 12);
+            this.label3.Size = new System.Drawing.Size(562, 15);
             this.label3.TabIndex = 7;
             this.label3.Text = "(建議每天晚上 10:00 更新資料，否則當天的歷史資料無法收集到法人買超資訊)";
             // 
             // button4
             // 
             this.button4.AutoSize = true;
-            this.button4.Location = new System.Drawing.Point(550, 4);
+            this.button4.Location = new System.Drawing.Point(733, 5);
+            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(159, 23);
+            this.button4.Size = new System.Drawing.Size(212, 29);
             this.button4.TabIndex = 8;
             this.button4.Text = "更新各公司每年股利資料庫";
             this.button4.UseVisualStyleBackColor = true;
@@ -150,9 +161,10 @@
             // button5
             // 
             this.button5.AutoSize = true;
-            this.button5.Location = new System.Drawing.Point(480, 30);
+            this.button5.Location = new System.Drawing.Point(640, 38);
+            this.button5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(99, 23);
+            this.button5.Size = new System.Drawing.Size(132, 29);
             this.button5.TabIndex = 9;
             this.button5.Text = "重置分類資料庫";
             this.button5.UseVisualStyleBackColor = true;
@@ -161,9 +173,10 @@
             // button6
             // 
             this.button6.AutoSize = true;
-            this.button6.Location = new System.Drawing.Point(6, 4);
+            this.button6.Location = new System.Drawing.Point(8, 5);
+            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(99, 23);
+            this.button6.Size = new System.Drawing.Size(132, 29);
             this.button6.TabIndex = 10;
             this.button6.Text = "更新所有資料庫";
             this.button6.UseVisualStyleBackColor = true;
@@ -171,9 +184,10 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(1038, 59);
+            this.button7.Location = new System.Drawing.Point(1419, 75);
+            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(67, 23);
+            this.button7.Size = new System.Drawing.Size(89, 29);
             this.button7.TabIndex = 11;
             this.button7.Text = "測試";
             this.button7.UseVisualStyleBackColor = true;
@@ -181,9 +195,10 @@
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(1036, 5);
+            this.textBox3.Location = new System.Drawing.Point(1417, 5);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(69, 22);
+            this.textBox3.Size = new System.Drawing.Size(91, 25);
             this.textBox3.TabIndex = 12;
             this.textBox3.Text = "0";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -191,17 +206,19 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(980, 10);
+            this.label4.Location = new System.Drawing.Point(1343, 11);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(46, 12);
+            this.label4.Size = new System.Drawing.Size(57, 15);
             this.label4.TabIndex = 13;
             this.label4.Text = "index ：";
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(7, 30);
+            this.button8.Location = new System.Drawing.Point(9, 38);
+            this.button8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(141, 23);
+            this.button8.Size = new System.Drawing.Size(188, 29);
             this.button8.TabIndex = 14;
             this.button8.Text = "分析及篩選(二次攻撃法)";
             this.button8.UseVisualStyleBackColor = true;
@@ -209,9 +226,10 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(769, 59);
+            this.button9.Location = new System.Drawing.Point(1060, 75);
+            this.button9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(98, 23);
+            this.button9.Size = new System.Drawing.Size(131, 29);
             this.button9.TabIndex = 15;
             this.button9.Text = "二次攻擊測試";
             this.button9.UseVisualStyleBackColor = true;
@@ -220,9 +238,10 @@
             // button10
             // 
             this.button10.AutoSize = true;
-            this.button10.Location = new System.Drawing.Point(873, 59);
+            this.button10.Location = new System.Drawing.Point(1199, 75);
+            this.button10.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(159, 23);
+            this.button10.Size = new System.Drawing.Size(212, 29);
             this.button10.TabIndex = 16;
             this.button10.Text = "列出10天內二次攻擊的股票";
             this.button10.UseVisualStyleBackColor = true;
@@ -230,9 +249,10 @@
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(901, 5);
+            this.textBox4.Location = new System.Drawing.Point(1237, 5);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(69, 22);
+            this.textBox4.Size = new System.Drawing.Size(91, 25);
             this.textBox4.TabIndex = 17;
             this.textBox4.Text = "2317";
             this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -240,17 +260,19 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(823, 10);
+            this.label5.Location = new System.Drawing.Point(1133, 11);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 12);
+            this.label5.Size = new System.Drawing.Size(86, 15);
             this.label5.TabIndex = 18;
             this.label5.Text = "公司代號 ：";
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(938, 30);
+            this.button11.Location = new System.Drawing.Point(1365, 38);
+            this.button11.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(107, 23);
+            this.button11.Size = new System.Drawing.Size(143, 29);
             this.button11.TabIndex = 19;
             this.button11.Text = "依公司代號刪除";
             this.button11.UseVisualStyleBackColor = true;
@@ -258,9 +280,10 @@
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(825, 30);
+            this.button12.Location = new System.Drawing.Point(1214, 38);
+            this.button12.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(107, 23);
+            this.button12.Size = new System.Drawing.Size(143, 29);
             this.button12.TabIndex = 20;
             this.button12.Text = "依公司代號查詢";
             this.button12.UseVisualStyleBackColor = true;
@@ -268,19 +291,77 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(585, 30);
+            this.button13.Location = new System.Drawing.Point(780, 38);
+            this.button13.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(124, 23);
+            this.button13.Size = new System.Drawing.Size(165, 29);
             this.button13.TabIndex = 21;
             this.button13.Text = "重置二次攻擊資料庫";
             this.button13.UseVisualStyleBackColor = true;
             this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1122, 117);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(82, 15);
+            this.label6.TabIndex = 22;
+            this.label6.Text = "追踪清單：";
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.id,
+            this.name,
+            this.date,
+            this.startScore,
+            this.score});
+            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView1.Location = new System.Drawing.Point(1122, 140);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(387, 577);
+            this.listView1.TabIndex = 23;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // id
+            // 
+            this.id.Text = "代號";
+            this.id.Width = 53;
+            // 
+            // name
+            // 
+            this.name.Text = "名稱";
+            this.name.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.name.Width = 65;
+            // 
+            // date
+            // 
+            this.date.Text = "開始追踪日期";
+            this.date.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.date.Width = 131;
+            // 
+            // score
+            // 
+            this.score.Text = "分數";
+            this.score.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.score.Width = 53;
+            // 
+            // startScore
+            // 
+            this.startScore.Text = "開始分數";
+            this.startScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.startScore.Width = 81;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1141, 587);
+            this.ClientSize = new System.Drawing.Size(1514, 723);
+            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
@@ -303,7 +384,9 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Location = new System.Drawing.Point(50, 50);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "股票分析及篩選程式";
             this.ResumeLayout(false);
@@ -335,6 +418,13 @@
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader id;
+        private System.Windows.Forms.ColumnHeader name;
+        private System.Windows.Forms.ColumnHeader date;
+        private System.Windows.Forms.ColumnHeader score;
+        private System.Windows.Forms.ColumnHeader startScore;
     }
 }
 

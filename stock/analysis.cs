@@ -3068,7 +3068,17 @@ namespace stock
                 "篩選的條件是如下列：\r\n" +
                 "\t(A) 一個月內多頭主力發動連續二次主力攻擊(無過濾)。\r\n" +
                 "\t(B) 一個月內多頭主力發動連續二次主力攻擊(有過濾)。\r\n" +
-                "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n\r\n";
+                "\t\t過濾條件：營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n" +
+                "\t(C) 一個月內多頭主力發動連續二次主力攻擊(超強過濾)。\r\n" +
+                "\t\t過濾條件：\r\n" +
+                "\t\t\t1. 營收沒有負值、有發股利，目前股價必須小於每股淨值。\r\n" +
+                "\t\t\t2. 每年股利無負值(含無零值)。\r\n" +
+                "\t\t\t3. 每季 EPS 無負值(含無零值)。\r\n" +
+                "\t\t\t4. 每年 EPS 無負值(含無零值)。\r\n" +
+                "\t\t\t5. 日k、週k、月k值都小於 25。\r\n" +
+                "\t\t\t6. 法人十日內買超 0.2% 以上。\r\n" +
+                "\t\t\t7. 低檔(比前高少70%)以上。\r\n" +
+                "\r\n";
             int attackCount = 0;
             var printMatchE = "滿足條件 (A) 的股票：\r\n";
             for (int i = 0; i < stockDatabase.companies.Length; i++)
@@ -3114,7 +3124,32 @@ namespace stock
             }
             printMatchF = printMatchF +
                     "\r\n";
-            returnText = returnText + printMatchF + printMatchE + "\r\n";
+            attackCount = 0;
+            var printMatchG = "滿足條件 (C) 的股票：\r\n";
+            for (int i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                if (company.matchG)
+                {
+
+                    printMatchG = printMatchG +
+                        company.getInformatioon(stockDatabase) + "\r\n";
+
+                    attackCount++;
+                }
+            }
+            if (attackCount == 0)
+            {
+                printMatchG = printMatchG +
+                    "\t沒有滿足 (C) 的股票。\r\n";
+            }
+            else
+            {
+                printMatchG = printMatchG + stockDatabase.getInformation();
+            }
+            printMatchG = printMatchG +
+                    "\r\n";
+            returnText = returnText + printMatchG + printMatchF + printMatchE + "\r\n";
             /*
             returnText = returnText + printMatchF + printMatchE + printMatch4 + printMatch3 +
                 printMatch2 + printMatch1;
