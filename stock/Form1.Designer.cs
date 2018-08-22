@@ -59,6 +59,7 @@
             this.score = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.count = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.upPercent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // button1
@@ -127,7 +128,7 @@
             // 
             this.button3.AutoSize = true;
             this.button3.Location = new System.Drawing.Point(387, 4);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(159, 22);
             this.button3.TabIndex = 6;
@@ -305,11 +306,12 @@
             this.startScore,
             this.score,
             this.count,
-            this.upPercent});
+            this.upPercent,
+            this.type});
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView1.LabelWrap = false;
             this.listView1.Location = new System.Drawing.Point(930, 112);
-            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(385, 537);
@@ -357,6 +359,10 @@
             // upPercent
             // 
             this.upPercent.Text = "上漲%";
+            // 
+            // type
+            // 
+            this.type.Text = "類型";
             // 
             // Form1
             // 
@@ -430,6 +436,7 @@
         private System.Windows.Forms.ColumnHeader startScore;
         private System.Windows.Forms.ColumnHeader count;
         private System.Windows.Forms.ColumnHeader upPercent;
+        private System.Windows.Forms.ColumnHeader type;
     }
 }
 

@@ -2230,7 +2230,7 @@ namespace stock
             }
             /* check (6) */
             getPrevHighANdLowIndex();
-            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+            Double todayPrice = dayHistoryData80[dayHistoryData80.Length - 1].c;
             if (((highestIndex - todayPrice) / (highestIndex - lowestIndex)) <= 0.7)
             {
                 this.matchG = false;
