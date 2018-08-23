@@ -442,6 +442,7 @@ namespace stock
                 stockDatabase.companies[0].id + "\r\n" +
                 companyInformation.bookValuePerShare;
              * */
+            /*
             EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
             if (earningInformation.Length > 0)
             {
@@ -461,6 +462,10 @@ namespace stock
                 }
                 new MessageWriter().showMessage(printText);
             }
+             * */
+            Trace trace = new Trace(stockDatabase);
+            Company company = stockDatabase.getCompany("2317");
+            trace.addCompany(company, "B");
         }
         // analysis analysisObj = null;
         private void button8_Click(object sender, EventArgs e)

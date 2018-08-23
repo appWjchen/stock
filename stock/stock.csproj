@@ -92,6 +92,7 @@
     <Compile Include="StockApplication.Windows.cs" />
     <Compile Include="StockCategories.cs" />
     <Compile Include="StockDatabase.cs" />
+    <Compile Include="Trace.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

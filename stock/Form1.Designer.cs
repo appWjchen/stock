@@ -212,9 +212,9 @@
             // 
             this.button8.Location = new System.Drawing.Point(7, 30);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(141, 23);
+            this.button8.Size = new System.Drawing.Size(165, 23);
             this.button8.TabIndex = 14;
-            this.button8.Text = "分析及篩選(二次攻撃法)";
+            this.button8.Text = "分析及篩選(双重二次攻撃法)";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
