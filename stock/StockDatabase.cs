@@ -41,6 +41,11 @@
           將各公司按資本額做排名
       12. getInformation()
           取得大盤的簡單描述資訊
+      13. public KDJ[] kValue(HistoryData[] historyData80)
+            此方法用來將傳入的 historyData80 計算其 KDJ 值
+      14. public HistoryData[] getHistoryData80(HistoryData[] historyData)
+            getHistoryData80 由傳入的歷史資料陣列中取最後 80 筆資料傳回。
+            如果不足 80 筆則全數傳回。
   資料成員：
       01. companies
           所有公司資料(Company類別)的陣列
@@ -903,7 +908,7 @@ namespace stock
                 comparer
             );
         }
-        private HistoryData[] getHistoryData80(HistoryData[] historyData)
+        public HistoryData[] getHistoryData80(HistoryData[] historyData)
         {
             List<HistoryData> historyData80List = new List<HistoryData>();
             int historyDataLength = historyData.Length;
@@ -922,7 +927,7 @@ namespace stock
             HistoryData[] historyData80 = historyData80List.ToArray();
             return historyData80;
         }
-        private KDJ[] kValue(HistoryData[] historyData80)
+        public KDJ[] kValue(HistoryData[] historyData80)
         {
             Indicator indicator = new Indicator(historyData80);
             Double[] rsvArray = indicator.calcRsvArray(9);
