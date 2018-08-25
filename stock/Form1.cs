@@ -17,6 +17,7 @@ namespace stock
         /* StockCategories stockCategories = new StockCategories();
         CompanyCategories companyCategories = new CompanyCategories(); */
         StockDatabase stockDatabase = null;
+        Trace stockTrace = null;
         Boolean createTwiceAttackFiles;
         Boolean isDebug = false;
 
@@ -141,6 +142,7 @@ namespace stock
                 }
                 else
                 {
+                    stockTrace = new Trace(stockDatabase, listView1);
                     enableAllButtons();
                     clearMessage();
                     textBox1.Text = "更新大盤資料庫完畢，可開始使用。\r\n\r\n";
@@ -463,7 +465,7 @@ namespace stock
                 new MessageWriter().showMessage(printText);
             }
              * */
-            Trace trace = new Trace(stockDatabase);
+            Trace trace = new Trace(stockDatabase, listView1);
             Company company = stockDatabase.getCompany("2317");
             trace.addCompany(company, "B");
         }
@@ -623,6 +625,28 @@ namespace stock
             {
                 this.Location = _desiredLocation;
             }
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            
+            disableAllButtons();
+            var id = textBox4.Text;
+            Company company = stockDatabase.getCompany(id);
+            if (company != null)
+            {
+                stockTrace.addCompany(company, "N");
+            }
+            else
+            {
+                new MessageWriter().showMessage("找不到公司代號是 " + id + " 的股票!\r\n");
+            }
+            enableAllButtons();
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

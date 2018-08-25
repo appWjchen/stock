@@ -60,6 +60,8 @@
             this.count = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.upPercent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button14 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -364,11 +366,33 @@
             // 
             this.type.Text = "類型";
             // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(838, 33);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(124, 23);
+            this.button14.TabIndex = 24;
+            this.button14.Text = "依公司代號加入追踪";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(838, 59);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(124, 23);
+            this.button15.TabIndex = 25;
+            this.button15.Text = "依公司代號取消追踪";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1316, 658);
+            this.Controls.Add(this.button15);
+            this.Controls.Add(this.button14);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.button13);
@@ -437,6 +461,8 @@
         private System.Windows.Forms.ColumnHeader count;
         private System.Windows.Forms.ColumnHeader upPercent;
         private System.Windows.Forms.ColumnHeader type;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
     }
 }
 
