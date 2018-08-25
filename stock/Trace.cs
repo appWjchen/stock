@@ -88,6 +88,7 @@ namespace stock
     }
     class Trace
     {
+        public String traceFilename = "trace.dat";
         public StockDatabase stockDatabase;
         public ListView listView;
         private List<TraceCompany> traceCompanyList = null;
@@ -102,6 +103,7 @@ namespace stock
             this.stockDatabase = stockDatabase;
             traceCompanyList = new List<TraceCompany>();
             this.listView = listView;
+            load();
         }
         /*
          * 函式 addCompany 用來將 company 以類型 type 加入到追踪系統中
@@ -171,7 +173,72 @@ namespace stock
                     traceCompany.kValueTWStockMonth.ToString("f2") + " " +
                     "\r\n";
             }
-            new FileHelper().WriteText("trace.dat", saveText);
+            new FileHelper().WriteText(traceFilename, saveText);
+        }
+        /*
+         * 函式 load 用來從追踪存檔中讀出所有被追踪的股票。
+         */
+        public void load()
+        {
+            FileHelper fileHelper = new FileHelper();
+            if (fileHelper.Exists(traceFilename))
+            {
+                var saveData = fileHelper.ReadText(traceFilename);
+                var saveDataSplit = saveData.Split(new string[] { "\n" },
+                    StringSplitOptions.RemoveEmptyEntries);
+                for (var i = 0; i < saveDataSplit.Length; i++)
+                {
+                    String oneTraceData = saveDataSplit[i];
+                    var oneTraceDataSplit = oneTraceData.Split(new string[] { " " },
+                    StringSplitOptions.RemoveEmptyEntries);
+                    if (oneTraceDataSplit.Length >= 13)
+                    {
+                        String id = oneTraceDataSplit[0];
+                        String name = oneTraceDataSplit[1];
+                        int Year = Convert.ToInt32(oneTraceDataSplit[2].Substring(0, 4));
+                        int Month = Convert.ToInt32(oneTraceDataSplit[2].Substring(5, 2));
+                        int Day = Convert.ToInt32(oneTraceDataSplit[2].Substring(8, 2));
+                        DateTime date = new DateTime(Year, Month, Day);
+                        Int32 startScore = Convert.ToInt32(oneTraceDataSplit[3]);
+                        Int32 count = Convert.ToInt32(oneTraceDataSplit[4]);
+                        String type = oneTraceDataSplit[5];
+                        Double startPrice = Convert.ToDouble(oneTraceDataSplit[6]);
+                        Double kValueDay = Convert.ToDouble(oneTraceDataSplit[7]);
+                        Double kValueWeek = Convert.ToDouble(oneTraceDataSplit[8]);
+                        Double kValueMonth = Convert.ToDouble(oneTraceDataSplit[9]);
+                        Double kValueTWStockDay = Convert.ToDouble(oneTraceDataSplit[10]);
+                        Double kValueTWStockWeek = Convert.ToDouble(oneTraceDataSplit[11]);
+                        Double kValueTWStockMonth = Convert.ToDouble(oneTraceDataSplit[12]);
+                        Company company = stockDatabase.getCompany(id);
+                        if (company != null)
+                        {
+                            TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase);
+                            traceCompany.id = id;
+                            traceCompany.name = name;
+                            traceCompany.date = date;
+                            traceCompany.startScore = startScore;
+                            traceCompany.count = count;
+                            traceCompany.type = type;
+                            traceCompany.startPrice = startPrice;
+                            traceCompany.kValueDay = kValueDay;
+                            traceCompany.kValueWeek = kValueWeek;
+                            traceCompany.kValueMonth = kValueMonth;
+                            traceCompany.kValueTWStockDay = kValueTWStockDay;
+                            traceCompany.kValueTWStockWeek = kValueTWStockWeek;
+                            traceCompany.kValueTWStockMonth = kValueTWStockMonth;
+                            traceCompanyList.Add(traceCompany);
+                            listView.Items.Add(traceCompany.id, traceCompany.id, 0);
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.date.ToString("yyyy/MM/dd"));
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.startScore.ToString());
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.score.ToString());
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.upPercent.ToString("f1"));
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
+                        }
+                    }
+                }
+            }
         }
     }
 }
