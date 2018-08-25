@@ -145,5 +145,33 @@ namespace stock
             }
             return null;
         }
+        /*
+         * 函式 save 用來將現有追踪股票存檔。
+         * 檔案儲存於 database 目錄下的 trace.dat 檔案。
+         */
+        public void save()
+        {
+            String saveText = "";
+            for (var i = 0; i < traceCompanyList.Count(); i++)
+            {
+                TraceCompany traceCompany = traceCompanyList[i];
+                saveText = saveText +
+                    traceCompany.id + " " +
+                    traceCompany.name + " " +
+                    traceCompany.date.ToString("yyyy/MM/dd") + " " +
+                    traceCompany.startScore.ToString() + " " +
+                    traceCompany.count.ToString() + " " +
+                    traceCompany.type + " " +
+                    traceCompany.startPrice.ToString("f2") + " " +
+                    traceCompany.kValueDay.ToString("f2") + " " +
+                    traceCompany.kValueWeek.ToString("f2") + " " +
+                    traceCompany.kValueMonth.ToString("f2") + " " +
+                    traceCompany.kValueTWStockDay.ToString("f2") + " " +
+                    traceCompany.kValueTWStockWeek.ToString("f2") + " " +
+                    traceCompany.kValueTWStockMonth.ToString("f2") + " " +
+                    "\r\n";
+            }
+            new FileHelper().WriteText("trace.dat", saveText);
+        }
     }
 }

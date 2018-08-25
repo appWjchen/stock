@@ -421,6 +421,7 @@
             this.Location = new System.Drawing.Point(20, 20);
             this.Name = "Form1";
             this.Text = "股票分析及篩選程式";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.LocationChanged += new System.EventHandler(this.Form1_LocationChanged);
             this.ResumeLayout(false);
             this.PerformLayout();

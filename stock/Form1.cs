@@ -648,5 +648,10 @@ namespace stock
         {
 
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            stockTrace.save();
+        }
     }
 }
