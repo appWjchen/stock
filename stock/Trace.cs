@@ -28,6 +28,7 @@ namespace stock
     class TraceCompany
     {
         public StockDatabase stockDatabase;
+        Company company;
         public String id;                   // 被追踪股票的代號
         public String name;                 // 被追踪股票的名稱
         public DateTime date;               // 被追踪股票加入追踪的日期
@@ -48,16 +49,19 @@ namespace stock
         public Double kValueTWStockWeek;    // 被追踪股票加入追踪當日的大盤週 K 值
         public Double kValueTWStockMonth;   // 被追踪股票加入追踪當日的大盤月 K 值
 
-
+        /* 
+         * TraceCompany 建構式 
+         */
         public TraceCompany(Company company, String type, StockDatabase stockDatabase)
         {
             this.stockDatabase = stockDatabase;
+            this.company = company;
             this.id = company.id;
             this.name = company.name;
             this.date = DateTime.Now;
             this.count = 1;
-            this.startScore = 0;
-            this.score = 0;
+            this.startScore = evaluateScore();
+            this.score = evaluateScore();
             this.upPercent = 0;
 
             /* 取得股票追踪當日 K 值 */
@@ -83,7 +87,25 @@ namespace stock
             kValueTWStockMonth = kdjValueArray[kdjValueArray.Length - 1].K;
 
             this.startPrice = dayHistoryData[dayHistoryData.Length - 1].c;
-            this.type = type;           
+            this.type = type; ;
+            evaluateUpPercent();
+        }
+        /*
+         * 函式 evaluateUpPercent 用來計算被追踪股票從加入追踪當天到今天所上漲的幅
+         * 度。
+         */
+        public void evaluateUpPercent()
+        {
+            HistoryData[] dayHistoryData = this.company.getRealHistoryDataArray("d");
+            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+            this.upPercent = (todayPrice - this.startPrice) / this.startPrice;
+        }
+        /*
+         * 函式 evaluateScore 用來計算被追踪股票今天的分數。
+         */
+        public Int32 evaluateScore()
+        {
+            return 0;
         }
     }
     class Trace
@@ -226,6 +248,7 @@ namespace stock
                             traceCompany.kValueTWStockDay = kValueTWStockDay;
                             traceCompany.kValueTWStockWeek = kValueTWStockWeek;
                             traceCompany.kValueTWStockMonth = kValueTWStockMonth;
+                            traceCompany.evaluateUpPercent();
                             traceCompanyList.Add(traceCompany);
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
