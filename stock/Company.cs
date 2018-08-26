@@ -1895,9 +1895,9 @@ namespace stock
         /*
          * getPrevHighAndLow 函式用來取得股價在六年最高及最低價。
          */
-        private Double highestIndex = 0;
-        private Double lowestIndex = 0;
-        private void getPrevHighANdLowIndex()
+        public  Double highestIndex = 0;
+        public Double lowestIndex = 0;
+        public void getPrevHighANdLowIndex()
         {
             HistoryData[] monthHistoryData = getRealHistoryDataArray("m");
             Double highestPrice = 0;

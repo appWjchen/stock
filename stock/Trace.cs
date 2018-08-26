@@ -103,9 +103,376 @@ namespace stock
         /*
          * 函式 evaluateScore 用來計算被追踪股票今天的分數。
          */
+        public Boolean passDividend;
+        public Boolean passSeansonEPS;
+        public Boolean passYearEps;
+        public Boolean passKValueDay5;
+        public Boolean passKValueDay10;
+        public Boolean passKValueDay15;
+        public Boolean passKValueDay20;
+        public Boolean passKValueWeek5;
+        public Boolean passKValueWeek10;
+        public Boolean passKValueWeek15;
+        public Boolean passKValueWeek20;
+        public Boolean passKValueMonth5;
+        public Boolean passKValueMonth10;
+        public Boolean passKValueMonth15;
+        public Boolean passKValueMonth20;
+        public Boolean passKValueStockDay5;
+        public Boolean passKValueStockDay10;
+        public Boolean passKValueStockDay15;
+        public Boolean passKValueStockDay20;
+        public Boolean passKValueStockWeek5;
+        public Boolean passKValueStockWeek10;
+        public Boolean passKValueStockWeek15;
+        public Boolean passKValueStockWeek20;
+        public Boolean passKValueStockMonth5;
+        public Boolean passKValueStockMonth10;
+        public Boolean passKValueStockMonth15;
+        public Boolean passKValueStockMonth20;
+        public Int32 sValueDiffScore;
+        public Int32 sValue10DayDiffSCore;
+        public Int32 priceRateScore;
         public Int32 evaluateScore()
         {
-            return 0;
+            Int32 score = 0;
+            this.passDividend = false;
+            this.passSeansonEPS = false;
+            this.passYearEps = false;
+            this.passKValueDay5 = false;
+            this.passKValueDay10 = false;
+            this.passKValueDay15 = false;
+            this.passKValueDay20 = false;
+            this.passKValueWeek5 = false;
+            this.passKValueWeek10 = false;
+            this.passKValueWeek15 = false;
+            this.passKValueWeek20 = false;
+            this.passKValueMonth5 = false;
+            this.passKValueMonth10 = false;
+            this.passKValueMonth15 = false;
+            this.passKValueMonth20 = false;
+            this.passKValueStockDay5 = false;
+            this.passKValueStockDay10 = false;
+            this.passKValueStockDay15 = false;
+            this.passKValueStockDay20 = false;
+            this.passKValueStockWeek5 = false;
+            this.passKValueStockWeek10 = false;
+            this.passKValueStockWeek15 = false;
+            this.passKValueStockWeek20 = false;
+            this.passKValueStockMonth5 = false;
+            this.passKValueStockMonth10 = false;
+            this.passKValueStockMonth15 = false;
+            this.passKValueStockMonth20 = false;
+            /* 每年股利無負值加 1 分 */
+            company.getDividend();
+            Boolean passDividend = true;
+            for (var i = 0; i < company.dividend.Length; i++)
+            {
+                if (company.dividend[i] <= 0)
+                {
+                    passDividend = false;
+                }
+            }
+            if (passDividend)
+            {
+                score++;
+            }
+            this.passDividend = passDividend;
+            /* 每季 EPS 無負值加 1 分 */
+            company.getSeasonEPS();
+            Boolean passSeansonEPS = true;
+            for (var i = 0; i < company.seasonEPS.Length; i++)
+            {
+                if (company.seasonEPS[i] <= 0)
+                {
+                    passSeansonEPS = false;
+                }
+            }
+            if (passSeansonEPS)
+            {
+                score++;
+            }
+            this.passSeansonEPS = passSeansonEPS;
+            /* 每年 EPS 無負值加 1 分 */
+            Boolean passYearEps = true;
+            company.getYearEPS();
+            for (var i = 0; i < company.yearEPS.Length; i++)
+            {
+                if (company.yearEPS[i] <= 0)
+                {
+                    passYearEps = false;
+                }
+            }
+            if (passYearEps)
+            {
+                score++;
+            }
+            this.passYearEps = passYearEps;
+            /* 個股 K<20 +1 K<15 +2 K<10 +3 K<5 +4 */
+            var historyData80 = company.getHistoryData80(company.getRealHistoryDataArray("d"));
+            var dayHistoryData80 = historyData80;
+            Double todayPrice = dayHistoryData80[dayHistoryData80.Length - 1].c;
+            KDJ[] kValueDay = null;
+            KDJ[] kValueWeek = null;
+            KDJ[] kValueMonth = null;
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每日歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueDay = company.kValue(historyData80);
+            }
+            historyData80 = company.getHistoryData80(company.getRealHistoryDataArray("w"));
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每周歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueWeek = company.kValue(historyData80);
+            }
+            historyData80 = company.getHistoryData80(company.getRealHistoryDataArray("m"));
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得每月歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueMonth = company.kValue(historyData80);
+            }
+            Double kValueDayToday = 100;
+            Double kValueWeekToday = 100;
+            Double kValueMonthToday = 100;
+            if ((kValueDay != null) && (kValueDay.Length > 0))
+            {
+                kValueDayToday = kValueDay[kValueDay.Length - 1].K;
+            }
+            if ((kValueWeek != null) && (kValueWeek.Length > 0))
+            {
+                kValueWeekToday = kValueWeek[kValueWeek.Length - 1].K;
+            }
+            if ((kValueMonth != null) && (kValueMonth.Length > 0))
+            {
+                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+            }
+            if (kValueDayToday < 5)
+            {
+                score += 4;
+                this.passKValueDay5 = true;
+            }
+            else if (kValueDayToday < 10)
+            {
+                score += 3;
+                this.passKValueDay10 = true;
+            }
+            else if (kValueDayToday < 15)
+            {
+                score += 2;
+                this.passKValueDay15 = true;
+            }
+            else if (kValueDayToday < 20)
+            {
+                score += 1;
+                this.passKValueDay20 = true;
+            }
+            if (kValueWeekToday < 5)
+            {
+                score += 4;
+                this.passKValueWeek5 = true;
+            }
+            else if (kValueWeekToday < 10)
+            {
+                score += 3;
+                this.passKValueWeek10 = true;
+            }
+            else if (kValueWeekToday < 15)
+            {
+                score += 2;
+                this.passKValueWeek15 = true;
+            }
+            else if (kValueWeekToday < 20)
+            {
+                score += 1;
+                this.passKValueWeek20 = true;
+            }
+            if (kValueMonthToday < 5)
+            {
+                score += 4;
+                this.passKValueMonth5 = true;
+            }
+            else if (kValueMonthToday < 10)
+            {
+                score += 3;
+                this.passKValueMonth10 = true;
+            }
+            else if (kValueMonthToday < 15)
+            {
+                score += 2;
+                this.passKValueMonth15 = true;
+            }
+            else if (kValueMonthToday < 20)
+            {
+                score += 1;
+                this.passKValueMonth20 = true;
+            }
+            /* 大盤 K<20 +1 K<15 +2 K<10 +3 K<5 +4 */
+            historyData80 = stockDatabase.getHistoryData80(stockDatabase.getDayHistoryData());
+            dayHistoryData80 = historyData80;
+            kValueDay = null;
+            kValueWeek = null;
+            kValueMonth = null;
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得大盤每日歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueDay = stockDatabase.kValue(historyData80);
+            }
+            historyData80 = stockDatabase.getHistoryData80(stockDatabase.getWeekHistoryData());
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得大盤每周歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueWeek = stockDatabase.kValue(historyData80);
+            }
+            historyData80 = stockDatabase.getHistoryData80(stockDatabase.getMonthHistoryData());
+            if (historyData80.Length == 0)
+            {
+                new MessageWriter().appendMessage(name + "(" + id + ") 無法取得大盤每月歷史資料!?\r\n", true);
+            }
+            else
+            {
+                kValueMonth = stockDatabase.kValue(historyData80);
+            }
+            kValueDayToday = 100;
+            kValueWeekToday = 100;
+            kValueMonthToday = 100;
+            if ((kValueDay != null) && (kValueDay.Length > 0))
+            {
+                kValueDayToday = kValueDay[kValueDay.Length - 1].K;
+            }
+            if ((kValueWeek != null) && (kValueWeek.Length > 0))
+            {
+                kValueWeekToday = kValueWeek[kValueWeek.Length - 1].K;
+            }
+            if ((kValueMonth != null) && (kValueMonth.Length > 0))
+            {
+                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+            }
+            if (kValueDayToday < 5)
+            {
+                score += 4;
+                this.passKValueStockDay5 = true;
+            }
+            else if (kValueDayToday < 10)
+            {
+                score += 3;
+                this.passKValueStockDay10 = true;
+            }
+            else if (kValueDayToday < 15)
+            {
+                score += 2;
+                this.passKValueStockDay15 = true;
+            }
+            else if (kValueDayToday < 20)
+            {
+                score += 1;
+                this.passKValueStockDay20 = true;
+            }
+            if (kValueWeekToday < 5)
+            {
+                score += 4;
+                this.passKValueStockWeek5 = true;
+            }
+            else if (kValueWeekToday < 10)
+            {
+                score += 3;
+                this.passKValueStockWeek10 = true;
+            }
+            else if (kValueWeekToday < 15)
+            {
+                score += 2;
+                this.passKValueStockWeek15 = true;
+            }
+            else if (kValueWeekToday < 20)
+            {
+                score += 1;
+                this.passKValueStockWeek20 = true;
+            }
+            if (kValueMonthToday < 5)
+            {
+                score += 4;
+                this.passKValueStockMonth5 = true;
+            }
+            else if (kValueMonthToday < 10)
+            {
+                score += 3;
+                this.passKValueStockMonth10 = true;
+            }
+            else if (kValueMonthToday < 15)
+            {
+                score += 2;
+                this.passKValueStockMonth15 = true;
+            }
+            else if (kValueMonthToday < 20)
+            {
+                score += 1;
+                this.passKValueStockMonth20 = true;
+            }
+            /* 往前 10 天，法人買超 1 天加 1 分 */
+            HistoryData[] historydata = company.getRealHistoryDataArray("d");
+            int count = 0;
+            int sValueDiffScore = 0;
+            for (var i = (historydata.Length - 1); i >= 0; i--)
+            {
+                if (count >= 10)
+                {
+                    break;
+                }
+                if ((i >= 0) && ((i - 1) >= 0))
+                {
+                    Double sValueDiff = historydata[i].s - historydata[i - 1].s;
+                    if (sValueDiff > 0)
+                    {
+                        sValueDiffScore++;
+                    }
+                }
+                count++;
+            }
+            score += sValueDiffScore;
+            this.sValueDiffScore = sValueDiffScore;
+            /* 法人 10 天總買超每增加 0.1% 加 1 分 */
+            int sValue10DayDiffSCore = 0;
+            if (historydata.Length >= 10)
+            {
+                Double sValue1 = historydata[historydata.Length - 10].s;
+                Double sValue2 = historydata[historydata.Length - 1].s;
+                Double sIncPercent = 100 * (sValue2 - sValue1) / sValue1;
+                if (sIncPercent > 0)
+                {
+                    sValue10DayDiffSCore = (int)(sIncPercent / 0.1);
+                }                
+            }
+            score += sValue10DayDiffSCore;
+            /* 比前高(50%)每少 1% 加 1 分 */
+            company.getPrevHighANdLowIndex();
+            Double priceDiff = company.highestIndex - company.lowestIndex;
+            Double rate = 100 * (todayPrice - company.lowestIndex) / priceDiff;
+            Int32 priceRateScore = (int)(50 - rate);
+            if (priceRateScore > 0)
+            {
+                score += priceRateScore;
+            }
+            else
+            {
+                priceRateScore = 0;
+            }
+            this.priceRateScore = priceRateScore;
+            return score;
         }
     }
     class Trace
