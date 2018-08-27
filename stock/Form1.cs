@@ -98,6 +98,9 @@ namespace stock
             button11.Enabled = false;
             button12.Enabled = false;
             button13.Enabled = false;
+            button14.Enabled = false;
+            button15.Enabled = false;
+            button16.Enabled = false;
         }
         private void enableAllButtons()
         {
@@ -114,6 +117,9 @@ namespace stock
             button11.Enabled = true;
             button12.Enabled = true;
             button13.Enabled = true;
+            button14.Enabled = true;
+            button15.Enabled = true;
+            button16.Enabled = true;
         }
         private void clearMessage()
         {
@@ -143,6 +149,7 @@ namespace stock
                 else
                 {
                     stockTrace = new Trace(stockDatabase, listView1);
+                    stockDatabase.stockTrace = stockTrace;
                     enableAllButtons();
                     clearMessage();
                     textBox1.Text = "更新大盤資料庫完畢，可開始使用。\r\n\r\n";
@@ -154,7 +161,7 @@ namespace stock
                         "\r\n" +
                         "使用方式：\r\n" +
                         "\t(A) 「更新各公司歷史資料庫」 --> 「分析及篩選」\r\n" +
-                        "\t(B) 或者，「更新各公司歷史資料庫」 --> 「更新各公司基本資料庫(可選)」 --> 「更新各公司每月營收資料庫(可選)」\r\n"+
+                        "\t(B) 或者，「更新各公司歷史資料庫」 --> 「更新各公司基本資料庫(可選)」 --> 「更新各公司每月營收資料庫(可選)」\r\n" +
                         "\t        --> 「更新各公司每年股利資料庫(可選)」 --> 「分析及篩選」\r\n" +
                         "\t(C) 或者，「更新所有資料庫」 --> 「分析及篩選」\r\n" +
                         "\t必要時：\r\n" +
@@ -162,7 +169,7 @@ namespace stock
                         "\t        必要的意思是指有公司下市或新公司上市。" +
                         "\r\n" +
                         "注意事項：\r\n" +
-                        "\t(A) 「更新所有資料庫」=「更新各公司歷史資料庫」+「更新各公司基本資料庫」+「更新各公司每月營收資料庫」\r\n"+
+                        "\t(A) 「更新所有資料庫」=「更新各公司歷史資料庫」+「更新各公司基本資料庫」+「更新各公司每月營收資料庫」\r\n" +
                         "\t        +「更新各公司每年股利資料庫」\r\n" +
                         "\t(B) 更新資料庫時，可能會有失敗的情形，例如 index 值停止不動，程式類似卡住，原因有：\r\n" +
                         "\t\t(1) index 公司下市，無法取得資料了。\r\n" +
@@ -170,7 +177,7 @@ namespace stock
                         "\t(C) 更新資料庫失敗時的處理方法：\r\n" +
                         "\t\t(1) 重啟程式，重新按正常操作再跑一次，如果還是會卡住，則按下列步驟處理。\r\n" +
                         "\t\t(1) 重啟程式，按「使用方式」的 (D) 項操作。\r\n" +
-                        "\t\t(2) 或者，寫下卡住股票的公司代號，重啟程式，將公司代號輸入，按下「依公司代號刪除」按鈕，重啟程式，\r\n"+
+                        "\t\t(2) 或者，寫下卡住股票的公司代號，重啟程式，將公司代號輸入，按下「依公司代號刪除」按鈕，重啟程式，\r\n" +
                         "\t        按「使用方式」的 (A) 項操作\r\n" +
                         "\t\t若按照更新失敗的處置方法去做，仍然無法排除問題，請回報卡住時的 index 值及公司名稱\r\n" +
                         "\t(D) 不要使用其它的按鈕選項，除非你知道它的作用。\r\n" +
@@ -444,7 +451,7 @@ namespace stock
                 stockDatabase.companies[0].id + "\r\n" +
                 companyInformation.bookValuePerShare;
              * */
-            /*
+           
             EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
             if (earningInformation.Length > 0)
             {
@@ -464,10 +471,7 @@ namespace stock
                 }
                 new MessageWriter().showMessage(printText);
             }
-             * */
-            Trace trace = new Trace(stockDatabase, listView1);
-            Company company = stockDatabase.getCompany("2317");
-            trace.addCompany(company, "B");
+            
         }
         // analysis analysisObj = null;
         private void button8_Click(object sender, EventArgs e)
@@ -629,7 +633,7 @@ namespace stock
 
         private void button14_Click(object sender, EventArgs e)
         {
-            
+
             disableAllButtons();
             var id = textBox4.Text;
             Company company = stockDatabase.getCompany(id);
@@ -652,6 +656,24 @@ namespace stock
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             stockTrace.save();
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            MessageWriter messageWriter = new MessageWriter();
+            messageWriter.showMessage("追踪股票資訊：\r\n");
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                String id = item.SubItems[0].Text;
+                Company company = stockDatabase.getCompany(id);
+                TraceCompany traceCompany = stockTrace.findTraceCompany(id);
+                messageWriter.appendMessage("\t股票代號：" + company.id + "\r\n", true);
+                messageWriter.appendMessage("\t股票名稱：" + company.name + "\r\n", true);
+                messageWriter.appendMessage("\t股票追踪資訊(含分數意義)：\r\n" , true);
+                messageWriter.appendMessage(traceCompany.passScoreTestExplain + "\r\n", true);
+                messageWriter.appendMessage(company.getInformatioon(stockDatabase) + "\r\n", true);
+                messageWriter.appendMessage(stockDatabase.getInformation() + "\r\n", true);
+            }
         }
     }
 }

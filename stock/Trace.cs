@@ -52,17 +52,14 @@ namespace stock
         /* 
          * TraceCompany 建構式 
          */
-        public TraceCompany(Company company, String type, StockDatabase stockDatabase)
+        public TraceCompany(Company company, String type, StockDatabase stockDatabase, Int32 startSCore)
         {
+            passScoreTestExplain = "";
             this.stockDatabase = stockDatabase;
             this.company = company;
             this.id = company.id;
             this.name = company.name;
             this.date = DateTime.Now;
-            this.count = 1;
-            this.startScore = evaluateScore();
-            this.score = evaluateScore();
-            this.upPercent = 0;
 
             /* 取得股票追踪當日 K 值 */
             HistoryData[] dayHistoryData = company.getRealHistoryDataArray("d");
@@ -86,9 +83,20 @@ namespace stock
             kdjValueArray = stockDatabase.kValue(stockDatabase.getHistoryData80(monthHistoryDataTWStock));
             kValueTWStockMonth = kdjValueArray[kdjValueArray.Length - 1].K;
 
+            this.count = 1;
             this.startPrice = dayHistoryData[dayHistoryData.Length - 1].c;
-            this.type = type; ;
+            this.type = type;
             evaluateUpPercent();
+            if (startSCore == -1)
+            {
+                this.startScore = evaluateScore();
+            }
+            else
+            {
+                this.startScore = startSCore;
+            }
+            this.score = startScore;
+            this.upPercent = 0;
         }
         /*
          * 函式 evaluateUpPercent 用來計算被追踪股票從加入追踪當天到今天所上漲的幅
@@ -99,9 +107,28 @@ namespace stock
             HistoryData[] dayHistoryData = this.company.getRealHistoryDataArray("d");
             Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
             this.upPercent = (todayPrice - this.startPrice) / this.startPrice;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t加入追踪當日股價為： " + this.startPrice + " ，今天股價為： " + todayPrice + " ";
+            if (upPercent >= 0)
+            {
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "，上漲 " + this.upPercent + "\r\n";
+            }
+            else
+            {
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "，下跌 " + (-this.upPercent) + "\r\n";
+            }
+            company.getPrevHighANdLowIndex();
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t今天往前六年最高股價為： " + company.highestIndex + " ，最低股價為： " + company.lowestIndex + "\r\n";
+            Double priceDiff = company.highestIndex - company.lowestIndex;
+            Double rate = 100 - 100 * (todayPrice - company.lowestIndex) / priceDiff;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t今日股價較前高低： " + rate.ToString("f2") + "\r\n";
         }
         /*
-         * 函式 evaluateScore 用來計算被追踪股票今天的分數。
+         * 以下為函式 evaluateScore 用來追踪通過測試的項目。
          */
         public Boolean passDividend;
         public Boolean passSeansonEPS;
@@ -133,6 +160,13 @@ namespace stock
         public Int32 sValueDiffScore;
         public Int32 sValue10DayDiffSCore;
         public Int32 priceRateScore;
+        /*
+         * passScoreTestExplain 用來記錄分數測試的結果之說明字串。
+         */
+        public String passScoreTestExplain = "";
+        /*
+         * 函式 evaluateScore 用來計算被追踪股票今天的分數。
+         */
         public Int32 evaluateScore()
         {
             Int32 score = 0;
@@ -163,6 +197,8 @@ namespace stock
             this.passKValueStockMonth10 = false;
             this.passKValueStockMonth15 = false;
             this.passKValueStockMonth20 = false;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t得分意義：\r\n";
             /* 每年股利無負值加 1 分 */
             company.getDividend();
             Boolean passDividend = true;
@@ -176,6 +212,8 @@ namespace stock
             if (passDividend)
             {
                 score++;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t每年股利無負值加 1 分\r\n";
             }
             this.passDividend = passDividend;
             /* 每季 EPS 無負值加 1 分 */
@@ -191,6 +229,8 @@ namespace stock
             if (passSeansonEPS)
             {
                 score++;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t每季 EPS 無負值加 1 分\r\n";
             }
             this.passSeansonEPS = passSeansonEPS;
             /* 每年 EPS 無負值加 1 分 */
@@ -206,6 +246,8 @@ namespace stock
             if (passYearEps)
             {
                 score++;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t每年 EPS 無負值加 1 分\r\n";
             }
             this.passYearEps = passYearEps;
             /* 個股 K<20 +1 K<15 +2 K<10 +3 K<5 +4 */
@@ -260,61 +302,85 @@ namespace stock
             {
                 score += 4;
                 this.passKValueDay5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股日 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueDayToday < 10)
             {
                 score += 3;
                 this.passKValueDay10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股日 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueDayToday < 15)
             {
                 score += 2;
                 this.passKValueDay15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股日 K 值小於 15 加 2 分\r\n";
             }
             else if (kValueDayToday < 20)
             {
                 score += 1;
                 this.passKValueDay20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股日 K 值小於 20 加 1 分\r\n";
             }
             if (kValueWeekToday < 5)
             {
                 score += 4;
                 this.passKValueWeek5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股週 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueWeekToday < 10)
             {
                 score += 3;
                 this.passKValueWeek10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股週 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueWeekToday < 15)
             {
                 score += 2;
                 this.passKValueWeek15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股週 K 值小於 15 加 2 分\r\n";
             }
             else if (kValueWeekToday < 20)
             {
                 score += 1;
                 this.passKValueWeek20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股週 K 值小於 20 加 1 分\r\n";
             }
             if (kValueMonthToday < 5)
             {
                 score += 4;
                 this.passKValueMonth5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股月 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueMonthToday < 10)
             {
                 score += 3;
                 this.passKValueMonth10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股月 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueMonthToday < 15)
             {
                 score += 2;
                 this.passKValueMonth15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股月 K 值小於 15 加 2 分\r\n";
             }
             else if (kValueMonthToday < 20)
             {
                 score += 1;
                 this.passKValueMonth20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t個股月 K 值小於 20 加 1 分\r\n";
             }
             /* 大盤 K<20 +1 K<15 +2 K<10 +3 K<5 +4 */
             historyData80 = stockDatabase.getHistoryData80(stockDatabase.getDayHistoryData());
@@ -367,61 +433,85 @@ namespace stock
             {
                 score += 4;
                 this.passKValueStockDay5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤日 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueDayToday < 10)
             {
                 score += 3;
                 this.passKValueStockDay10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤日 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueDayToday < 15)
             {
                 score += 2;
                 this.passKValueStockDay15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤日 K 值小於 15 加 3 分\r\n";
             }
             else if (kValueDayToday < 20)
             {
                 score += 1;
                 this.passKValueStockDay20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤日 K 值小於 20 加 1 分\r\n";
             }
             if (kValueWeekToday < 5)
             {
                 score += 4;
                 this.passKValueStockWeek5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤週 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueWeekToday < 10)
             {
                 score += 3;
                 this.passKValueStockWeek10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤週 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueWeekToday < 15)
             {
                 score += 2;
                 this.passKValueStockWeek15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤週 K 值小於 15 加 2 分\r\n";
             }
             else if (kValueWeekToday < 20)
             {
                 score += 1;
                 this.passKValueStockWeek20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤週 K 值小於 20 加 1 分\r\n";
             }
             if (kValueMonthToday < 5)
             {
                 score += 4;
                 this.passKValueStockMonth5 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤月 K 值小於 5 加 4 分\r\n";
             }
             else if (kValueMonthToday < 10)
             {
                 score += 3;
                 this.passKValueStockMonth10 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤月 K 值小於 10 加 3 分\r\n";
             }
             else if (kValueMonthToday < 15)
             {
                 score += 2;
                 this.passKValueStockMonth15 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤月 K 值小於 15 加 2 分\r\n";
             }
             else if (kValueMonthToday < 20)
             {
                 score += 1;
                 this.passKValueStockMonth20 = true;
+                this.passScoreTestExplain = this.passScoreTestExplain +
+                    "\t\t大盤月 K 值小於 20 加 1 分\r\n";
             }
             /* 往前 10 天，法人買超 1 天加 1 分 */
             HistoryData[] historydata = company.getRealHistoryDataArray("d");
@@ -444,6 +534,8 @@ namespace stock
                 count++;
             }
             score += sValueDiffScore;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t往前 10 天，法人買超 1 天加 1 分，共加 " + sValueDiffScore + " 分\r\n";
             this.sValueDiffScore = sValueDiffScore;
             /* 法人 10 天總買超每增加 0.1% 加 1 分 */
             int sValue10DayDiffSCore = 0;
@@ -458,6 +550,9 @@ namespace stock
                 }                
             }
             score += sValue10DayDiffSCore;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t法人 10 天總買超每增加 0.1% 加 1 分，共加 " + sValue10DayDiffSCore + " 分\r\n";
+            this.sValue10DayDiffSCore = sValue10DayDiffSCore;
             /* 比前高(50%)每少 1% 加 1 分 */
             company.getPrevHighANdLowIndex();
             Double priceDiff = company.highestIndex - company.lowestIndex;
@@ -472,6 +567,8 @@ namespace stock
                 priceRateScore = 0;
             }
             this.priceRateScore = priceRateScore;
+            this.passScoreTestExplain = this.passScoreTestExplain +
+                "\t\t比前高(50%)每少 1% 加 1 分，共加 " + priceRateScore + " 分\r\n";
             return score;
         }
     }
@@ -481,8 +578,8 @@ namespace stock
         public StockDatabase stockDatabase;
         public ListView listView;
         private List<TraceCompany> traceCompanyList = null;
-        public Int32 successCount;      // 記錄 30 天內上漲超過 10% 的股票個數
-        public Int32 failCount;         // 記錄 30 天內上漲不超過 10% 的股票個數
+        public Int32 successCount = 0;      // 記錄 30 天內上漲超過 10% 的股票個數
+        public Int32 failCount = 0;         // 記錄 30 天內上漲不超過 10% 的股票個數
 
         /*
          * Trace 建構式
@@ -502,7 +599,7 @@ namespace stock
             TraceCompany foundTraceCompany = findTraceCompany(company.id);
             if (foundTraceCompany == null)
             {
-                TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase);
+                TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase, -1);
                 traceCompanyList.Add(traceCompany);
                 listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
@@ -516,7 +613,9 @@ namespace stock
             else
             {
                 foundTraceCompany.count++;
+                foundTraceCompany.type = foundTraceCompany.type + type;
                 listView.Items[foundTraceCompany.id].SubItems[5].Text = foundTraceCompany.count.ToString();
+                listView.Items[foundTraceCompany.id].SubItems[7].Text = foundTraceCompany.type;
             }
         }
         /*
@@ -601,7 +700,7 @@ namespace stock
                         Company company = stockDatabase.getCompany(id);
                         if (company != null)
                         {
-                            TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase);
+                            TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase, startScore);
                             traceCompany.id = id;
                             traceCompany.name = name;
                             traceCompany.date = date;
@@ -615,7 +714,8 @@ namespace stock
                             traceCompany.kValueTWStockDay = kValueTWStockDay;
                             traceCompany.kValueTWStockWeek = kValueTWStockWeek;
                             traceCompany.kValueTWStockMonth = kValueTWStockMonth;
-                            traceCompany.evaluateUpPercent();
+                            // traceCompany.evaluateUpPercent();
+                            traceCompany.score = traceCompany.evaluateScore();
                             traceCompanyList.Add(traceCompany);
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);

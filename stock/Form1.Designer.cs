@@ -62,6 +62,7 @@
             this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
+            this.button16 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -295,9 +296,9 @@
             this.label6.Location = new System.Drawing.Point(928, 91);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(65, 12);
+            this.label6.Size = new System.Drawing.Size(145, 12);
             this.label6.TabIndex = 22;
-            this.label6.Text = "追踪清單：";
+            this.label6.Text = "追踪清單：(點取代號查詢)";
             // 
             // listView1
             // 
@@ -316,7 +317,7 @@
             this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(385, 537);
+            this.listView1.Size = new System.Drawing.Size(385, 503);
             this.listView1.TabIndex = 23;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -378,19 +379,30 @@
             // 
             // button15
             // 
-            this.button15.Location = new System.Drawing.Point(838, 59);
+            this.button15.Location = new System.Drawing.Point(929, 620);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(124, 23);
+            this.button15.Size = new System.Drawing.Size(69, 23);
             this.button15.TabIndex = 25;
-            this.button15.Text = "依公司代號取消追踪";
+            this.button15.Text = "取消追踪";
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // button16
+            // 
+            this.button16.Location = new System.Drawing.Point(1001, 622);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(85, 23);
+            this.button16.TabIndex = 26;
+            this.button16.Text = "顯示追踪資訊";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1316, 658);
+            this.Controls.Add(this.button16);
             this.Controls.Add(this.button15);
             this.Controls.Add(this.button14);
             this.Controls.Add(this.listView1);
@@ -464,6 +476,7 @@
         private System.Windows.Forms.ColumnHeader type;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Button button16;
     }
 }
 

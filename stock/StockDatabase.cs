@@ -143,6 +143,7 @@ namespace stock
         CreateStockDatabaseCallback createStockDatabaseCallback;
         public String stockDatabaseString;
         public List<int> scoreIndexList;
+        public Trace stockTrace;
         /*
          * StockDatabase 建構式
          */

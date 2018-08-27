@@ -2992,7 +2992,12 @@ namespace stock
                 Company company = stockDatabase.companies[i];
                 if (company.matchF)
                 {
+                    stockDatabase.stockTrace.addCompany(company, "B");
                     company.checkMatchG();
+                    if (company.matchG)
+                    {
+                        stockDatabase.stockTrace.addCompany(company, "C");
+                    }
                 }
             }
         }
