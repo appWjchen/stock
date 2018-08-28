@@ -2692,6 +2692,11 @@ namespace stock
                 new WarningWriter().showMessage(i + "\r\n");
                 new AppDoEvents().DoEvents();
                 Company company = stockDatabase.companies[i];
+                if (company.id == "1528")
+                {
+                    company.matchE = false;
+                    company.matchF = false;
+                }
                 if (!company.passCheckDatabase)
                 {
                     company.matchE = false;
@@ -2985,6 +2990,7 @@ namespace stock
          *      (5) 法人十日內買超 0.2% 以上
          *      (6) 低檔(比前高少70%)以上
          */
+        public String strongFilterMessage;
         private void strongFilter()
         {
             for (var i = 0; i < stockDatabase.companies.Length; i++)
@@ -2993,10 +2999,16 @@ namespace stock
                 if (company.matchF)
                 {
                     stockDatabase.stockTrace.addCompany(company, "B");
+                    company.matchGMessage = "";
                     company.checkMatchG();
                     if (company.matchG)
                     {
                         stockDatabase.stockTrace.addCompany(company, "C");
+                    }
+                    else
+                    {
+                        strongFilterMessage = "\t" + company.name + "(" + company.id + ")未通過超強篩選，原因：\r\n";
+                        strongFilterMessage = strongFilterMessage + company.matchGMessage + "\r\n";
                     }
                 }
             }
@@ -3147,6 +3159,7 @@ namespace stock
             {
                 printMatchG = printMatchG +
                     "\t沒有滿足 (C) 的股票。\r\n";
+                printMatchG = printMatchG + strongFilterMessage;
             }
             else
             {

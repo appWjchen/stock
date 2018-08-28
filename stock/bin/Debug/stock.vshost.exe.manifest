@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="stock.exe" size="136704">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="stock.exe" size="137216">
       <assemblyIdentity name="stock" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>/TYTJeYCB6KTv2M+xfExIkIG1bY=</dsig:DigestValue>
+        <dsig:DigestValue>kF9pRNwo7Mtqb4sfAMzG1uutwbg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

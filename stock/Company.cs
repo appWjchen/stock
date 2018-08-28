@@ -2133,6 +2133,7 @@ namespace stock
          *      (6) 低檔(比前高少70%)以上
          */
         private Double minKValue = 25;
+        public String matchGMessage;
         public void checkMatchG()
         {
             this.matchG = true;
@@ -2143,6 +2144,9 @@ namespace stock
                 if (dividend[i] <= 0)
                 {
                     this.matchG = false;
+                    matchGMessage = matchGMessage +
+                        "\t\t未通過：每年股利無負值(含零值)\r\n";
+                    break;
                 }
             }
             /* check (2) */
@@ -2152,6 +2156,9 @@ namespace stock
                 if (seasonEPS[i] <= 0)
                 {
                     this.matchG = false;
+                    matchGMessage = matchGMessage +
+                        "\t\t未通過：每季 EPS 無負值(含零值)\r\n";
+                    break;
                 }
             }
             /* check (3) */
@@ -2161,6 +2168,9 @@ namespace stock
                 if (yearEPS[i] <= 0)
                 {
                     this.matchG = false;
+                    matchGMessage = matchGMessage +
+                        "\t\t未通過：每年 EPS 無負值(含零值)\r\n";
+                    break;
                 }
             }
             /* check (4) */
@@ -2213,6 +2223,8 @@ namespace stock
             if (!((kValueDayToday < minKValue) && (kValueMonthToday < minKValue) && (kValueWeekToday < minKValue)))
             {
                 this.matchG = false;
+                matchGMessage = matchGMessage +
+                    "\t\t未通過：日k、週k、月k值都小於 " + minKValue + "\r\n";
             }
             /* check (5) */
             MarketMakerInformation[] marketMakerInfomationArray = getMarketMaker(dayHistoryData80);
@@ -2233,6 +2245,8 @@ namespace stock
             if (increasePercent <= 0.2)
             {
                 this.matchG = false;
+                matchGMessage = matchGMessage +
+                    "\t\t未通過：法人十日內買超 0.2% 以上\r\n";
             }
             /* check (6) */
             getPrevHighANdLowIndex();
@@ -2240,6 +2254,8 @@ namespace stock
             if (((highestIndex - todayPrice) / (highestIndex - lowestIndex)) <= 0.7)
             {
                 this.matchG = false;
+                matchGMessage = matchGMessage +
+                    "\t\t未通過：低檔(比前高少70%)以上\r\n";
             }
         }
         /*
