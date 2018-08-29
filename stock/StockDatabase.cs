@@ -922,7 +922,7 @@ namespace stock
                 }
                 else
                 {
-                    break;
+                    continue;
                 }
             }
             HistoryData[] historyData80 = historyData80List.ToArray();

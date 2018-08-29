@@ -1725,7 +1725,7 @@ namespace stock
                 }
                 else
                 {
-                    break;
+                    continue;
                 }
             }
             HistoryData[] historyData80 = historyData80List.ToArray();
@@ -2004,7 +2004,7 @@ namespace stock
             }
             if ((kValueMonth != null) && (kValueMonth.Length > 0))
             {
-                returnText = returnText + "\t月k： " + kValueMonth[kValueWeek.Length - 1].K.ToString("f2") + "\r\n";
+                returnText = returnText + "\t月k： " + kValueMonth[kValueMonth.Length - 1].K.ToString("f2") + "\r\n";
             }
             getYearEPS();
             Double oneYearEPS = yearEPS[yearEPS.Length - 1];

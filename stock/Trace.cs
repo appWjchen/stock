@@ -125,7 +125,7 @@ namespace stock
             Double priceDiff = company.highestIndex - company.lowestIndex;
             Double rate = 100 - 100 * (todayPrice - company.lowestIndex) / priceDiff;
             this.passScoreTestExplain = this.passScoreTestExplain +
-                "\t\t今日股價較前高低： " + rate.ToString("f2") + "\r\n";
+                "\t\t今日股價較前高低： " + rate.ToString("f2") + "%\r\n";
         }
         /*
          * 以下為函式 evaluateScore 用來追踪通過測試的項目。
@@ -296,7 +296,7 @@ namespace stock
             }
             if ((kValueMonth != null) && (kValueMonth.Length > 0))
             {
-                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+                kValueMonthToday = kValueMonth[kValueMonth.Length - 1].K;
             }
             if (kValueDayToday < 5)
             {
@@ -427,7 +427,7 @@ namespace stock
             }
             if ((kValueMonth != null) && (kValueMonth.Length > 0))
             {
-                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+                kValueMonthToday = kValueMonth[kValueMonth.Length - 1].K;
             }
             if (kValueDayToday < 5)
             {
