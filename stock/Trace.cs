@@ -86,7 +86,6 @@ namespace stock
             this.count = 1;
             this.startPrice = dayHistoryData[dayHistoryData.Length - 1].c;
             this.type = type;
-            evaluateUpPercent();
             if (startSCore == -1)
             {
                 this.startScore = evaluateScore();
@@ -112,12 +111,12 @@ namespace stock
             if (upPercent >= 0)
             {
                 this.passScoreTestExplain = this.passScoreTestExplain +
-                    "，上漲 " + this.upPercent + "\r\n";
+                    "，上漲 " + (this.upPercent * 100).ToString("f2") + "%\r\n";
             }
             else
             {
                 this.passScoreTestExplain = this.passScoreTestExplain +
-                    "，下跌 " + (-this.upPercent) + "\r\n";
+                    "，下跌 " + (-this.upPercent * 100).ToString("f2") + "%\r\n";
             }
             company.getPrevHighANdLowIndex();
             this.passScoreTestExplain = this.passScoreTestExplain +
@@ -547,7 +546,7 @@ namespace stock
                 if (sIncPercent > 0)
                 {
                     sValue10DayDiffSCore = (int)(sIncPercent / 0.1);
-                }                
+                }
             }
             score += sValue10DayDiffSCore;
             this.passScoreTestExplain = this.passScoreTestExplain +
@@ -600,6 +599,7 @@ namespace stock
             if (foundTraceCompany == null)
             {
                 TraceCompany traceCompany = new TraceCompany(company, type, stockDatabase, -1);
+                traceCompany.evaluateUpPercent();
                 traceCompanyList.Add(traceCompany);
                 listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
@@ -607,7 +607,7 @@ namespace stock
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.startScore.ToString());
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.score.ToString());
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
-                listView.Items[traceCompany.id].SubItems.Add(traceCompany.upPercent.ToString("f1"));
+                listView.Items[traceCompany.id].SubItems.Add((traceCompany.upPercent * 100).ToString("f2"));
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
             }
             else
@@ -714,7 +714,7 @@ namespace stock
                             traceCompany.kValueTWStockDay = kValueTWStockDay;
                             traceCompany.kValueTWStockWeek = kValueTWStockWeek;
                             traceCompany.kValueTWStockMonth = kValueTWStockMonth;
-                            // traceCompany.evaluateUpPercent();
+                            traceCompany.evaluateUpPercent();
                             traceCompany.score = traceCompany.evaluateScore();
                             traceCompanyList.Add(traceCompany);
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
@@ -723,7 +723,7 @@ namespace stock
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.startScore.ToString());
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.score.ToString());
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
-                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.upPercent.ToString("f1"));
+                            listView.Items[traceCompany.id].SubItems.Add((traceCompany.upPercent * 100).ToString("f2"));
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
                         }
                     }
