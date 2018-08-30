@@ -619,6 +619,15 @@ namespace stock
             }
         }
         /*
+         * remove 函式從追踪股票列表中移除名稱是 id 的股票。
+         */
+        public void remove(String id)
+        {
+            TraceCompany foundTraceCompany = findTraceCompany(id);
+            traceCompanyList.Remove(foundTraceCompany);
+            listView.Items[foundTraceCompany.id].Remove();
+        }
+        /*
          * 函式 findTraceCompany 用來在追踪列表中找尋股票代號是 id 的股票是否已
          * 經加入到追踪列表中，如果在追踪列表中有找到該公司，則傳回該公司的物件
          * ，資料型態是 TraceCompany ，否則傳回 null。

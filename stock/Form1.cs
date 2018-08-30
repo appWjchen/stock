@@ -120,6 +120,8 @@ namespace stock
             button14.Enabled = true;
             button15.Enabled = true;
             button16.Enabled = true;
+
+            button10.Focus();
         }
         private void clearMessage()
         {
@@ -503,7 +505,10 @@ namespace stock
                     );
             enableAllButtons();
         }
-
+        private void button10_Click(object sender, EventArgs e)
+        {
+        }
+        /* // 列出10 天內連續二次攻擊的股票
         private void button10_Click(object sender, EventArgs e)
         {
             disableAllButtons();
@@ -532,7 +537,7 @@ namespace stock
             }
             enableAllButtons();
         }
-
+        */
         private void button11_Click(object sender, EventArgs e)
         {
             disableAllButtons();
@@ -633,7 +638,6 @@ namespace stock
 
         private void button14_Click(object sender, EventArgs e)
         {
-
             disableAllButtons();
             var id = textBox4.Text;
             Company company = stockDatabase.getCompany(id);
@@ -650,7 +654,14 @@ namespace stock
 
         private void button15_Click(object sender, EventArgs e)
         {
-
+            disableAllButtons();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                String id = item.SubItems[0].Text;
+                //Company company = stockDatabase.getCompany(id);
+                stockTrace.remove(id);
+            }
+            enableAllButtons();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
