@@ -101,6 +101,8 @@ namespace stock
             button14.Enabled = false;
             button15.Enabled = false;
             button16.Enabled = false;
+            button17.Enabled = false;
+            button18.Enabled = false;
         }
         private void enableAllButtons()
         {
@@ -120,6 +122,8 @@ namespace stock
             button14.Enabled = true;
             button15.Enabled = true;
             button16.Enabled = true;
+            button17.Enabled = true;
+            button18.Enabled = true;
 
             button10.Focus();
         }
@@ -658,7 +662,6 @@ namespace stock
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 String id = item.SubItems[0].Text;
-                //Company company = stockDatabase.getCompany(id);
                 stockTrace.remove(id);
             }
             enableAllButtons();
@@ -671,6 +674,7 @@ namespace stock
 
         private void button16_Click(object sender, EventArgs e)
         {
+            disableAllButtons();
             MessageWriter messageWriter = new MessageWriter();
             messageWriter.showMessage("追踪股票資訊：\r\n");
             foreach (ListViewItem item in listView1.SelectedItems)
@@ -685,6 +689,67 @@ namespace stock
                 messageWriter.appendMessage(company.getInformatioon(stockDatabase) + "\r\n", true);
                 messageWriter.appendMessage(stockDatabase.getInformation() + "\r\n", true);
             }
+            enableAllButtons();
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            disableAllButtons();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                String id = item.SubItems[0].Text;
+                listView1.Items[id].UseItemStyleForSubItems = false;
+                for (var k = 0; k < listView1.Items[id].SubItems.Count; k++)
+                {
+                    listView1.Items[id].SubItems[k].ForeColor = Color.DarkBlue;
+                }
+                TraceCompany traceCompany = stockTrace.findTraceCompany(id);
+                traceCompany.hasBought = true;
+                if (traceCompany.upPercent > 0)
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Red;
+                }
+                else if (traceCompany.upPercent <= 0)
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Green;
+                }
+                else
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Black;
+                }
+            }
+            enableAllButtons();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            disableAllButtons();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                String id = item.SubItems[0].Text;
+                listView1.Items[id].UseItemStyleForSubItems = false;
+                for (var k = 0; k < listView1.Items[id].SubItems.Count; k++)
+                {
+                    listView1.Items[id].SubItems[k].ForeColor = Color.OrangeRed;
+                }
+                TraceCompany traceCompany = stockTrace.findTraceCompany(id);
+                traceCompany.hasBought = false;
+                if (traceCompany.upPercent > 0)
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Red;
+                }
+                else if (traceCompany.upPercent <= 0)
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Green;
+                }
+                else
+                {
+                    listView1.Items[traceCompany.id].SubItems[6].ForeColor = Color.Black;
+                }
+                listView1.Items[traceCompany.id].SubItems[6].Font = new Font(listView1.Items[traceCompany.id].SubItems[6].Font,
+                    listView1.Items[traceCompany.id].SubItems[6].Font.Style | FontStyle.Bold);
+            }
+            enableAllButtons();
         }
     }
 }

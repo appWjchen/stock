@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using System.Windows.Forms;
 
 /*
@@ -48,6 +49,7 @@ namespace stock
         public Double kValueTWStockDay;     // 被追踪股票加入追踪當日的大盤日 K 值
         public Double kValueTWStockWeek;    // 被追踪股票加入追踪當日的大盤週 K 值
         public Double kValueTWStockMonth;   // 被追踪股票加入追踪當日的大盤月 K 值
+        public Boolean hasBought;           // 被追踪股票是否已被購入
 
         /* 
          * TraceCompany 建構式 
@@ -60,6 +62,7 @@ namespace stock
             this.id = company.id;
             this.name = company.name;
             this.date = DateTime.Now;
+            this.hasBought = false;
 
             /* 取得股票追踪當日 K 值 */
             HistoryData[] dayHistoryData = company.getRealHistoryDataArray("d");
@@ -668,6 +671,7 @@ namespace stock
                     traceCompany.kValueTWStockDay.ToString("f2") + " " +
                     traceCompany.kValueTWStockWeek.ToString("f2") + " " +
                     traceCompany.kValueTWStockMonth.ToString("f2") + " " +
+                    traceCompany.hasBought +
                     "\r\n";
             }
             new FileHelper().WriteText(traceFilename, saveText);
@@ -706,6 +710,7 @@ namespace stock
                         Double kValueTWStockDay = Convert.ToDouble(oneTraceDataSplit[10]);
                         Double kValueTWStockWeek = Convert.ToDouble(oneTraceDataSplit[11]);
                         Double kValueTWStockMonth = Convert.ToDouble(oneTraceDataSplit[12]);
+                        Boolean hasBought = Convert.ToBoolean(oneTraceDataSplit[13]);
                         Company company = stockDatabase.getCompany(id);
                         if (company != null)
                         {
@@ -726,6 +731,7 @@ namespace stock
                             traceCompany.evaluateUpPercent();
                             traceCompany.score = traceCompany.evaluateScore();
                             traceCompanyList.Add(traceCompany);
+                            traceCompany.hasBought = hasBought;
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.date.ToString("yyyy/MM/dd"));
@@ -734,6 +740,36 @@ namespace stock
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
                             listView.Items[traceCompany.id].SubItems.Add((traceCompany.upPercent * 100).ToString("f2"));
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
+                            if (hasBought)
+                            {
+                                listView.Items[traceCompany.id].UseItemStyleForSubItems = false;
+                                for (var k = 0; k < listView.Items[traceCompany.id].SubItems.Count; k++)
+                                {
+                                    listView.Items[traceCompany.id].SubItems[k].ForeColor = Color.DarkBlue;
+                                }
+                            }
+                            else
+                            {
+                                listView.Items[traceCompany.id].UseItemStyleForSubItems = false;
+                                for (var k = 0; k < listView.Items[traceCompany.id].SubItems.Count; k++)
+                                {
+                                    listView.Items[traceCompany.id].SubItems[k].ForeColor = Color.OrangeRed;
+                                }
+                            }
+                            if (traceCompany.upPercent > 0)
+                            {
+                                listView.Items[traceCompany.id].SubItems[6].ForeColor = Color.Red;
+                            }
+                            else if (traceCompany.upPercent <= 0)
+                            {
+                                listView.Items[traceCompany.id].SubItems[6].ForeColor = Color.Green;
+                            }
+                            else
+                            {
+                                listView.Items[traceCompany.id].SubItems[6].ForeColor = Color.Black;
+                            }
+                            listView.Items[traceCompany.id].SubItems[6].Font = new Font(listView.Items[traceCompany.id].SubItems[6].Font,
+                                listView.Items[traceCompany.id].SubItems[6].Font.Style | FontStyle.Bold);
                         }
                     }
                 }

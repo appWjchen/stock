@@ -63,6 +63,8 @@
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
+            this.button17 = new System.Windows.Forms.Button();
+            this.button18 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -236,11 +238,11 @@
             // button10
             // 
             this.button10.AutoSize = true;
-            this.button10.Location = new System.Drawing.Point(1215, 635);
+            this.button10.Location = new System.Drawing.Point(1221, 635);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(100, 23);
+            this.button10.Size = new System.Drawing.Size(92, 23);
             this.button10.TabIndex = 16;
-            this.button10.Text = "平均攻擊研究";
+            this.button10.Text = "絕對低檔研究";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
@@ -391,7 +393,7 @@
             // 
             // button16
             // 
-            this.button16.Location = new System.Drawing.Point(1004, 635);
+            this.button16.Location = new System.Drawing.Point(1009, 635);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(85, 23);
             this.button16.TabIndex = 26;
@@ -399,11 +401,33 @@
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(1105, 635);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(47, 23);
+            this.button17.TabIndex = 27;
+            this.button17.Text = "已購";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
+            // button18
+            // 
+            this.button18.Location = new System.Drawing.Point(1163, 635);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(47, 23);
+            this.button18.TabIndex = 28;
+            this.button18.Text = "未購";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1316, 658);
+            this.Controls.Add(this.button18);
+            this.Controls.Add(this.button17);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button16);
             this.Controls.Add(this.button15);
@@ -479,6 +503,8 @@
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.Button button18;
     }
 }
 
