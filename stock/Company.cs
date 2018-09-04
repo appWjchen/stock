@@ -2218,7 +2218,7 @@ namespace stock
             }
             if ((kValueMonth != null) && (kValueMonth.Length > 0))
             {
-                kValueMonthToday = kValueMonth[kValueWeek.Length - 1].K;
+                kValueMonthToday = kValueMonth[kValueMonth.Length - 1].K;
             }
             if (!((kValueDayToday < minKValue) && (kValueMonthToday < minKValue) && (kValueWeekToday < minKValue)))
             {

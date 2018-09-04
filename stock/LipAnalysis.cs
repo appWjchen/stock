@@ -44,7 +44,7 @@ namespace stock
             return newDate;
         }
         /*
-         * 
+         * 函式 dateTimeToDateString 將傳入的日期物件轉換成日期字串傳回。
          */
         public static String dateTimeToDateString(DateTime date)
         {

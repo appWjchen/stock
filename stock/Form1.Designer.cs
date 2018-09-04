@@ -338,13 +338,13 @@
             // 
             this.name.Text = "名稱";
             this.name.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.name.Width = 40;
+            this.name.Width = 59;
             // 
             // date
             // 
             this.date.Text = "開始追踪日期";
             this.date.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.date.Width = 100;
+            this.date.Width = 96;
             // 
             // startScore
             // 
