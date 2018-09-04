@@ -511,6 +511,7 @@ namespace stock
         }
         private void button10_Click(object sender, EventArgs e)
         {
+
         }
         /* // 列出10 天內連續二次攻擊的股票
         private void button10_Click(object sender, EventArgs e)
