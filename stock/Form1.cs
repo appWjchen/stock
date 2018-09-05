@@ -143,6 +143,8 @@ namespace stock
             }
             else
             {
+                stockTrace = new Trace(stockDatabase, listView1);
+                stockDatabase.stockTrace = stockTrace;
                 if (createTwiceAttackFiles)
                 {
                     /*
@@ -151,11 +153,10 @@ namespace stock
                     analysisObj.doAttackAnalysis(300, true);
                      */
                     button6.Enabled = true;
+                    textBox1.Text = "更新大盤資料庫完畢，請按「更新所有資料庫」繼續。\r\n\r\n";
                 }
                 else
                 {
-                    stockTrace = new Trace(stockDatabase, listView1);
-                    stockDatabase.stockTrace = stockTrace;
                     enableAllButtons();
                     clearMessage();
                     textBox1.Text = "更新大盤資料庫完畢，可開始使用。\r\n\r\n";
@@ -191,6 +192,7 @@ namespace stock
                         ;
                     textBox1.Text = textBox1.Text + mesg;
                 }
+                button10.Focus();
             }
         }
         public void emptyCallback()
