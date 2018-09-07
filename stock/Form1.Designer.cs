@@ -65,6 +65,10 @@
             this.button16 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
+            this.maxScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxScoreDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxPrice = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxPriceDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // button1
@@ -314,7 +318,11 @@
             this.score,
             this.count,
             this.upPercent,
-            this.type});
+            this.type,
+            this.maxScore,
+            this.maxScoreDate,
+            this.maxPrice,
+            this.maxPriceDate});
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView1.LabelWrap = false;
             this.listView1.Location = new System.Drawing.Point(836, 112);
@@ -370,6 +378,8 @@
             // type
             // 
             this.type.Text = "類型";
+            this.type.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.type.Width = 30;
             // 
             // button14
             // 
@@ -420,6 +430,29 @@
             this.button18.Text = "未購";
             this.button18.UseVisualStyleBackColor = true;
             this.button18.Click += new System.EventHandler(this.button18_Click);
+            // 
+            // maxScore
+            // 
+            this.maxScore.Text = "最高分數";
+            this.maxScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // maxScoreDate
+            // 
+            this.maxScoreDate.Text = "最高分數日期";
+            this.maxScoreDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxScoreDate.Width = 90;
+            // 
+            // maxPrice
+            // 
+            this.maxPrice.Text = "最高價";
+            this.maxPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxPrice.Width = 45;
+            // 
+            // maxPriceDate
+            // 
+            this.maxPriceDate.Text = "最高價日期";
+            this.maxPriceDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxPriceDate.Width = 75;
             // 
             // Form1
             // 
@@ -505,6 +538,10 @@
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.ColumnHeader maxScore;
+        private System.Windows.Forms.ColumnHeader maxScoreDate;
+        private System.Windows.Forms.ColumnHeader maxPrice;
+        private System.Windows.Forms.ColumnHeader maxPriceDate;
     }
 }
 

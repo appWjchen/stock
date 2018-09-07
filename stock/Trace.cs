@@ -29,7 +29,7 @@ namespace stock
     class TraceCompany
     {
         public StockDatabase stockDatabase;
-        Company company;
+        public Company company;
         public String id;                   // 被追踪股票的代號
         public String name;                 // 被追踪股票的名稱
         public DateTime date;               // 被追踪股票加入追踪的日期
@@ -50,6 +50,10 @@ namespace stock
         public Double kValueTWStockWeek;    // 被追踪股票加入追踪當日的大盤週 K 值
         public Double kValueTWStockMonth;   // 被追踪股票加入追踪當日的大盤月 K 值
         public Boolean hasBought;           // 被追踪股票是否已被購入
+        public Int32 maxScore;              // 被追踪股票最高分數
+        public DateTime maxScoreDate;       // 被追踪股票最高分數發生日期
+        public Double maxPrice;             // 被追踪股票的最高價格
+        public DateTime maxPriceDate;       // 被追踪股票最高價格發生的日期
 
         /* 
          * TraceCompany 建構式 
@@ -63,6 +67,10 @@ namespace stock
             this.name = company.name;
             this.date = DateTime.Now;
             this.hasBought = false;
+            this.maxScore = 0;
+            this.maxScoreDate = DateTime.Now;
+            this.maxPrice = 0;
+            this.maxPriceDate = DateTime.Now;
 
             /* 取得股票追踪當日 K 值 */
             HistoryData[] dayHistoryData = company.getRealHistoryDataArray("d");
@@ -612,6 +620,10 @@ namespace stock
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
                 listView.Items[traceCompany.id].SubItems.Add((traceCompany.upPercent * 100).ToString("f2"));
                 listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
+                listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxScore.ToString("f0"));
+                listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxScoreDate.ToString("yyyy/MM/dd"));
+                listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxPrice.ToString("f2"));
+                listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxPriceDate.ToString("yyyy/MM/dd"));
             }
             else
             {
@@ -671,7 +683,11 @@ namespace stock
                     traceCompany.kValueTWStockDay.ToString("f2") + " " +
                     traceCompany.kValueTWStockWeek.ToString("f2") + " " +
                     traceCompany.kValueTWStockMonth.ToString("f2") + " " +
-                    traceCompany.hasBought +
+                    traceCompany.hasBought + " " +
+                    traceCompany.maxScore.ToString() + " " +
+                    traceCompany.maxScoreDate.ToString("yyyy/MM/dd") + " " +
+                    traceCompany.maxPrice.ToString() + " " +
+                    traceCompany.maxPriceDate.ToString("yyyy/MM/dd") + " " +
                     "\r\n";
             }
             new FileHelper().WriteText(traceFilename, saveText);
@@ -711,6 +727,18 @@ namespace stock
                         Double kValueTWStockWeek = Convert.ToDouble(oneTraceDataSplit[11]);
                         Double kValueTWStockMonth = Convert.ToDouble(oneTraceDataSplit[12]);
                         Boolean hasBought = Convert.ToBoolean(oneTraceDataSplit[13]);
+                        
+                        Int32 maxScore = Convert.ToInt32(oneTraceDataSplit[14]);
+                        Year = Convert.ToInt32(oneTraceDataSplit[15].Substring(0, 4));
+                        Month = Convert.ToInt32(oneTraceDataSplit[15].Substring(5, 2));
+                        Day = Convert.ToInt32(oneTraceDataSplit[15].Substring(8, 2));
+                        DateTime maxScoreDate = new DateTime(Year, Month, Day);
+                        Double maxPrice = Convert.ToDouble(oneTraceDataSplit[16]);
+                        Year = Convert.ToInt32(oneTraceDataSplit[17].Substring(0, 4));
+                        Month = Convert.ToInt32(oneTraceDataSplit[17].Substring(5, 2));
+                        Day = Convert.ToInt32(oneTraceDataSplit[17].Substring(8, 2));
+                        DateTime maxPriceDate = new DateTime(Year, Month, Day);
+                        
                         Company company = stockDatabase.getCompany(id);
                         if (company != null)
                         {
@@ -732,6 +760,48 @@ namespace stock
                             traceCompany.score = traceCompany.evaluateScore();
                             traceCompanyList.Add(traceCompany);
                             traceCompany.hasBought = hasBought;
+                            traceCompany.maxScore = maxScore;
+                            traceCompany.maxScoreDate = maxScoreDate;
+                            traceCompany.maxPrice = maxPrice;
+                            traceCompany.maxPriceDate = maxPriceDate;
+
+                            if (traceCompany.score > maxScore)
+                            {
+                                traceCompany.maxScore = traceCompany.score;
+                                traceCompany.maxScoreDate = DateTime.Now;
+                            }
+                            HistoryData[] dayHistoryData = traceCompany.company.getRealHistoryDataArray("d");
+                            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+                            if (todayPrice > traceCompany.maxPrice)
+                            {
+                                traceCompany.maxPrice = todayPrice;
+                                traceCompany.maxPriceDate = DateTime.Now;
+                            }
+                            
+                            /*
+                            if (traceCompany.startScore > traceCompany.score)
+                            {
+                                traceCompany.maxScore = traceCompany.startScore;
+                                traceCompany.maxScoreDate = traceCompany.date;
+                            }
+                            else
+                            {
+                                traceCompany.maxScore = traceCompany.score;
+                                traceCompany.maxScoreDate = DateTime.Now;
+                            }
+                            HistoryData[] dayHistoryData = traceCompany.company.getRealHistoryDataArray("d");
+                            Double todayPrice = dayHistoryData[dayHistoryData.Length - 1].c;
+                            if (traceCompany.startPrice > todayPrice)
+                            {
+                                traceCompany.maxPrice = traceCompany.startPrice;
+                                traceCompany.maxPriceDate = traceCompany.date;
+                            }
+                            else
+                            {
+                                traceCompany.maxPrice = todayPrice;
+                                traceCompany.maxPriceDate = DateTime.Now;
+                            }
+                            */
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.date.ToString("yyyy/MM/dd"));
@@ -740,6 +810,12 @@ namespace stock
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.count.ToString());
                             listView.Items[traceCompany.id].SubItems.Add((traceCompany.upPercent * 100).ToString("f2"));
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.type);
+                            
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxScore.ToString("f0"));
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxScoreDate.ToString("yyyy/MM/dd"));
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxPrice.ToString("f2"));
+                            listView.Items[traceCompany.id].SubItems.Add(traceCompany.maxPriceDate.ToString("yyyy/MM/dd"));
+                            
                             if (hasBought)
                             {
                                 listView.Items[traceCompany.id].UseItemStyleForSubItems = false;
