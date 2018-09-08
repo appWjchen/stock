@@ -143,7 +143,7 @@ namespace stock
             }
             else
             {
-                stockTrace = new Trace(stockDatabase, listView1);
+                stockTrace = new Trace(stockDatabase, listView1, label7);
                 stockDatabase.stockTrace = stockTrace;
                 if (createTwiceAttackFiles)
                 {

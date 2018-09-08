@@ -587,18 +587,19 @@ namespace stock
         public String traceFilename = "trace.dat";
         public StockDatabase stockDatabase;
         public ListView listView;
+        public Label labelOutMessage;
         private List<TraceCompany> traceCompanyList = null;
-        public Int32 successCount = 0;      // 記錄 30 天內上漲超過 10% 的股票個數
-        public Int32 failCount = 0;         // 記錄 30 天內上漲不超過 10% 的股票個數
 
         /*
          * Trace 建構式
          */
-        public Trace(StockDatabase stockDatabase, ListView listView)
+        public Trace(StockDatabase stockDatabase, ListView listView, Label labelOutMessage)
         {
             this.stockDatabase = stockDatabase;
             traceCompanyList = new List<TraceCompany>();
             this.listView = listView;
+            this.labelOutMessage = labelOutMessage;
+            this.labelOutMessage.ForeColor = Color.Purple;
             load();
         }
         /*
@@ -703,6 +704,9 @@ namespace stock
                 var saveData = fileHelper.ReadText(traceFilename);
                 var saveDataSplit = saveData.Split(new string[] { "\n" },
                     StringSplitOptions.RemoveEmptyEntries);
+                int upCount = 0;
+                int successfulCount = 0;
+                int failCount = 0;
                 for (var i = 0; i < saveDataSplit.Length; i++)
                 {
                     String oneTraceData = saveDataSplit[i];
@@ -777,7 +781,11 @@ namespace stock
                                 traceCompany.maxPrice = todayPrice;
                                 traceCompany.maxPriceDate = DateTime.Now;
                             }
-                            
+                            if (todayPrice > traceCompany.startPrice)
+                            {
+                                /* 計算目前追踪股票是否上漲，並統計總數 */
+                                upCount++;
+                            }
                             /*
                             if (traceCompany.startScore > traceCompany.score)
                             {
@@ -802,6 +810,23 @@ namespace stock
                                 traceCompany.maxPriceDate = DateTime.Now;
                             }
                             */
+                            Double traceDays = (DateTime.Now - traceCompany.date).TotalDays;
+                            if (todayPrice < 60)
+                            {
+                                /* 追踪超過 2 個月股票，上漲機率統計 */
+                                if (((traceCompany.maxPrice - traceCompany.startPrice) / traceCompany.startPrice) > 0.1)
+                                {
+                                    successfulCount++;
+                                }
+                            }
+                            if (traceDays > 60)
+                            {
+                                /* 追踪超過 2 個月股票，下跌機率統計 */
+                                if (((traceCompany.maxPrice - traceCompany.startPrice) / traceCompany.startPrice) < 0.1)
+                                {
+                                    failCount++;
+                                }
+                            }
                             listView.Items.Add(traceCompany.id, traceCompany.id, 0);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.name);
                             listView.Items[traceCompany.id].SubItems.Add(traceCompany.date.ToString("yyyy/MM/dd"));
@@ -849,6 +874,9 @@ namespace stock
                         }
                     }
                 }
+                this.labelOutMessage.Text = "追踪上漲 " + upCount + " 家，下跌 " + (saveDataSplit.Length - upCount) + " 家\r\n";
+                this.labelOutMessage.Text = this.labelOutMessage.Text + "追踪二個月成功 " + successfulCount
+                    + " 家，失敗 " + failCount + " 家";
             }
         }
     }

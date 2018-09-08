@@ -60,15 +60,16 @@
             this.count = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.upPercent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxScoreDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxPrice = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.maxPriceDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
-            this.maxScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.maxScoreDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.maxPrice = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.maxPriceDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -191,7 +192,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(1144, 84);
+            this.button7.Location = new System.Drawing.Point(1144, 55);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(67, 23);
             this.button7.TabIndex = 11;
@@ -230,7 +231,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(1040, 84);
+            this.button9.Location = new System.Drawing.Point(1040, 55);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(98, 23);
             this.button9.TabIndex = 15;
@@ -301,7 +302,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(834, 91);
+            this.label6.Location = new System.Drawing.Point(836, 89);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(145, 12);
@@ -381,6 +382,29 @@
             this.type.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.type.Width = 30;
             // 
+            // maxScore
+            // 
+            this.maxScore.Text = "最高分數";
+            this.maxScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // maxScoreDate
+            // 
+            this.maxScoreDate.Text = "最高分數日期";
+            this.maxScoreDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxScoreDate.Width = 90;
+            // 
+            // maxPrice
+            // 
+            this.maxPrice.Text = "最高價";
+            this.maxPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxPrice.Width = 45;
+            // 
+            // maxPriceDate
+            // 
+            this.maxPriceDate.Text = "最高價日期";
+            this.maxPriceDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.maxPriceDate.Width = 75;
+            // 
             // button14
             // 
             this.button14.Location = new System.Drawing.Point(1087, 32);
@@ -431,34 +455,19 @@
             this.button18.UseVisualStyleBackColor = true;
             this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
-            // maxScore
+            // label7
             // 
-            this.maxScore.Text = "最高分數";
-            this.maxScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // maxScoreDate
-            // 
-            this.maxScoreDate.Text = "最高分數日期";
-            this.maxScoreDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.maxScoreDate.Width = 90;
-            // 
-            // maxPrice
-            // 
-            this.maxPrice.Text = "最高價";
-            this.maxPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.maxPrice.Width = 45;
-            // 
-            // maxPriceDate
-            // 
-            this.maxPriceDate.Text = "最高價日期";
-            this.maxPriceDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.maxPriceDate.Width = 75;
+            this.label7.Location = new System.Drawing.Point(986, 81);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(235, 29);
+            this.label7.TabIndex = 29;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1223, 658);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.button18);
             this.Controls.Add(this.button17);
             this.Controls.Add(this.button10);
@@ -542,6 +551,7 @@
         private System.Windows.Forms.ColumnHeader maxScoreDate;
         private System.Windows.Forms.ColumnHeader maxPrice;
         private System.Windows.Forms.ColumnHeader maxPriceDate;
+        private System.Windows.Forms.Label label7;
     }
 }
 
