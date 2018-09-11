@@ -514,6 +514,32 @@ namespace stock
         private void button10_Click(object sender, EventArgs e)
         {
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+            HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
+            /* 呼叫 findLipHipData 找出各波段最高及最低價， 36 表示一個波段最少 36 個月 */
+            List<LipHipData> lipHipDataList = 
+                lipAnalysis.findLipHipData(monthHistoryDataArray, 36);
+            String msgText = "";
+            for (var i = 0; i < lipHipDataList.Count(); i++)
+            {
+                LipHipData oneLipHitData=lipHipDataList[i];
+                if (oneLipHitData.type)
+                {
+                    /* 波段高點 */
+                    msgText = msgText + "波段高點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date +
+                        " ,高點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+                else
+                {
+                    /* 波段低點 */
+                    msgText = msgText + "波段低點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date +
+                        " ,低點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+            }
+            new MessageWriter().showMessage(msgText);
         }
         /* // 列出10 天內連續二次攻擊的股票
         private void button10_Click(object sender, EventArgs e)

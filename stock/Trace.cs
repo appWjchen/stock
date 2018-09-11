@@ -731,7 +731,7 @@ namespace stock
                         Double kValueTWStockWeek = Convert.ToDouble(oneTraceDataSplit[11]);
                         Double kValueTWStockMonth = Convert.ToDouble(oneTraceDataSplit[12]);
                         Boolean hasBought = Convert.ToBoolean(oneTraceDataSplit[13]);
-                        
+                                                
                         Int32 maxScore = Convert.ToInt32(oneTraceDataSplit[14]);
                         Year = Convert.ToInt32(oneTraceDataSplit[15].Substring(0, 4));
                         Month = Convert.ToInt32(oneTraceDataSplit[15].Substring(5, 2));

@@ -80,105 +80,115 @@ namespace stock
             LipHipData prevLipData = null;
             LipHipData prevHipData = null;
             Int32 index = historyDataArray.Length - 1;
+            /*
+             * 這裡的 type 和 LipHipData 中的 type 有點不一樣，
+             *  type=-1     表示目前找到的是最低點，要開始找最高點
+             *  typr=0      表示目前正在找第一點，還沒找到最高或最低點
+             *  type=1      表示目前找到的是最高點，要開始找最低點
+             */
+            int type = 0;   
             while (index >= 0)
             {
                 /*
-                 * 把目前的最高價和先前找到的最高價比較，若時間差值在 1.5 年內，
+                 * 把目前的最高價和先前找到的最高價比較，若時間差值在 3 年內，
                  * 則認定其為同一波段的最高點，以目前最高價取代先前的最高價。
                  * 最低價也是如此。
-                 * 1.5 年以內表示 index(月線歷史資料) 相差 18 (不含)以內為準。
+                 * 3 年以內表示 index(月線歷史資料) 相差 36 (不含)以內為準。
                  * 此分析方法將來可能用在短線(日線歷史資料)上，故以 indexDiff 
                  * 伐表波段時間差之容許值。
                  */
                 HistoryData historyData = historyDataArray[index];
                 Double currentValue = historyData.c;
                 DateTime currentDate = dateStringToDateTime(historyData.t);
-                if (prevHipData != null)
+                /* (1) 首先要找到第一個最高或最低點 */
+                if (type == 0)
                 {
-                    /* 處理最高價程式 */
-                    if (currentValue > prevHipData.value)
+                    /* 找第一點 */
+                    if (prevHipData != null)
                     {
-                        /* 找到更高價 */
-                        if ((prevHipData.index - index) < indexDiff)
+                        /* 處理最高價程式 */
+                        if ((prevHipData.index - index) > indexDiff)
                         {
-                            /* 此高點和前次記錄高點為同一波段，更新前次最高價為目前最高價 */
-                            prevHipData.date = currentDate;
-                            prevHipData.value = currentValue;
-                            prevHipData.type = true;
-                            prevHipData.index = index;
-                        }
-                        else
-                        {
-                            /* 此高點和前次記錄高點為不同波段，將前波高點放到 lipHipDataList 列表中 */
+                            /* 找到第一高點，將其放到 lipHipDataList 列表中 */
                             LipHipData hipData = new LipHipData();
                             hipData.date = prevHipData.date;
                             hipData.value = prevHipData.value;
                             hipData.type = prevHipData.type;
                             hipData.index = prevHipData.index;
                             lipHipDataList.Add(hipData);
-                            /* 更新前波高點為目前高點 */
+                            type = 1;
+                            break;
+                        }
+                        if (currentValue > prevHipData.value)
+                        {
+                            /* 找到更高點 */
                             prevHipData.date = currentDate;
                             prevHipData.value = currentValue;
                             prevHipData.type = true;
                             prevHipData.index = index;
                         }
                     }
-                }
-                else
-                {
-                    /* 沒有最高價物件，產生之 */
-                    prevHipData = new LipHipData();
-                    prevHipData.date = currentDate;
-                    prevHipData.type = true;
-                    prevHipData.value = currentValue;
-                    prevHipData.index = index;
-                }
-                if (prevLipData != null)
-                {
-                    /* 處理最低價程式 */
-                    if (currentValue < prevLipData.value)
+                    else
                     {
-                        /* 找到更低價 */
-                        if ((prevLipData.index - index) < indexDiff)
+                        /* 沒有最高價物件，產生之 */
+                        prevHipData = new LipHipData();
+                        prevHipData.date = currentDate;
+                        prevHipData.type = true;
+                        prevHipData.value = currentValue;
+                        prevHipData.index = index;
+                    }
+                    if (prevLipData != null)
+                    {
+                        /* 處理最低價程式 */
+                        if ((prevLipData.index - index) > indexDiff)
                         {
-                            /* 此低點和前次記錄低點為同一波段，更新前次最低價為目前最低價 */
-                            prevLipData.date = currentDate;
-                            prevLipData.value = currentValue;
-                            prevLipData.type = false;
-                            prevLipData.index = index;
-                        }
-                        else
-                        {
-                            /* 此低點和前次記錄低點為不同波段，將前波低點放到 lipHipDataList 列表中 */
+                            /* 找到第一低點，將其放到 lipHipDataList 列表中 */
                             LipHipData lipData = new LipHipData();
                             lipData.date = prevLipData.date;
                             lipData.value = prevLipData.value;
                             lipData.type = prevLipData.type;
                             lipData.index = prevLipData.index;
                             lipHipDataList.Add(lipData);
-                            /* 更新前波低點為目前低點 */
+                            type = -1;
+                            break;
+                        }
+                        if (currentValue < prevLipData.value)
+                        {
+                            /* 找到更低點 */
                             prevLipData.date = currentDate;
                             prevLipData.value = currentValue;
-                            prevLipData.type = true;
+                            prevLipData.type = false;
                             prevLipData.index = index;
                         }
                     }
+                    else
+                    {
+                        /* 沒有最低價物件，產生之 */
+                        prevLipData = new LipHipData();
+                        prevLipData.date = currentDate;
+                        prevLipData.type = false;
+                        prevLipData.value = currentValue;
+                        prevLipData.index = index;
+                    }
+                    index--;
                 }
                 else
                 {
-                    /* 沒有最低價物件，產生之 */
-                    prevLipData = new LipHipData();
-                    prevLipData.date = currentDate;
-                    prevLipData.type = false;
-                    prevLipData.value = currentValue;
-                    prevLipData.index = index;
+                    /* 不是第一點，則根據 type 依序找高低點 */
+                    if (type == 1)
+                    {
+                    }
+                    else
+                    {
+                    }
                 }
-                index--;
+
+
             }
-            /* 檢查前波最高最低點是否在列表中 */
+
+            /*
             if (!isDataInLipHipList(prevLipData))
             {
-                /* 前波最低點不在列表中，加入列表 */
                 LipHipData lipData = new LipHipData();
                 lipData.date = prevLipData.date;
                 lipData.value = prevLipData.value;
@@ -188,7 +198,6 @@ namespace stock
             }
             if (!isDataInLipHipList(prevHipData))
             {
-                /* 前波最高點不在列表中，加入列表 */
                 LipHipData hipData = new LipHipData();
                 hipData.date = prevHipData.date;
                 hipData.value = prevHipData.value;
@@ -196,6 +205,8 @@ namespace stock
                 hipData.index = prevHipData.index;
                 lipHipDataList.Add(hipData);
             }
+            */
+            
             lipHipDataList.Sort(
                 delegate(LipHipData x, LipHipData y)
                 {
