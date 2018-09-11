@@ -515,9 +515,9 @@ namespace stock
         {
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
-            /* 呼叫 findLipHipData 找出各波段最高及最低價， 36 表示一個波段最少 36 個月 */
+            /* 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 */
             List<LipHipData> lipHipDataList = 
-                lipAnalysis.findLipHipData(monthHistoryDataArray, 36);
+                lipAnalysis.findLipHipData(monthHistoryDataArray, 48);
             String msgText = "";
             for (var i = 0; i < lipHipDataList.Count(); i++)
             {

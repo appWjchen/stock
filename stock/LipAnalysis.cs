@@ -86,19 +86,21 @@ namespace stock
              *  typr=0      表示目前正在找第一點，還沒找到最高或最低點
              *  type=1      表示目前找到的是最高點，要開始找最低點
              */
-            int type = 0;   
+            int type = 0;
             while (index >= 0)
             {
                 /*
                  * 把目前的最高價和先前找到的最高價比較，若時間差值在 3 年內，
                  * 則認定其為同一波段的最高點，以目前最高價取代先前的最高價。
                  * 最低價也是如此。
-                 * 3 年以內表示 index(月線歷史資料) 相差 36 (不含)以內為準。
+                 * indexDiff 個月以內表示 index(月線歷史資料) 相差 indexDiff個月以內為準。
                  * 此分析方法將來可能用在短線(日線歷史資料)上，故以 indexDiff 
                  * 伐表波段時間差之容許值。
                  */
                 HistoryData historyData = historyDataArray[index];
                 Double currentValue = historyData.c;
+                Double currentHigh = historyData.h;
+                Double currentLow = historyData.l;
                 DateTime currentDate = dateStringToDateTime(historyData.t);
                 /* (1) 首先要找到第一個最高或最低點 */
                 if (type == 0)
@@ -117,13 +119,19 @@ namespace stock
                             hipData.index = prevHipData.index;
                             lipHipDataList.Add(hipData);
                             type = 1;
-                            break;
+                            /* 將最低點設為最低高點當天，準備往後繼續尋找 */
+                            prevLipData.date = prevHipData.date;
+                            prevLipData.value = prevHipData.value;
+                            prevLipData.type = false;
+                            prevLipData.index = prevHipData.index;
+                            index = prevHipData.index;
+                            continue;
                         }
-                        if (currentValue > prevHipData.value)
+                        if (currentHigh > prevHipData.value)
                         {
                             /* 找到更高點 */
                             prevHipData.date = currentDate;
-                            prevHipData.value = currentValue;
+                            prevHipData.value = currentHigh;
                             prevHipData.type = true;
                             prevHipData.index = index;
                         }
@@ -150,13 +158,19 @@ namespace stock
                             lipData.index = prevLipData.index;
                             lipHipDataList.Add(lipData);
                             type = -1;
-                            break;
+                            /* 將最高點設為最低點當天，準備往後繼續尋找 */
+                            prevHipData.date = prevLipData.date;
+                            prevHipData.value = prevLipData.value;
+                            prevHipData.type = true;
+                            prevHipData.index = prevLipData.index;
+                            index = prevLipData.index;
+                            continue;
                         }
-                        if (currentValue < prevLipData.value)
+                        if (currentLow < prevLipData.value)
                         {
                             /* 找到更低點 */
                             prevLipData.date = currentDate;
-                            prevLipData.value = currentValue;
+                            prevLipData.value = currentLow;
                             prevLipData.type = false;
                             prevLipData.index = index;
                         }
@@ -170,24 +184,76 @@ namespace stock
                         prevLipData.value = currentValue;
                         prevLipData.index = index;
                     }
-                    index--;
                 }
                 else
                 {
                     /* 不是第一點，則根據 type 依序找高低點 */
                     if (type == 1)
                     {
+                        /* 前一極點是最高點, 往後找最低點 */
+                        if ((prevHipData.index - index) > indexDiff)
+                        {
+                            /* 找到最低點，將其放到 lipHipDataList 列表中 */
+                            LipHipData lipData = new LipHipData();
+                            lipData.date = prevLipData.date;
+                            lipData.value = prevLipData.value;
+                            lipData.type = prevLipData.type;
+                            lipData.index = prevLipData.index;
+                            lipHipDataList.Add(lipData);
+                            type = -1;
+                            /* 將最高點設為最低點當天，準備往後繼續尋找 */
+                            prevHipData.date = prevLipData.date;
+                            prevHipData.value = prevLipData.value;
+                            prevHipData.type = true;
+                            prevHipData.index = prevLipData.index;
+                            index = prevLipData.index;
+                            continue;
+                        }
+                        if (currentLow < prevLipData.value)
+                        {
+                            /* 找到更低點 */
+                            prevLipData.date = currentDate;
+                            prevLipData.value = currentLow;
+                            prevLipData.type = false;
+                            prevLipData.index = index;
+                        }
                     }
                     else
                     {
+                        /* 前一極點是最低點點, 往後找最高點 */
+                        if ((prevLipData.index - index) > indexDiff)
+                        {
+                            /* 找到第一高點，將其放到 lipHipDataList 列表中 */
+                            LipHipData hipData = new LipHipData();
+                            hipData.date = prevHipData.date;
+                            hipData.value = prevHipData.value;
+                            hipData.type = prevHipData.type;
+                            hipData.index = prevHipData.index;
+                            lipHipDataList.Add(hipData);
+                            type = 1;
+                            /* 將最低點設為最低高點當天，準備往後繼續尋找 */
+                            prevLipData.date = prevHipData.date;
+                            prevLipData.value = prevHipData.value;
+                            prevLipData.type = false;
+                            prevLipData.index = prevHipData.index;
+                            index = prevHipData.index;
+                            continue;
+                        }
+                        if (currentHigh > prevHipData.value)
+                        {
+                            /* 找到更高點 */
+                            prevHipData.date = currentDate;
+                            prevHipData.value = currentHigh;
+                            prevHipData.type = true;
+                            prevHipData.index = index;
+                        }
                     }
                 }
-
-
+                index--;
             }
 
-            /*
-            if (!isDataInLipHipList(prevLipData))
+
+            if ((type == 1) && (!isDataInLipHipList(prevLipData)))
             {
                 LipHipData lipData = new LipHipData();
                 lipData.date = prevLipData.date;
@@ -196,7 +262,7 @@ namespace stock
                 lipData.index = prevLipData.index;
                 lipHipDataList.Add(lipData);
             }
-            if (!isDataInLipHipList(prevHipData))
+            if ((type == -1) && (!isDataInLipHipList(prevHipData)))
             {
                 LipHipData hipData = new LipHipData();
                 hipData.date = prevHipData.date;
@@ -205,8 +271,8 @@ namespace stock
                 hipData.index = prevHipData.index;
                 lipHipDataList.Add(hipData);
             }
-            */
-            
+
+
             lipHipDataList.Sort(
                 delegate(LipHipData x, LipHipData y)
                 {
