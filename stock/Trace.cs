@@ -811,7 +811,7 @@ namespace stock
                             }
                             */
                             Double traceDays = (DateTime.Now - traceCompany.date).TotalDays;
-                            if (todayPrice < 60)
+                            if ((todayPrice < 60)&&(traceCompany.type!="N"))
                             {
                                 /* 追踪超過 2 個月股票，上漲機率統計 */
                                 if (((traceCompany.maxPrice - traceCompany.startPrice) / traceCompany.startPrice) > 0.1)
@@ -819,7 +819,7 @@ namespace stock
                                     successfulCount++;
                                 }
                             }
-                            if (traceDays > 60)
+                            if ((traceDays > 60)&&(traceCompany.type!="N"))
                             {
                                 /* 追踪超過 2 個月股票，下跌機率統計 */
                                 if (((traceCompany.maxPrice - traceCompany.startPrice) / traceCompany.startPrice) < 0.1)

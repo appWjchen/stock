@@ -306,11 +306,13 @@ namespace stock
          */
         public void findAllLipHipDataList()
         {
+            /* 
+            // bug 試用程式片段
             stockDatabase.companies[77].lipHipDataList = findLipHipData(
                 stockDatabase.companies[77].getRealHistoryDataArray("m"),
                 36
                 );
-
+            */
             /* 大盤波段用 48 個月做波段搜尋最大期限 */
             stockDatabase.lipHipDataList = findLipHipData(
                 stockDatabase.getMonthHistoryData(), 
@@ -329,6 +331,12 @@ namespace stock
             }
             new WarningWriter().showMessage("搜尋所有公司波段極值完畢");
             new AppDoEvents().DoEvents();
+        }
+        /*
+         * 
+         */
+        public void findAllWaveDataList()
+        {
         }
     }
 }

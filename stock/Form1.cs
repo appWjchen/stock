@@ -7,6 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+/*
+ * 股票分析及選程式(stock.sln)大約是開始於 2014 年尾，原本是用 JavaScript 語言在
+ * Node.js + Electron 平台上開發，大約在 2017 年中移植到 C# 語言，改變開發語言的
+ * 最主要原因在於除錯的方便性，Visual Studio 2010 就可以有不錯的開發環境了，加上
+ * C# Windows 程式要移植到 Android 及 iOS 也很容易，所以不再用 JavaScript 語言做
+ * 開發了。
+ * 專案還有一個 Visual Studio 2018 版本的方案，裡面維持了 Windows, Android 及 iOS
+ * 的開發相容函式及專案，原本在開發時會保持各專案的相容性，讓程式可以在 Android 上
+ * 順利執行，但在 2018 年中開始全力用 Windows 專案來開發，以加快完成速度。
+ * 2018年9月實際可用來分析及篩選股票(含追踪系統)的可運行版本大致完成，由於還有更多
+ * 的想法要測試，所以仍然持續開發中。
+ *      22018.09.10     開始波段絕對極值法的統計分析及開發
+ */
 namespace stock
 {
     public delegate void showTextBoxMessageCallback(String text);

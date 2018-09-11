@@ -76,6 +76,8 @@
        17.  public HistoryData[] getHistoryData80(HistoryData[] historyData)
             getHistoryData80 由傳入的歷史資料陣列中取最後 80 筆資料傳回。
             如果不足 80 筆則全數傳回。
+       18.  findWaveDataList 
+            用來找尋波段上漲或下跌的幅度。
         
   注意事項：
     2017/03/28 此類別中的方法，一開始設計時，要傳入 id, name, category
@@ -147,6 +149,9 @@ namespace stock
      */
     class WaveData
     {
+        public Boolean type;                // 上漲或下跌，true 表示上漲，false 表示下跌
+        public Double diffPercent;          // 上漲或下跌的百分比，百分比是和波段的起始價格比較
+        public Int32 diffDays;              // 波段的總日數
     }
     class Company
     {
@@ -2319,6 +2324,41 @@ namespace stock
             {
                 passCheckDatabase = false;
             }
+        }
+        /*
+         * 函式 findWaveDataList 用來找尋波段上漲或下跌的幅度。
+         */
+        public List<WaveData> findWaveDataList()
+        {
+            List<WaveData> waveDataList = new List<WaveData>();
+            for (var i = 0; i < (this.lipHipDataList.Count()-1); i++)
+            {
+                /* 
+                 * lipHipDataList.Count()-1 是因為最後一個波段是到當日為止，
+                 * 還不能算是一個完整的波段，不能用來計算波段漲幅。
+                 */
+                var oneLipHipData = this.lipHipDataList[i];
+                var nextLipHipData = this.lipHipDataList[i + 1];
+                Double valueDiff = Math.Abs( oneLipHipData.value - nextLipHipData.value);
+                Double daysDiff = Math.Abs((nextLipHipData.date - oneLipHipData.date).TotalDays);
+                Int32 daysOffInteger = Convert.ToInt32(daysDiff);
+                WaveData waveData = new WaveData();
+                waveData.diffDays = daysOffInteger;
+                waveData.diffPercent = valueDiff * 100.0 / oneLipHipData.value;
+                if (oneLipHipData.type)
+                {
+                    /* 高點 */
+                    waveData.type = false;      // 下跌
+                }
+                else
+                {   
+                    /* 低點 */
+                    waveData.type = true;       // 上漲
+                }
+                waveDataList.Add(waveData);
+            }
+            this.waveDataList = waveDataList;
+            return this.waveDataList;
         }
     }
 }
