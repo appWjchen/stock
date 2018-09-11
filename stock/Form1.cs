@@ -513,35 +513,65 @@ namespace stock
         }
         private void button10_Click(object sender, EventArgs e)
         {
+            disableAllButtons();
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+            lipAnalysis.findAllLipHipDataList();
+            enableAllButtons();
+            /*
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
-            /* 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 */
+            // 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 
             List<LipHipData> lipHipDataList = 
                 lipAnalysis.findLipHipData(monthHistoryDataArray, 48);
-            String msgText = "";
+            String msgText = "大盤極值搜尋:\r\n";
             for (var i = 0; i < lipHipDataList.Count(); i++)
             {
                 LipHipData oneLipHitData=lipHipDataList[i];
                 if (oneLipHitData.type)
                 {
-                    /* 波段高點 */
-                    msgText = msgText + "波段高點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date +
+                    // 波段高點 
+                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
                         " ,高點 = " + oneLipHitData.value +
                         "\r\n";
                 }
                 else
                 {
-                    /* 波段低點 */
-                    msgText = msgText + "波段低點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date +
+                    // 波段低點 
+                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                        " ,低點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+            }
+            monthHistoryDataArray = stockDatabase.getCompany("2317").getHistoryDataArray("m");
+            lipHipDataList =
+                lipAnalysis.findLipHipData(monthHistoryDataArray, 36);
+            msgText = msgText + "鴻海(2317)極值搜尋:\r\n";
+            for (var i = 0; i < lipHipDataList.Count(); i++)
+            {
+                LipHipData oneLipHitData = lipHipDataList[i];
+                if (oneLipHitData.type)
+                {
+                    // 波段高點 
+                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                        " ,高點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+                else
+                {
+                    // 波段低點 
+                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
                         " ,低點 = " + oneLipHitData.value +
                         "\r\n";
                 }
             }
             new MessageWriter().showMessage(msgText);
+            */
         }
-        /* // 列出10 天內連續二次攻擊的股票
+        /* 
+        // 列出10 天內連續二次攻擊的股票
         private void button10_Click(object sender, EventArgs e)
         {
             disableAllButtons();

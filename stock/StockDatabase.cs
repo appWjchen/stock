@@ -144,6 +144,9 @@ namespace stock
         public String stockDatabaseString;
         public List<int> scoreIndexList;
         public Trace stockTrace;
+        public List<LipHipData> lipHipDataList;
+        public List<WaveData> waveDataList;
+
         /*
          * StockDatabase 建構式
          */

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace stock
 {
+    /* 
+     * 資料結構 LipHipData 是用來記錄歷史資料的極值(最高、最低)的結構， 
+     */
     class LipHipData
     {
         public Boolean type;        // Lip, Hip 資料的型態，true 表示 Hip，false 表示 Lip
@@ -22,6 +25,10 @@ namespace stock
      * 若此方法可行則把找到的股票加入追踪系統。
      * 預期此方法應該適用長線的股價波動，應該很準，所以主要是以月線資料為分析以據，
      * 完成整個分析方法後，試試看對短線(日線)的分析結果為何。
+     * 主要函式列表：
+     *      1. findLipHipData ：
+     *          用來找尋 historyDataArray 的最高點及最低點的列表
+     *      2. 
      */
     class LipAnalysis
     {
@@ -207,6 +214,7 @@ namespace stock
                             prevHipData.type = true;
                             prevHipData.index = prevLipData.index;
                             index = prevLipData.index;
+                            index--;
                             continue;
                         }
                         if (currentLow < prevLipData.value)
@@ -237,6 +245,7 @@ namespace stock
                             prevLipData.type = false;
                             prevLipData.index = prevHipData.index;
                             index = prevHipData.index;
+                            index--;
                             continue;
                         }
                         if (currentHigh > prevHipData.value)
@@ -291,6 +300,35 @@ namespace stock
                 }
                 );
             return lipHipDataList;
+        }
+        /*
+         * 函式 findAllLipHipDataList 用來計算大盤及所有
+         */
+        public void findAllLipHipDataList()
+        {
+            stockDatabase.companies[77].lipHipDataList = findLipHipData(
+                stockDatabase.companies[77].getRealHistoryDataArray("m"),
+                36
+                );
+
+            /* 大盤波段用 48 個月做波段搜尋最大期限 */
+            stockDatabase.lipHipDataList = findLipHipData(
+                stockDatabase.getMonthHistoryData(), 
+                48
+                );
+            for (var i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                new WarningWriter().showMessage("正在搜尋" + company.name + "(" + company.id + ")的波段極值，index=" + i);
+                new AppDoEvents().DoEvents();
+                /* 各股波段用 36 個月做波段搜尋最大期限 */
+                company.lipHipDataList = findLipHipData(
+                    company.getRealHistoryDataArray("m"),
+                    36
+                    );
+            }
+            new WarningWriter().showMessage("搜尋所有公司波段極值完畢");
+            new AppDoEvents().DoEvents();
         }
     }
 }

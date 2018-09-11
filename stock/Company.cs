@@ -142,6 +142,12 @@ namespace stock
         public Double y4EPS;
         public Double bookValuePerShare;
     }
+    /*
+     * 資料結構 WaveData 是用來記錄波段上漲及下跌幅度的
+     */
+    class WaveData
+    {
+    }
     class Company
     {
         public String id;
@@ -174,6 +180,8 @@ namespace stock
         public Boolean matchF;
         public Boolean matchG;
         public Boolean passCheckDatabase;
+        public List<LipHipData> lipHipDataList;
+        public List<WaveData> waveDataList;
 
         /*
          * Company 建構式
