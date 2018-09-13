@@ -229,6 +229,7 @@ namespace stock
 #endif
             InitializeComponent();
             _desiredLocation = new Point(20, 20);
+            listView1.FullRowSelect = true;
             if (!isDebug)
             {
                 button7.Hide();
@@ -557,6 +558,71 @@ namespace stock
                         " ,時間 = " + oneWavedata.diffDays + " 天" +
                         "\r\n";
                 }
+            }
+            msgText = msgText + "大盤波幅統計:\r\n";
+            if (stockDatabase.waveStatisticInformationList.totalUpCount > 0)
+            {
+                msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.waveStatisticInformationList.maxUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.waveStatisticInformationList.minUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.waveStatisticInformationList.averageUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.waveStatisticInformationList.maxUpDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.waveStatisticInformationList.minUpDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.waveStatisticInformationList.averageUpDiffDate.ToString("f0") + "天\r\n";
+            }
+            if (stockDatabase.waveStatisticInformationList.totalDownCount > 0)
+            {
+                msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.waveStatisticInformationList.maxDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.waveStatisticInformationList.minDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.waveStatisticInformationList.averageDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.waveStatisticInformationList.maxDownDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.waveStatisticInformationList.minDownDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.waveStatisticInformationList.averageDownDiffDate.ToString("f0") + "天\r\n";
+            }
+            msgText = msgText + "鴻海漲幅搜尋:\r\n";
+            for (var i = 0; i < stockDatabase.getCompany("2317").waveDataList.Count(); i++)
+            {
+                WaveData oneWavedata = stockDatabase.getCompany("2317").waveDataList[i];
+                if (oneWavedata.type)
+                {
+                    // 波段上漲
+                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+                else
+                {
+                    // 波段下跌
+                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+            }
+            msgText = msgText + "個股波幅統計:\r\n";
+            if (stockDatabase.getCompany("2317").waveStatisticInformationList.totalUpCount > 0)
+            {
+                msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.maxUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.minUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.averageUpDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.maxUpDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.minUpDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.averageUpDiffDate.ToString("f0") + "天\r\n";
+            }
+            if (stockDatabase.getCompany("2317").waveStatisticInformationList.totalDownCount > 0)
+            {
+                msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.maxDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.minDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.getCompany("2317").waveStatisticInformationList.averageDownDiffPercent.ToString("f2") + "%\r\n";
+                msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.maxDownDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.minDownDiffDate.ToString("f0") + "天\r\n";
+                msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.getCompany("2317").waveStatisticInformationList.averageDownDiffDate.ToString("f0") + "天\r\n";
             }
             new MessageWriter().showMessage(msgText);
             enableAllButtons();
