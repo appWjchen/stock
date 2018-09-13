@@ -146,7 +146,7 @@ namespace stock
         public Trace stockTrace;
         public List<LipHipData> lipHipDataList;
         public List<WaveData> waveDataList;
-        public List<WaveStatisticInformation> waveStatisticInformationList;
+        public WaveStatisticInformation waveStatisticInformationList;
 
         /*
          * StockDatabase 建構式

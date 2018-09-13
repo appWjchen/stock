@@ -8,7 +8,7 @@ namespace stock
     /* 
      * 資料結構 LipHipData 是用來記錄歷史資料的極值(最高、最低)的結構， 
      */
-    public class LipHipData
+    class LipHipData
     {
         public Boolean type;        // Lip, Hip 資料的型態，true 表示 Hip，false 表示 Lip
         public DateTime date;       // 最高或最低點的日期
@@ -18,7 +18,7 @@ namespace stock
     /*
      * 資料結構 WaveData 是用來記錄波段上漲及下跌幅度的
      */
-    public class WaveData
+    class WaveData
     {
         public Boolean type;                // 上漲或下跌，true 表示上漲，false 表示下跌
         public Double diffPercent;          // 上漲或下跌的百分比，百分比是和波段的起始價格比較
@@ -31,16 +31,26 @@ namespace stock
     /*
      * 資料結構 WaveStatisticInformation 用來表示波段漲跌幅度統計資訊用。
      */
-    public class WaveStatisticInformation
+    class WaveStatisticInformation
     {
-        Double maxUpDiffPercent;
-        Double minUpDiffPercent;
-        Int32 maxUpDiffDate;
-        Int32 minUpDiffDate;
-        Double totalUpDiffPercent;
-        Double averageUpDiffPercent;
-        Int32 totalUpDiffDate;
-        Int32 averageUpDiffDate;
+        public Double maxUpDiffPercent;
+        public Double minUpDiffPercent;
+        public Int32 maxUpDiffDate;
+        public Int32 minUpDiffDate;
+        public Double totalUpDiffPercent;
+        public Double averageUpDiffPercent;
+        public Int32 totalUpDiffDate;
+        public Double averageUpDiffDate;
+        public Int32 totalUpCount;
+        public Double maxDownDiffPercent;
+        public Double minDownDiffPercent;
+        public Int32 maxDownDiffDate;
+        public Int32 minDownDiffDate;
+        public Double totalDownDiffPercent;
+        public Double averageDownDiffPercent;
+        public Int32 totalDownDiffDate;
+        public Double averageDownDiffDate;
+        public Int32 totalDownCount;
     }
     /*
      * LipAnalysis 類別用來做絕對低點(Absolute Lowest Index Point)分析用，
@@ -418,14 +428,97 @@ namespace stock
         /*
          *
          */
-        public List<WaveStatisticInformation> findWaveStatisticInformation(List<WaveData> waveDataList)
+        public WaveStatisticInformation findWaveStatisticInformation(List<WaveData> waveDataList)
         {
-            List<WaveStatisticInformation> waveStatisticInformationList = new List<WaveStatisticInformation>();
+            WaveStatisticInformation waveStatisticInformation = new WaveStatisticInformation();
+            /* 初始化波段統計資料 */
+            waveStatisticInformation.maxUpDiffDate = 0;
+            waveStatisticInformation.minUpDiffDate = Int32.MaxValue;
+            waveStatisticInformation.maxUpDiffPercent = 0;
+            waveStatisticInformation.minUpDiffPercent = Double.MaxValue;
+            waveStatisticInformation.totalUpDiffDate = 0;
+            waveStatisticInformation.totalUpDiffPercent = 0;
+            waveStatisticInformation.totalUpCount = 0;
+            waveStatisticInformation.maxDownDiffDate = 0;
+            waveStatisticInformation.minDownDiffDate = Int32.MaxValue;
+            waveStatisticInformation.maxDownDiffPercent = 0;
+            waveStatisticInformation.minDownDiffPercent = Double.MaxValue;
+            waveStatisticInformation.totalDownDiffDate = 0;
+            waveStatisticInformation.totalDownDiffPercent = 0;
+            waveStatisticInformation.totalDownCount = 0;
 
-            return waveStatisticInformationList;
+            for (var i = 0; i < waveDataList.Count(); i++)
+            {
+                var oneWaveData = waveDataList[i];
+                if (oneWaveData.type)
+                {
+                    /* 上漲 */
+                    waveStatisticInformation.totalUpCount++;
+                    if (oneWaveData.diffDays > waveStatisticInformation.maxUpDiffDate)
+                    {
+                        waveStatisticInformation.maxUpDiffDate = oneWaveData.diffDays;
+                    }
+                    if (oneWaveData.diffDays < waveStatisticInformation.minUpDiffDate)
+                    {
+                        waveStatisticInformation.minUpDiffDate = oneWaveData.diffDays;
+                    }
+                    if (oneWaveData.diffPercent > waveStatisticInformation.maxUpDiffPercent)
+                    {
+                        waveStatisticInformation.maxUpDiffPercent = oneWaveData.diffPercent;
+                    }
+                    if (oneWaveData.diffPercent < waveStatisticInformation.minUpDiffPercent)
+                    {
+                        waveStatisticInformation.minUpDiffPercent = oneWaveData.diffPercent;
+                    }
+                    waveStatisticInformation.totalUpDiffDate = waveStatisticInformation.totalUpDiffDate +
+                        oneWaveData.diffDays;
+                    waveStatisticInformation.totalUpDiffPercent = waveStatisticInformation.totalUpDiffPercent +
+                        oneWaveData.diffPercent;
+                }
+                else
+                {
+                    /* 下跌 */
+                    waveStatisticInformation.totalDownCount++;
+                    if (oneWaveData.diffDays > waveStatisticInformation.maxDownDiffDate)
+                    {
+                        waveStatisticInformation.maxDownDiffDate = oneWaveData.diffDays;
+                    }
+                    if (oneWaveData.diffDays < waveStatisticInformation.minDownDiffDate)
+                    {
+                        waveStatisticInformation.minDownDiffDate = oneWaveData.diffDays;
+                    }
+                    if (oneWaveData.diffPercent > waveStatisticInformation.maxDownDiffPercent)
+                    {
+                        waveStatisticInformation.maxDownDiffPercent = oneWaveData.diffPercent;
+                    }
+                    if (oneWaveData.diffPercent < waveStatisticInformation.minDownDiffPercent)
+                    {
+                        waveStatisticInformation.minDownDiffPercent = oneWaveData.diffPercent;
+                    }
+                    waveStatisticInformation.totalDownDiffDate = waveStatisticInformation.totalDownDiffDate +
+                        oneWaveData.diffDays;
+                    waveStatisticInformation.totalDownDiffPercent = waveStatisticInformation.totalDownDiffPercent +
+                        oneWaveData.diffPercent;
+                }
+            }
+            if (waveStatisticInformation.totalUpCount != 0)
+            {
+                waveStatisticInformation.averageUpDiffDate = 
+                    waveStatisticInformation.totalUpDiffDate / waveStatisticInformation.totalUpCount;
+                waveStatisticInformation.averageUpDiffPercent =
+                    waveStatisticInformation.totalUpDiffPercent / waveStatisticInformation.totalUpCount;
+            }
+            if (waveStatisticInformation.totalDownCount != 0)
+            {
+                waveStatisticInformation.averageDownDiffDate =
+                    waveStatisticInformation.totalDownDiffDate / waveStatisticInformation.totalDownCount;
+                waveStatisticInformation.averageDownDiffPercent =
+                    waveStatisticInformation.totalDownDiffPercent / waveStatisticInformation.totalDownCount;
+            }
+            return waveStatisticInformation;
         }
         /*
-         *
+         * 函式 findAllWaveStatisticInformation 用來計算大盤及各股票的漲跌幅統計資料。
          */
         public void findAllWaveStatisticInformation()
         {

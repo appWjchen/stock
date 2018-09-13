@@ -530,6 +530,7 @@ namespace stock
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();
             lipAnalysis.findAllWaveDataList();
+            lipAnalysis.findAllWaveStatisticInformation();
             String msgText = "大盤漲幅搜尋:\r\n";
             for (var i = 0; i < stockDatabase.waveDataList.Count(); i++)
             {

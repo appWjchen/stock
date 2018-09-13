@@ -178,7 +178,7 @@ namespace stock
         public Boolean passCheckDatabase;
         public List<LipHipData> lipHipDataList;
         public List<WaveData> waveDataList;
-        public List<WaveStatisticInformation> waveStatisticInformationList;
+        public WaveStatisticInformation waveStatisticInformationList;
 
         /*
          * Company 建構式
