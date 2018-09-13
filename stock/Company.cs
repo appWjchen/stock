@@ -152,6 +152,10 @@ namespace stock
         public Boolean type;                // 上漲或下跌，true 表示上漲，false 表示下跌
         public Double diffPercent;          // 上漲或下跌的百分比，百分比是和波段的起始價格比較
         public Int32 diffDays;              // 波段的總日數
+        public DateTime startDate;
+        public DateTime endDate;
+        public Double startPrice;
+        public Double endPrice;
     }
     class Company
     {
@@ -215,6 +219,8 @@ namespace stock
             candidateMatchCount = 0;
             candidateMatchString = "";
             passCheckDatabase = true;
+            lipHipDataList = null;
+            waveDataList = null;
         }
         CreateHistoryDatabaseCallback createHistoryDatabaseCallback;
         /*
@@ -2328,7 +2334,7 @@ namespace stock
         /*
          * 函式 findWaveDataList 用來找尋波段上漲或下跌的幅度。
          */
-        public List<WaveData> findWaveDataList()
+        public void findWaveDataList()
         {
             List<WaveData> waveDataList = new List<WaveData>();
             for (var i = 0; i < (this.lipHipDataList.Count()-1); i++)
@@ -2345,6 +2351,10 @@ namespace stock
                 WaveData waveData = new WaveData();
                 waveData.diffDays = daysOffInteger;
                 waveData.diffPercent = valueDiff * 100.0 / oneLipHipData.value;
+                waveData.startDate = oneLipHipData.date;
+                waveData.endDate = nextLipHipData.date;
+                waveData.startPrice = oneLipHipData.value;
+                waveData.endPrice = nextLipHipData.value;
                 if (oneLipHipData.type)
                 {
                     /* 高點 */
@@ -2358,7 +2368,6 @@ namespace stock
                 waveDataList.Add(waveData);
             }
             this.waveDataList = waveDataList;
-            return this.waveDataList;
         }
     }
 }

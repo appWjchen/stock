@@ -529,6 +529,35 @@ namespace stock
             disableAllButtons();
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();
+            lipAnalysis.findAllWaveDataList();
+            String msgText = "大盤漲幅搜尋:\r\n";
+            for (var i = 0; i < stockDatabase.waveDataList.Count(); i++)
+            {
+                WaveData oneWavedata = stockDatabase.waveDataList[i];
+                if (oneWavedata.type)
+                {
+                    // 波段上漲
+                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+                else
+                {
+                    // 波段下跌
+                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+            }
+            new MessageWriter().showMessage(msgText);
             enableAllButtons();
             /*
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();

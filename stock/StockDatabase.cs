@@ -175,6 +175,8 @@ namespace stock
             dayRealHistoryData = null;
             weeRealkHistoryData = null;
             monthRealHistoryData = null;
+            lipHipDataList = null;
+            waveDataList = null;
         }
         /*
          * 函式 createAllCompaniesDirectiory 用來為各公司建立資料夾。
@@ -1134,6 +1136,44 @@ namespace stock
             information = returnText;
             timeInformation = DateTime.Now;
             return information;
+        }
+        /*
+         * 函式 findWaveDataList 用來找尋波段上漲或下跌的幅度。
+         */
+        public void findWaveDataList()
+        {
+            List<WaveData> waveDataList = new List<WaveData>();
+            for (var i = 0; i < (this.lipHipDataList.Count() - 1); i++)
+            {
+                /* 
+                 * lipHipDataList.Count()-1 是因為最後一個波段是到當日為止，
+                 * 還不能算是一個完整的波段，不能用來計算波段漲幅。
+                 */
+                var oneLipHipData = this.lipHipDataList[i];
+                var nextLipHipData = this.lipHipDataList[i + 1];
+                Double valueDiff = Math.Abs(oneLipHipData.value - nextLipHipData.value);
+                Double daysDiff = Math.Abs((nextLipHipData.date - oneLipHipData.date).TotalDays);
+                Int32 daysOffInteger = Convert.ToInt32(daysDiff);
+                WaveData waveData = new WaveData();
+                waveData.diffDays = daysOffInteger;
+                waveData.diffPercent = valueDiff * 100.0 / oneLipHipData.value;
+                waveData.startDate = oneLipHipData.date;
+                waveData.endDate = nextLipHipData.date;
+                waveData.startPrice = oneLipHipData.value;
+                waveData.endPrice = nextLipHipData.value;
+                if (oneLipHipData.type)
+                {
+                    /* 高點 */
+                    waveData.type = false;      // 下跌
+                }
+                else
+                {
+                    /* 低點 */
+                    waveData.type = true;       // 上漲
+                }
+                waveDataList.Add(waveData);
+            }
+            this.waveDataList = waveDataList;
         }
     }
 }

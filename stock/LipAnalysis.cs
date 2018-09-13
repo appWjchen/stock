@@ -333,10 +333,22 @@ namespace stock
             new AppDoEvents().DoEvents();
         }
         /*
-         * 
+         * 函式 findAllWaveDataList 用來找出大盤及所有股票的漲幅資訊。
          */
         public void findAllWaveDataList()
         {
+            if (stockDatabase.lipHipDataList == null)
+            {
+                findAllLipHipDataList();
+            }
+            stockDatabase.findWaveDataList();
+            for (var i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                new WarningWriter().showMessage("正在搜尋" + company.name + "(" + company.id + ")的波段漲幅，index=" + i);
+                new AppDoEvents().DoEvents();
+                company.findWaveDataList();
+            }
         }
     }
 }
