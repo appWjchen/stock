@@ -8,12 +8,39 @@ namespace stock
     /* 
      * 資料結構 LipHipData 是用來記錄歷史資料的極值(最高、最低)的結構， 
      */
-    class LipHipData
+    public class LipHipData
     {
         public Boolean type;        // Lip, Hip 資料的型態，true 表示 Hip，false 表示 Lip
         public DateTime date;       // 最高或最低點的日期
         public Double value;        // 最高或最低點的值
         public Int32 index;         // 最高或最低價發生時的 index
+    }
+    /*
+     * 資料結構 WaveData 是用來記錄波段上漲及下跌幅度的
+     */
+    public class WaveData
+    {
+        public Boolean type;                // 上漲或下跌，true 表示上漲，false 表示下跌
+        public Double diffPercent;          // 上漲或下跌的百分比，百分比是和波段的起始價格比較
+        public Int32 diffDays;              // 波段的總日數
+        public DateTime startDate;
+        public DateTime endDate;
+        public Double startPrice;
+        public Double endPrice;
+    }
+    /*
+     * 資料結構 WaveStatisticInformation 用來表示波段漲跌幅度統計資訊用。
+     */
+    public class WaveStatisticInformation
+    {
+        Double maxUpDiffPercent;
+        Double minUpDiffPercent;
+        Int32 maxUpDiffDate;
+        Int32 minUpDiffDate;
+        Double totalUpDiffPercent;
+        Double averageUpDiffPercent;
+        Int32 totalUpDiffDate;
+        Int32 averageUpDiffDate;
     }
     /*
      * LipAnalysis 類別用來做絕對低點(Absolute Lowest Index Point)分析用，
@@ -315,7 +342,7 @@ namespace stock
             */
             /* 大盤波段用 48 個月做波段搜尋最大期限 */
             stockDatabase.lipHipDataList = findLipHipData(
-                stockDatabase.getMonthHistoryData(), 
+                stockDatabase.getMonthHistoryData(),
                 48
                 );
             for (var i = 0; i < stockDatabase.companies.Length; i++)
@@ -333,6 +360,44 @@ namespace stock
             new AppDoEvents().DoEvents();
         }
         /*
+         * 函式 findWaveDataList 用來找尋波段上漲或下跌的幅度。
+         */
+        public List<WaveData> findWaveDataList(List<LipHipData> lipHipDataList)
+        {
+            List<WaveData> waveDataList = new List<WaveData>();
+            for (var i = 0; i < (lipHipDataList.Count() - 1); i++)
+            {
+                /* 
+                 * lipHipDataList.Count()-1 是因為最後一個波段是到當日為止，
+                 * 還不能算是一個完整的波段，不能用來計算波段漲幅。
+                 */
+                var oneLipHipData = lipHipDataList[i];
+                var nextLipHipData = lipHipDataList[i + 1];
+                Double valueDiff = Math.Abs(oneLipHipData.value - nextLipHipData.value);
+                Double daysDiff = Math.Abs((nextLipHipData.date - oneLipHipData.date).TotalDays);
+                Int32 daysOffInteger = Convert.ToInt32(daysDiff);
+                WaveData waveData = new WaveData();
+                waveData.diffDays = daysOffInteger;
+                waveData.diffPercent = valueDiff * 100.0 / oneLipHipData.value;
+                waveData.startDate = oneLipHipData.date;
+                waveData.endDate = nextLipHipData.date;
+                waveData.startPrice = oneLipHipData.value;
+                waveData.endPrice = nextLipHipData.value;
+                if (oneLipHipData.type)
+                {
+                    /* 高點 */
+                    waveData.type = false;      // 下跌
+                }
+                else
+                {
+                    /* 低點 */
+                    waveData.type = true;       // 上漲
+                }
+                waveDataList.Add(waveData);
+            }
+            return waveDataList;
+        }
+        /*
          * 函式 findAllWaveDataList 用來找出大盤及所有股票的漲幅資訊。
          */
         public void findAllWaveDataList()
@@ -341,13 +406,40 @@ namespace stock
             {
                 findAllLipHipDataList();
             }
-            stockDatabase.findWaveDataList();
+            stockDatabase.waveDataList = findWaveDataList(stockDatabase.lipHipDataList);
             for (var i = 0; i < stockDatabase.companies.Length; i++)
             {
                 Company company = stockDatabase.companies[i];
                 new WarningWriter().showMessage("正在搜尋" + company.name + "(" + company.id + ")的波段漲幅，index=" + i);
                 new AppDoEvents().DoEvents();
-                company.findWaveDataList();
+                company.waveDataList = findWaveDataList(company.lipHipDataList);
+            }
+        }
+        /*
+         *
+         */
+        public List<WaveStatisticInformation> findWaveStatisticInformation(List<WaveData> waveDataList)
+        {
+            List<WaveStatisticInformation> waveStatisticInformationList = new List<WaveStatisticInformation>();
+
+            return waveStatisticInformationList;
+        }
+        /*
+         *
+         */
+        public void findAllWaveStatisticInformation()
+        {
+            if (stockDatabase.waveDataList == null)
+            {
+                findAllWaveDataList();
+            }
+            stockDatabase.waveStatisticInformationList = findWaveStatisticInformation(stockDatabase.waveDataList);
+            for (var i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                new WarningWriter().showMessage("正在搜尋" + company.name + "(" + company.id + ")的波段漲幅統計資料，index=" + i);
+                new AppDoEvents().DoEvents();
+                company.waveStatisticInformationList = findWaveStatisticInformation(company.waveDataList);
             }
         }
     }

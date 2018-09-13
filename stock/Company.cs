@@ -144,19 +144,6 @@ namespace stock
         public Double y4EPS;
         public Double bookValuePerShare;
     }
-    /*
-     * 資料結構 WaveData 是用來記錄波段上漲及下跌幅度的
-     */
-    class WaveData
-    {
-        public Boolean type;                // 上漲或下跌，true 表示上漲，false 表示下跌
-        public Double diffPercent;          // 上漲或下跌的百分比，百分比是和波段的起始價格比較
-        public Int32 diffDays;              // 波段的總日數
-        public DateTime startDate;
-        public DateTime endDate;
-        public Double startPrice;
-        public Double endPrice;
-    }
     class Company
     {
         public String id;
@@ -191,6 +178,7 @@ namespace stock
         public Boolean passCheckDatabase;
         public List<LipHipData> lipHipDataList;
         public List<WaveData> waveDataList;
+        public List<WaveStatisticInformation> waveStatisticInformationList;
 
         /*
          * Company 建構式
@@ -221,6 +209,7 @@ namespace stock
             passCheckDatabase = true;
             lipHipDataList = null;
             waveDataList = null;
+            waveStatisticInformationList = null;
         }
         CreateHistoryDatabaseCallback createHistoryDatabaseCallback;
         /*
@@ -2330,44 +2319,6 @@ namespace stock
             {
                 passCheckDatabase = false;
             }
-        }
-        /*
-         * 函式 findWaveDataList 用來找尋波段上漲或下跌的幅度。
-         */
-        public void findWaveDataList()
-        {
-            List<WaveData> waveDataList = new List<WaveData>();
-            for (var i = 0; i < (this.lipHipDataList.Count()-1); i++)
-            {
-                /* 
-                 * lipHipDataList.Count()-1 是因為最後一個波段是到當日為止，
-                 * 還不能算是一個完整的波段，不能用來計算波段漲幅。
-                 */
-                var oneLipHipData = this.lipHipDataList[i];
-                var nextLipHipData = this.lipHipDataList[i + 1];
-                Double valueDiff = Math.Abs( oneLipHipData.value - nextLipHipData.value);
-                Double daysDiff = Math.Abs((nextLipHipData.date - oneLipHipData.date).TotalDays);
-                Int32 daysOffInteger = Convert.ToInt32(daysDiff);
-                WaveData waveData = new WaveData();
-                waveData.diffDays = daysOffInteger;
-                waveData.diffPercent = valueDiff * 100.0 / oneLipHipData.value;
-                waveData.startDate = oneLipHipData.date;
-                waveData.endDate = nextLipHipData.date;
-                waveData.startPrice = oneLipHipData.value;
-                waveData.endPrice = nextLipHipData.value;
-                if (oneLipHipData.type)
-                {
-                    /* 高點 */
-                    waveData.type = false;      // 下跌
-                }
-                else
-                {   
-                    /* 低點 */
-                    waveData.type = true;       // 上漲
-                }
-                waveDataList.Add(waveData);
-            }
-            this.waveDataList = waveDataList;
         }
     }
 }
