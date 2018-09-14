@@ -146,7 +146,8 @@ namespace stock
         public Trace stockTrace;
         public List<LipHipData> lipHipDataList;
         public List<WaveData> waveDataList;
-        public WaveStatisticInformation waveStatisticInformationList;
+        public WaveStatisticInformation waveStatisticInformation;
+        public WaveStatisticInformation waveStatisticInformationAllCompany;
 
         /*
          * StockDatabase 建構式
@@ -178,7 +179,8 @@ namespace stock
             monthRealHistoryData = null;
             lipHipDataList = null;
             waveDataList = null;
-            waveStatisticInformationList = null;
+            waveStatisticInformation = null;
+            waveStatisticInformationAllCompany = null;
         }
         /*
          * 函式 createAllCompaniesDirectiory 用來為各公司建立資料夾。

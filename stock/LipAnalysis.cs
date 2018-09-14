@@ -503,7 +503,7 @@ namespace stock
             }
             if (waveStatisticInformation.totalUpCount != 0)
             {
-                waveStatisticInformation.averageUpDiffDate = 
+                waveStatisticInformation.averageUpDiffDate =
                     waveStatisticInformation.totalUpDiffDate / waveStatisticInformation.totalUpCount;
                 waveStatisticInformation.averageUpDiffPercent =
                     waveStatisticInformation.totalUpDiffPercent / waveStatisticInformation.totalUpCount;
@@ -526,14 +526,135 @@ namespace stock
             {
                 findAllWaveDataList();
             }
-            stockDatabase.waveStatisticInformationList = findWaveStatisticInformation(stockDatabase.waveDataList);
+            /* 計算大盤的波段漲跌幅的統計資訊 */
+            stockDatabase.waveStatisticInformation = findWaveStatisticInformation(stockDatabase.waveDataList);
+            /* 計算各個股的波段漲跌幅的統計資訊 */
             for (var i = 0; i < stockDatabase.companies.Length; i++)
             {
                 Company company = stockDatabase.companies[i];
                 new WarningWriter().showMessage("正在搜尋" + company.name + "(" + company.id + ")的波段漲幅統計資料，index=" + i);
                 new AppDoEvents().DoEvents();
-                company.waveStatisticInformationList = findWaveStatisticInformation(company.waveDataList);
+                company.waveStatisticInformation = findWaveStatisticInformation(company.waveDataList);
             }
+            /* 將個股的波段漲跌幅的統計資訊再加以統計 */
+            stockDatabase.waveStatisticInformationAllCompany = new WaveStatisticInformation();
+            stockDatabase.waveStatisticInformationAllCompany.maxUpDiffDate = 0;
+            stockDatabase.waveStatisticInformationAllCompany.minUpDiffDate = Int32.MaxValue;
+            stockDatabase.waveStatisticInformationAllCompany.maxUpDiffPercent = 0;
+            stockDatabase.waveStatisticInformationAllCompany.minUpDiffPercent = Double.MaxValue;
+            stockDatabase.waveStatisticInformationAllCompany.totalUpDiffDate = 0;
+            stockDatabase.waveStatisticInformationAllCompany.totalUpDiffPercent = 0;
+            stockDatabase.waveStatisticInformationAllCompany.totalUpCount = 0;
+            stockDatabase.waveStatisticInformationAllCompany.maxDownDiffDate = 0;
+            stockDatabase.waveStatisticInformationAllCompany.minDownDiffDate = Int32.MaxValue;
+            stockDatabase.waveStatisticInformationAllCompany.maxDownDiffPercent = 0;
+            stockDatabase.waveStatisticInformationAllCompany.minDownDiffPercent = Double.MaxValue;
+            stockDatabase.waveStatisticInformationAllCompany.totalDownDiffDate = 0;
+            stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent = 0;
+            stockDatabase.waveStatisticInformationAllCompany.totalDownCount = 0;
+            /* ↓ 除錯用資訊 */
+            Company maxUpDiffDate = null;
+            Company minUpDiffDate = null;
+            Company maxDownDiffDate = null;
+            Company minDownDiffDate = null;
+            Company maxUpDiffPercent = null;
+            Company minUpDiffPercent = null;
+            Company maxDownDiffPercent = null;
+            Company minDownDiffPercent = null;
+            /* ↑ 除錯用資訊 */
+            for (var i = 0; i < stockDatabase.companies.Length; i++)
+            {
+                Company company = stockDatabase.companies[i];
+                if (company.waveStatisticInformation.totalUpCount > 0)
+                {
+                    if (company.waveStatisticInformation.maxUpDiffDate > stockDatabase.waveStatisticInformationAllCompany.maxUpDiffDate)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.maxUpDiffDate = company.waveStatisticInformation.maxUpDiffDate;
+                        maxUpDiffDate = company;
+                    }
+                    if (company.waveStatisticInformation.minUpDiffDate < stockDatabase.waveStatisticInformationAllCompany.minUpDiffDate)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.minUpDiffDate = company.waveStatisticInformation.minUpDiffDate;
+                        minUpDiffDate = company;
+                    }
+                    if (company.waveStatisticInformation.maxUpDiffPercent > stockDatabase.waveStatisticInformationAllCompany.maxUpDiffPercent)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.maxUpDiffPercent = company.waveStatisticInformation.maxUpDiffPercent;
+                        maxUpDiffPercent = company;
+                    }
+                    if (company.waveStatisticInformation.minUpDiffPercent < stockDatabase.waveStatisticInformationAllCompany.minUpDiffPercent)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.minUpDiffPercent = company.waveStatisticInformation.minUpDiffPercent;
+                        minUpDiffPercent = company;
+                    }
+                    stockDatabase.waveStatisticInformationAllCompany.totalUpDiffDate =
+                        stockDatabase.waveStatisticInformationAllCompany.totalUpDiffDate +
+                        company.waveStatisticInformation.totalUpDiffDate;
+                    stockDatabase.waveStatisticInformationAllCompany.totalUpDiffPercent =
+                        stockDatabase.waveStatisticInformationAllCompany.totalUpDiffPercent +
+                        company.waveStatisticInformation.totalUpDiffPercent;
+                    stockDatabase.waveStatisticInformationAllCompany.totalUpCount =
+                        stockDatabase.waveStatisticInformationAllCompany.totalUpCount +
+                        company.waveStatisticInformation.totalUpCount;
+
+                }
+                if (company.waveStatisticInformation.totalDownCount > 0)
+                {
+                    if (company.waveStatisticInformation.maxDownDiffDate > stockDatabase.waveStatisticInformationAllCompany.maxDownDiffDate)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.maxDownDiffDate = company.waveStatisticInformation.maxDownDiffDate;
+                        maxDownDiffDate = company;
+                    }
+                    if (company.waveStatisticInformation.minDownDiffDate < stockDatabase.waveStatisticInformationAllCompany.minDownDiffDate)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.minDownDiffDate = company.waveStatisticInformation.minDownDiffDate;
+                        minDownDiffDate = company;
+                    }
+                    if (company.waveStatisticInformation.maxDownDiffPercent > stockDatabase.waveStatisticInformationAllCompany.maxDownDiffPercent)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.maxDownDiffPercent = company.waveStatisticInformation.maxDownDiffPercent;
+                        maxDownDiffPercent = company;
+                    }
+                    if (company.waveStatisticInformation.minDownDiffPercent < stockDatabase.waveStatisticInformationAllCompany.minDownDiffPercent)
+                    {
+                        stockDatabase.waveStatisticInformationAllCompany.minDownDiffPercent = company.waveStatisticInformation.minDownDiffPercent;
+                        minDownDiffPercent = company;
+                    }
+                    stockDatabase.waveStatisticInformationAllCompany.totalDownDiffDate =
+                        stockDatabase.waveStatisticInformationAllCompany.totalDownDiffDate +
+                        company.waveStatisticInformation.totalDownDiffDate;
+                    stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent =
+                        stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent +
+                        company.waveStatisticInformation.totalDownDiffPercent;
+                    stockDatabase.waveStatisticInformationAllCompany.totalDownCount =
+                        stockDatabase.waveStatisticInformationAllCompany.totalDownCount +
+                        company.waveStatisticInformation.totalDownCount;
+                }
+            }
+            stockDatabase.waveStatisticInformationAllCompany.averageUpDiffDate =
+                stockDatabase.waveStatisticInformationAllCompany.totalUpDiffDate /
+                stockDatabase.waveStatisticInformationAllCompany.totalUpCount;
+            stockDatabase.waveStatisticInformationAllCompany.averageUpDiffPercent =
+                stockDatabase.waveStatisticInformationAllCompany.totalUpDiffPercent /
+                stockDatabase.waveStatisticInformationAllCompany.totalUpCount;
+            stockDatabase.waveStatisticInformationAllCompany.averageDownDiffDate =
+                stockDatabase.waveStatisticInformationAllCompany.totalDownDiffDate /
+                stockDatabase.waveStatisticInformationAllCompany.totalDownCount;
+            stockDatabase.waveStatisticInformationAllCompany.averageDownDiffPercent =
+                stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent /
+                stockDatabase.waveStatisticInformationAllCompany.totalDownCount;
+            /* ↓ 除錯用資訊 */
+            String msg = "";
+            msg = msg + "最長上漲時間公司是：" + maxUpDiffDate.name + "(" + maxUpDiffDate.id + ")\r\n";
+            msg = msg + "最短上漲時間公司是：" + minUpDiffDate.name + "(" + minUpDiffDate.id + ")\r\n";
+            msg = msg + "最大上漲幅度公司是：" + maxUpDiffPercent.name + "(" + maxUpDiffPercent.id + ")\r\n";
+            msg = msg + "最小上漲幅度公司是：" + minUpDiffPercent.name + "(" + minUpDiffPercent.id + ")\r\n";
+            msg = msg + "最長下跌時間公司是：" + maxDownDiffDate.name + "(" + maxDownDiffDate.id + ")\r\n";
+            msg = msg + "最短下跌時間公司是：" + minDownDiffDate.name + "(" + minDownDiffDate.id + ")\r\n";
+            msg = msg + "最大下跌幅度公司是：" + maxDownDiffPercent.name + "(" + maxDownDiffPercent.id + ")\r\n";
+            msg = msg + "最小下跌幅度公司是：" + minDownDiffPercent.name + "(" + minDownDiffPercent.id + ")\r\n";
+            new WarningWriter().showMessage(msg);
+            /* ↑ 除錯用資訊 */
         }
     }
 }

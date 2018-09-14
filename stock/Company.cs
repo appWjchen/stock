@@ -178,7 +178,7 @@ namespace stock
         public Boolean passCheckDatabase;
         public List<LipHipData> lipHipDataList;
         public List<WaveData> waveDataList;
-        public WaveStatisticInformation waveStatisticInformationList;
+        public WaveStatisticInformation waveStatisticInformation;
 
         /*
          * Company 建構式
@@ -209,7 +209,7 @@ namespace stock
             passCheckDatabase = true;
             lipHipDataList = null;
             waveDataList = null;
-            waveStatisticInformationList = null;
+            waveStatisticInformation = null;
         }
         CreateHistoryDatabaseCallback createHistoryDatabaseCallback;
         /*
