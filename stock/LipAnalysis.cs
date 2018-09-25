@@ -105,7 +105,7 @@ namespace stock
             for (var i = 0; i < lipHipDataList.Count(); i++)
             {
                 LipHipData oneLipHipData = lipHipDataList[i];
-                if ((oneLipHipData.index == lipHipData.index) && (oneLipHipData.type == lipHipData.type))
+                if ((oneLipHipData.index == lipHipData.index) /*&& (oneLipHipData.type == lipHipData.type)*/)
                 {
                     inList = true;
                     break;
@@ -114,11 +114,77 @@ namespace stock
             return inList;
         }
         /*
+         * 函式 findLipHipDataStage1 是函式 findLipHipData 的第一階段，此階段將
+         * historyDataArray 計算出 N 天平均值。
+         * 傳回值型態也是 HistoryData 的陣列，元素的 c 成員是N天平均值。
+         */
+        public HistoryData[] findLipHipDataStage1(HistoryData[] historyDataArray, int N)
+        {
+            /* 拷貝一份 historayDataArray */
+            HistoryData[] historyDataArrayTemp=new HistoryData[historyDataArray.Length];
+            for (var i = 0; i < historyDataArray.Length; i++)
+            {
+                historyDataArrayTemp[i] = new HistoryData();
+                historyDataArrayTemp[i].c = historyDataArray[i].c;
+                historyDataArrayTemp[i].d = historyDataArray[i].d;
+                historyDataArrayTemp[i].f = historyDataArray[i].f;
+                historyDataArrayTemp[i].h = historyDataArray[i].h;
+                historyDataArrayTemp[i].i = historyDataArray[i].i;
+                historyDataArrayTemp[i].l = historyDataArray[i].l;
+                historyDataArrayTemp[i].m = historyDataArray[i].m;
+                historyDataArrayTemp[i].n = historyDataArray[i].n;
+                historyDataArrayTemp[i].o = historyDataArray[i].o;
+                historyDataArrayTemp[i].p = historyDataArray[i].p;
+                historyDataArrayTemp[i].r = historyDataArray[i].r;
+                historyDataArrayTemp[i].s = historyDataArray[i].s;
+                historyDataArrayTemp[i].t = historyDataArray[i].t;
+                historyDataArrayTemp[i].u = historyDataArray[i].u;
+                historyDataArrayTemp[i].v = historyDataArray[i].v;
+            }
+            List<HistoryData> historyDataList = new List<HistoryData>();
+            for (var i = 0; i < historyDataArrayTemp.Length; i++)
+            {
+                if (i < (N - 1))
+                {
+                    historyDataList.Add(historyDataArray[i]);
+                }
+                else
+                {
+                    Double sum = 0;
+                    for (var k = (i - N + 1); k <= i; k++)
+                    {
+                        sum = sum + historyDataArray[k].c;
+                    }
+                    Double average = sum / N;
+                    historyDataArrayTemp[i].c = average;
+                    historyDataList.Add(historyDataArrayTemp[i]);
+                }
+            }
+            return historyDataList.ToArray();
+        }
+        /*
          *  函式 findLipHipData 用來找尋 historyDataArray 的最高點及最低點的列表，
          *  傳入 historyDataArray 為歷史資料陣列，尋回一個包含最高點及最低點資料
          *  的列表，型態是 List<LipHipData>
+         *  此函式是第2次嘗試的方法，主要是先找月線的5日平均線之轉折點，找到後往前
+         *  5筆資料找出 HIP 或 LIP ，以便得到波段資料。
          */
         public List<LipHipData> findLipHipData(HistoryData[] historyDataArray, int indexDiff)
+        {
+            lipHipDataList = new List<LipHipData>();
+            /* 計算 5 天平均值 */
+            HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, 5);
+
+            return lipHipDataList;
+        }
+        /*
+         *  函式 findLipHipData_0 用來找尋 historyDataArray 的最高點及最低點的列表，
+         *  傳入 historyDataArray 為歷史資料陣列，尋回一個包含最高點及最低點資料
+         *  的列表，型態是 List<LipHipData>
+         *  此函式是第一次嘗試找尋極值的方法，經過實際資料的分析後，發現有些特別情形
+         *  會找到不太正確的波段資料，因此放棄使用，重新再試另一種找尋波段的方法。
+         */
+        public List<LipHipData> findLipHipData_0(HistoryData[] historyDataArray, int indexDiff)
         {
             lipHipDataList = new List<LipHipData>();
             LipHipData prevLipData = null;
@@ -298,7 +364,7 @@ namespace stock
                 index--;
             }
 
-
+            
             if ((type == 1) && (!isDataInLipHipList(prevLipData)))
             {
                 LipHipData lipData = new LipHipData();
@@ -307,8 +373,7 @@ namespace stock
                 lipData.type = prevLipData.type;
                 lipData.index = prevLipData.index;
                 lipHipDataList.Add(lipData);
-            }
-            if ((type == -1) && (!isDataInLipHipList(prevHipData)))
+            } else if ((type == -1) && (!isDataInLipHipList(prevHipData)))
             {
                 LipHipData hipData = new LipHipData();
                 hipData.date = prevHipData.date;
@@ -317,7 +382,7 @@ namespace stock
                 hipData.index = prevHipData.index;
                 lipHipDataList.Add(hipData);
             }
-
+            
 
             lipHipDataList.Sort(
                 delegate(LipHipData x, LipHipData y)

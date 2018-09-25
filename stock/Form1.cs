@@ -466,14 +466,20 @@ namespace stock
                 printText = printText + stockDatabase.companies[i].name + "\r\n";
             }
              * */
+            Company company = stockDatabase.getCompany("9934");
+            company.createInfomationDatabase(
+                () =>
+                {
+                    CompanyInformation[] companyInformationArray = company.getMarginInformation();
+                    CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
+                    printText = printText + company.name + "\r\n" +
+                        company.id + "\r\n" +
+                        companyInformation.bookValuePerShare;
+                    new MessageWriter().showMessage(printText);
+                }
+                );
+
             /*
-            CompanyInformation[] companyInformationArray = stockDatabase.companies[0].getMarginInformation();
-            CompanyInformation companyInformation = companyInformationArray[companyInformationArray.Length - 1];
-            printText = printText + stockDatabase.companies[0].name + "\r\n" +
-                stockDatabase.companies[0].id + "\r\n" +
-                companyInformation.bookValuePerShare;
-             * */
-           
             EarningInformation[] earningInformation = stockDatabase.companies[0].getEarning();
             if (earningInformation.Length > 0)
             {
@@ -493,7 +499,7 @@ namespace stock
                 }
                 new MessageWriter().showMessage(printText);
             }
-            
+            */
         }
         // analysis analysisObj = null;
         private void button8_Click(object sender, EventArgs e)
@@ -528,6 +534,37 @@ namespace stock
         private void button10_Click(object sender, EventArgs e)
         {
             disableAllButtons();
+            /*
+            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+            Company company = stockDatabase.getCompany("2208");
+            company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
+            var lipHipDataList = company.lipHipDataList;
+            var msgText = "";
+            msgText = msgText + company.name + "(" + company.id + ")極值搜尋:\r\n";
+            for (var i = 0; i < lipHipDataList.Count(); i++)
+            {
+                LipHipData oneLipHitData = lipHipDataList[i];
+                if (oneLipHitData.type)
+                {
+                    // 波段高點 
+                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                        " ,高點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+                else
+                {
+                    // 波段低點 
+                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
+                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                        " ,低點 = " + oneLipHitData.value +
+                        "\r\n";
+                }
+            }
+            new MessageWriter().showMessage(msgText);
+            company.waveDataList = lipAnalysis.findWaveDataList(company.lipHipDataList);
+            */
+            
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();
             lipAnalysis.findAllWaveDataList();
@@ -646,6 +683,7 @@ namespace stock
             }
             new MessageWriter().showMessage(msgText);
             enableAllButtons();
+            
             /*
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
             // 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 

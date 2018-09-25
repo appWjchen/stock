@@ -1146,15 +1146,15 @@ namespace stock
                         companyInformation = tdStringsToInformation(tdStrings);
                         saveCompanyInformation(companyInformation);
                     }
-                    /*
+                    
                     String printString = "";
                     for (int i = 0; i < tdStrings.Length; i++)
                     {
                         printString = printString + i.ToString() + "\t" + tdStrings[i] + "\r\n";
                     }
-                    String printString = companyInformation.y1Name;
+                    // String printString = companyInformation.y1Name;
                     new MessageWriter().showMessage(printString);
-                    */
+                    
                     createInformationDatabaseCallback();
                 }
             );
