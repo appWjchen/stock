@@ -534,6 +534,11 @@ namespace stock
         private void button10_Click(object sender, EventArgs e)
         {
             disableAllButtons();
+            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+            stockDatabase.lipHipDataList = lipAnalysis.findLipHipData(
+                stockDatabase.getMonthHistoryData(),
+                48
+                );
             /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             Company company = stockDatabase.getCompany("2208");
@@ -564,7 +569,7 @@ namespace stock
             new MessageWriter().showMessage(msgText);
             company.waveDataList = lipAnalysis.findWaveDataList(company.lipHipDataList);
             */
-            
+            /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();
             lipAnalysis.findAllWaveDataList();
@@ -683,8 +688,9 @@ namespace stock
             }
             new MessageWriter().showMessage(msgText);
             enableAllButtons();
-            
+            */
             /*
+            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
             // 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 
             List<LipHipData> lipHipDataList = 

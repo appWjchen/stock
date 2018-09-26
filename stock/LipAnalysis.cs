@@ -163,6 +163,77 @@ namespace stock
             return historyDataList.ToArray();
         }
         /*
+         * 函式 findLipHipDataStage2 由傳入的 N 天平均值資料中，找出轉折點，
+         * 所謂轉折點是指斜率由正轉負，或由負轉正的點。
+         * 傳回這些點的 index 值，型態是 int[]。
+         */
+        public int[] findLipHipDataStage2(HistoryData[] averageHistoryDataArray)
+        {
+            List<int> indexList = new List<int>();
+            /* 
+             * 計算所有資料點的斜率，斜率為目前資料點和前一資料的差值，
+             * 差值為正，表上升，斜率為正。
+             * 差值為負，表下降，斜率為負。
+             */
+            Double[] slopeArray = new Double[averageHistoryDataArray.Length];
+            slopeArray[0] = 0;
+            for (var i = 1; i < averageHistoryDataArray.Length; i++)
+            {
+                Double slope = averageHistoryDataArray[i].c -
+                    averageHistoryDataArray[i - 1].c;
+                slopeArray[i] = slope;
+            }
+            /*
+             * 由前住後比較斜率值，若有正負號變化，則將 index 放到
+             * indexList 中。
+             */
+            Boolean prevSlopeIsPositive = false;
+            if (slopeArray[1] > 0)
+            {
+                prevSlopeIsPositive = true;
+            }
+            for (var i = 2; i < slopeArray.Length; i++)
+            {
+                Boolean slopeIsPositive = false;
+                if (slopeArray[i] > 0)
+                {
+                    slopeIsPositive = true;
+                }
+                if (slopeIsPositive == prevSlopeIsPositive)
+                {
+                    continue;
+                }
+                else
+                {
+                    /* 斜率符號轉換了 */
+                    indexList.Add(i);
+                    prevSlopeIsPositive = slopeIsPositive;
+                }
+            }
+            int[] indexArray = indexList.ToArray();
+            indexList=new List<int>();
+            for (var i = 0; i < (indexArray.Length - 1); i++)
+            {
+                if ((indexArray[i] + 1) == indexArray[i + 1])
+                {
+                    /* 二個 index 值差 1,表示斜率變化太接近，二個 index 
+                     * 都不採納，跳過。
+                     */
+                    i++;
+                }
+                else
+                {
+                    indexList.Add(indexArray[i]);
+                }
+            }
+            /* 最後一點和前一點斜率差 1 以上，要再加入到 indexList 中 */
+            if ((indexArray[indexArray.Length - 1] - indexArray[indexArray.Length - 2]) != 1)
+            {
+                indexList.Add(indexArray[indexArray.Length - 1]);
+            }
+            return indexList.ToArray();
+        }
+        /*
          *  函式 findLipHipData 用來找尋 historyDataArray 的最高點及最低點的列表，
          *  傳入 historyDataArray 為歷史資料陣列，尋回一個包含最高點及最低點資料
          *  的列表，型態是 List<LipHipData>
@@ -174,6 +245,19 @@ namespace stock
             lipHipDataList = new List<LipHipData>();
             /* 計算 5 天平均值 */
             HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, 5);
+            int[] indexChange = findLipHipDataStage2(averageHistoryDataArray);
+            
+            String msg = "";
+            for (var i = 0; i < averageHistoryDataArray.Length; i++)
+            {
+                msg = msg + i + "\t" + averageHistoryDataArray[i].c.ToString("f2") + "\r\n";
+            }
+            msg = msg + "\r\n";
+            for (var i = 0; i < indexChange.Length; i++)
+            {
+                msg = msg + indexChange[i] + "\r\n";
+            }
+            new MessageWriter().showMessage(msg);
 
             return lipHipDataList;
         }
@@ -404,7 +488,7 @@ namespace stock
             return lipHipDataList;
         }
         /*
-         * 函式 findAllLipHipDataList 用來計算大盤及所有
+         * 函式 findAllLipHipDataList 用來計算大盤及所有股票波段資訊。
          */
         public void findAllLipHipDataList()
         {
