@@ -2083,7 +2083,7 @@ namespace stock
                     {
                         returnText = returnText + "\t\t" + (i + 1) + "月\t"
                             + lastEaringInformation.earningString[i] +
-                            "\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
+                            "\t\t" + lastEaringInformation.increasePercentCompareToLastYear[i].ToString("f2") +
                             "\r\n";
                     }
                 }

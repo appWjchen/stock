@@ -165,11 +165,11 @@ namespace stock
         /*
          * 函式 findLipHipDataStage2 由傳入的 N 天平均值資料中，找出轉折點，
          * 所謂轉折點是指斜率由正轉負，或由負轉正的點。
-         * 傳回這些點的 index 值，型態是 int[]。
+         * 傳回這些點所形成的波段資料，List<LipHipData>。
          */
-        public int[] findLipHipDataStage2(HistoryData[] averageHistoryDataArray)
+        public List<LipHipData> findLipHipDataStage2(HistoryData[] averageHistoryDataArray)
         {
-            List<int> indexList = new List<int>();
+            List<LipHipData> lipHipDataList = new List<LipHipData>();
             /* 
              * 計算所有資料點的斜率，斜率為目前資料點和前一資料的差值，
              * 差值為正，表上升，斜率為正。
@@ -206,15 +206,19 @@ namespace stock
                 else
                 {
                     /* 斜率符號轉換了 */
-                    indexList.Add(i);
+                    // indexList.Add(i);
+                    LipHipData lipHipData = new LipHipData();
+                    lipHipData.type = prevSlopeIsPositive;
+                    lipHipData.index = i;
+                    lipHipDataList.Add(lipHipData);
                     prevSlopeIsPositive = slopeIsPositive;
                 }
             }
-            int[] indexArray = indexList.ToArray();
-            indexList=new List<int>();
-            for (var i = 0; i < (indexArray.Length - 1); i++)
+            LipHipData[] lipHipDataArray = lipHipDataList.ToArray();
+            lipHipDataList = new List<LipHipData>();
+            for (var i = 0; i < (lipHipDataArray.Length - 1); i++)
             {
-                if ((indexArray[i] + 1) == indexArray[i + 1])
+                if ((lipHipDataArray[i].index + 1) == lipHipDataArray[i + 1].index)
                 {
                     /* 二個 index 值差 1,表示斜率變化太接近，二個 index 
                      * 都不採納，跳過。
@@ -223,15 +227,29 @@ namespace stock
                 }
                 else
                 {
-                    indexList.Add(indexArray[i]);
+                    lipHipDataList.Add(lipHipDataArray[i]);
                 }
             }
             /* 最後一點和前一點斜率差 1 以上，要再加入到 indexList 中 */
-            if ((indexArray[indexArray.Length - 1] - indexArray[indexArray.Length - 2]) != 1)
+            if ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) != 1)
             {
-                indexList.Add(indexArray[indexArray.Length - 1]);
+                lipHipDataList.Add(lipHipDataArray[lipHipDataArray.Length - 1]);
             }
-            return indexList.ToArray();
+            return lipHipDataList;
+        }
+        /*
+         * 函式 findLipHipDataStage3 用來找尋波段的極值點。
+         * 原理是利用 N 日平均值的轉折點，假設極值是出現在轉折點往前
+         * N 日內。
+         * 因為假設可能不正確(沒有經過證明)，因此往前找尋 2*N 日內的
+         * 極值，當做是波段的橿值。
+         * 傳回找到的極值位置之 index ，型態是陣列。
+         */
+        public List<LipHipData> findLipHipDataStage3(HistoryData[] historyDataArray, int[] indexChange)
+        {
+            List<LipHipData> lipHipDataList = new List<LipHipData>();
+
+            return lipHipDataList;
         }
         /*
          *  函式 findLipHipData 用來找尋 historyDataArray 的最高點及最低點的列表，
@@ -242,23 +260,20 @@ namespace stock
          */
         public List<LipHipData> findLipHipData(HistoryData[] historyDataArray, int indexDiff)
         {
-            lipHipDataList = new List<LipHipData>();
             /* 計算 5 天平均值 */
             HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, 5);
-            int[] indexChange = findLipHipDataStage2(averageHistoryDataArray);
-            
+            List<LipHipData> lipHipDataList = findLipHipDataStage2(averageHistoryDataArray);
             String msg = "";
             for (var i = 0; i < averageHistoryDataArray.Length; i++)
             {
                 msg = msg + i + "\t" + averageHistoryDataArray[i].c.ToString("f2") + "\r\n";
             }
             msg = msg + "\r\n";
-            for (var i = 0; i < indexChange.Length; i++)
+            for (var i = 0; i < lipHipDataList.Count(); i++)
             {
-                msg = msg + indexChange[i] + "\r\n";
+                msg = msg + lipHipDataList[i].index + "\t" + lipHipDataList[i].type + "\r\n";
             }
             new MessageWriter().showMessage(msg);
-
             return lipHipDataList;
         }
         /*
