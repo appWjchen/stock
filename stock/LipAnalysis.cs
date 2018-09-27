@@ -243,12 +243,55 @@ namespace stock
          * N 日內。
          * 因為假設可能不正確(沒有經過證明)，因此往前找尋 2*N 日內的
          * 極值，當做是波段的橿值。
-         * 傳回找到的極值位置之 index ，型態是陣列。
+         * 傳回找到的極值位置之波段資料 ，型態是  List<LipHipData>。
          */
-        public List<LipHipData> findLipHipDataStage3(HistoryData[] historyDataArray, int[] indexChange)
+        public List<LipHipData> findLipHipDataStage3(HistoryData[] historyDataArray, List<LipHipData> lipHipDataListChangePoint, int N)
         {
             List<LipHipData> lipHipDataList = new List<LipHipData>();
-
+            for (var i = 0; i < lipHipDataListChangePoint.Count(); i++)
+            {
+                LipHipData lipHipDataChangePoint = lipHipDataListChangePoint[i];
+                if (lipHipDataChangePoint.type)
+                {
+                    // 極大值搜尋
+                    int indexMax = lipHipDataChangePoint.index;
+                    Double valueMax = historyDataArray[indexMax].h;
+                    for (var k = lipHipDataChangePoint.index; k > (lipHipDataChangePoint.index - 2 * N); k--)
+                    {
+                        if ((k >= 0) && (historyDataArray[k].h > valueMax))
+                        {
+                            valueMax = historyDataArray[k].h;
+                            indexMax = k;
+                        }
+                    }
+                    LipHipData lipHipData = new LipHipData();
+                    lipHipData.type = lipHipDataChangePoint.type;
+                    lipHipData.value = valueMax;
+                    lipHipData.date = dateStringToDateTime(historyDataArray[indexMax].t);
+                    lipHipData.index = indexMax;
+                    lipHipDataList.Add(lipHipData);
+                }
+                else
+                {
+                    // 極小值搜尋
+                    int indexMin = lipHipDataChangePoint.index;
+                    Double valueMin = historyDataArray[indexMin].l;
+                    for (var k = lipHipDataChangePoint.index; k > (lipHipDataChangePoint.index - 2 * N); k--)
+                    {
+                        if ((k >= 0) && (historyDataArray[k].l < valueMin))
+                        {
+                            valueMin = historyDataArray[k].l;
+                            indexMin = k;
+                        }
+                    }
+                    LipHipData lipHipData = new LipHipData();
+                    lipHipData.type = lipHipDataChangePoint.type;
+                    lipHipData.value = valueMin;
+                    lipHipData.date = dateStringToDateTime(historyDataArray[indexMin].t);
+                    lipHipData.index = indexMin;
+                    lipHipDataList.Add(lipHipData);
+                }
+            }
             return lipHipDataList;
         }
         /*
@@ -261,19 +304,24 @@ namespace stock
         public List<LipHipData> findLipHipData(HistoryData[] historyDataArray, int indexDiff)
         {
             /* 計算 5 天平均值 */
-            HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, 5);
-            List<LipHipData> lipHipDataList = findLipHipDataStage2(averageHistoryDataArray);
+            int N = 5;
+            HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, N);
+            /* 找尋轉折點 */
+            List<LipHipData> lipHipDataListChangePoint = findLipHipDataStage2(averageHistoryDataArray);
+            /* 利用轉折點找尋極值 */
+            List<LipHipData> lipHipDataList = findLipHipDataStage3(historyDataArray, lipHipDataListChangePoint, N);
+            /*
             String msg = "";
-            for (var i = 0; i < averageHistoryDataArray.Length; i++)
-            {
-                msg = msg + i + "\t" + averageHistoryDataArray[i].c.ToString("f2") + "\r\n";
-            }
-            msg = msg + "\r\n";
             for (var i = 0; i < lipHipDataList.Count(); i++)
             {
-                msg = msg + lipHipDataList[i].index + "\t" + lipHipDataList[i].type + "\r\n";
+                msg = msg + lipHipDataList[i].index + 
+                    "\t" + lipHipDataList[i].type +
+                    "\t" + lipHipDataList[i].value +
+                    "\t" + lipHipDataList[i].date.ToString("yyy/MM/dd") +
+                    "\r\n";
             }
             new MessageWriter().showMessage(msg);
+            */
             return lipHipDataList;
         }
         /*
