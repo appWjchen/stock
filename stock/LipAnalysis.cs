@@ -121,7 +121,7 @@ namespace stock
         public HistoryData[] findLipHipDataStage1(HistoryData[] historyDataArray, int N)
         {
             /* 拷貝一份 historayDataArray */
-            HistoryData[] historyDataArrayTemp=new HistoryData[historyDataArray.Length];
+            HistoryData[] historyDataArrayTemp = new HistoryData[historyDataArray.Length];
             for (var i = 0; i < historyDataArray.Length; i++)
             {
                 historyDataArrayTemp[i] = new HistoryData();
@@ -146,7 +146,15 @@ namespace stock
             {
                 if (i < (N - 1))
                 {
-                    historyDataList.Add(historyDataArray[i]);
+                    /* 前 N 日無法算 N 日平均，只能算 i 天平均(i<N) */
+                    Double sum = 0;
+                    for (var k = 0; k <= i; k++)
+                    {
+                        sum = sum + historyDataArray[k].c;
+                    }
+                    Double average = sum / (i + 1);
+                    historyDataArrayTemp[i].c = average;
+                    historyDataList.Add(historyDataArrayTemp[i]);
                 }
                 else
                 {
@@ -230,8 +238,9 @@ namespace stock
                     lipHipDataList.Add(lipHipDataArray[i]);
                 }
             }
-            /* 最後一點和前一點斜率差 1 以上，要再加入到 indexList 中 */
-            if ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) != 1)
+            /* 最後一點和前一點斜率差 1 以上，要再加入到 indexList 中(要先檢查 lipHipDataArray 中至少二點才可以) */
+            if ((lipHipDataArray.Length >= 2) && 
+                ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) != 1))
             {
                 lipHipDataList.Add(lipHipDataArray[lipHipDataArray.Length - 1]);
             }
@@ -303,13 +312,46 @@ namespace stock
          */
         public List<LipHipData> findLipHipData(HistoryData[] historyDataArray, int indexDiff)
         {
+            String msg = "";
             /* 計算 5 天平均值 */
             int N = 5;
             HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, N);
+            
+            for (var i = 0; i < averageHistoryDataArray.Length; i++)
+            {
+                msg = msg + i +
+                    "\t" + averageHistoryDataArray[i].c.ToString("f2") +
+                    "\t" + averageHistoryDataArray[i].t +
+                    "\r\n";
+            }
+            msg = msg + "\r\n";
+            
             /* 找尋轉折點 */
             List<LipHipData> lipHipDataListChangePoint = findLipHipDataStage2(averageHistoryDataArray);
+            
+            for (var i = 0; i < lipHipDataListChangePoint.Count(); i++)
+            {
+                LipHipData lipHipData = lipHipDataListChangePoint[i];
+                msg = msg + i +
+                    "\t" + lipHipData.index +
+                    "\t" + lipHipData.type +
+                    "\r\n";
+            }
+            msg = msg + "\r\n";
+            
             /* 利用轉折點找尋極值 */
             List<LipHipData> lipHipDataList = findLipHipDataStage3(historyDataArray, lipHipDataListChangePoint, N);
+            for (var i = 0; i < lipHipDataList.Count(); i++)
+            {
+                LipHipData lipHipData = lipHipDataList[i];
+                msg = msg + i +
+                    "\t" + lipHipData.date +
+                    "\t" + lipHipData.index +
+                    "\t" + lipHipData.type +
+                    "\t" + lipHipData.value +
+                    "\r\n";
+            }
+            msg = msg + "\r\n";
             /*
             String msg = "";
             for (var i = 0; i < lipHipDataList.Count(); i++)
@@ -322,6 +364,7 @@ namespace stock
             }
             new MessageWriter().showMessage(msg);
             */
+            new MessageWriter().showMessage(msg);
             return lipHipDataList;
         }
         /*
@@ -511,7 +554,7 @@ namespace stock
                 index--;
             }
 
-            
+
             if ((type == 1) && (!isDataInLipHipList(prevLipData)))
             {
                 LipHipData lipData = new LipHipData();
@@ -520,7 +563,8 @@ namespace stock
                 lipData.type = prevLipData.type;
                 lipData.index = prevLipData.index;
                 lipHipDataList.Add(lipData);
-            } else if ((type == -1) && (!isDataInLipHipList(prevHipData)))
+            }
+            else if ((type == -1) && (!isDataInLipHipList(prevHipData)))
             {
                 LipHipData hipData = new LipHipData();
                 hipData.date = prevHipData.date;
@@ -529,7 +573,7 @@ namespace stock
                 hipData.index = prevHipData.index;
                 lipHipDataList.Add(hipData);
             }
-            
+
 
             lipHipDataList.Sort(
                 delegate(LipHipData x, LipHipData y)

@@ -533,15 +533,9 @@ namespace stock
         }
         private void button10_Click(object sender, EventArgs e)
         {
-            disableAllButtons();
+            
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            stockDatabase.lipHipDataList = lipAnalysis.findLipHipData(
-                stockDatabase.getMonthHistoryData(),
-                48
-                );
-            /*
-            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            Company company = stockDatabase.getCompany("2208");
+            Company company = stockDatabase.getCompany("1101");
             company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
             var lipHipDataList = company.lipHipDataList;
             var msgText = "";
@@ -566,9 +560,34 @@ namespace stock
                         "\r\n";
                 }
             }
-            new MessageWriter().showMessage(msgText);
             company.waveDataList = lipAnalysis.findWaveDataList(company.lipHipDataList);
-            */
+            for (var i = 0; i < company.waveDataList.Count(); i++)
+            {
+                WaveData oneWavedata = company.waveDataList[i];
+                if (oneWavedata.type)
+                {
+                    // 波段上漲
+                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+                else
+                {
+                    // 波段下跌
+                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                        " ,時間 = " + oneWavedata.diffDays + " 天" +
+                        "\r\n";
+                }
+            }
+            new MessageWriter().appendMessage(msgText, true);
             /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();

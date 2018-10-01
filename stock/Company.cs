@@ -1153,7 +1153,7 @@ namespace stock
                         printString = printString + i.ToString() + "\t" + tdStrings[i] + "\r\n";
                     }
                     // String printString = companyInformation.y1Name;
-                    new MessageWriter().showMessage(printString);
+                    // new MessageWriter().showMessage(printString);
                     
                     createInformationDatabaseCallback();
                 }
