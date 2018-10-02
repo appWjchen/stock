@@ -175,7 +175,7 @@ namespace stock
          * 所謂轉折點是指斜率由正轉負，或由負轉正的點。
          * 傳回這些點所形成的波段資料，List<LipHipData>。
          */
-        public List<LipHipData> findLipHipDataStage2(HistoryData[] averageHistoryDataArray)
+        public List<LipHipData> findLipHipDataStage2(HistoryData[] averageHistoryDataArray, int N)
         {
             List<LipHipData> lipHipDataList = new List<LipHipData>();
             /* 
@@ -226,10 +226,9 @@ namespace stock
             lipHipDataList = new List<LipHipData>();
             for (var i = 0; i < (lipHipDataArray.Length - 1); i++)
             {
-                if ((lipHipDataArray[i].index + 1) == lipHipDataArray[i + 1].index)
+                if ((lipHipDataArray[i + 1].index - lipHipDataArray[i].index) <= N)
                 {
-                    /* 二個 index 值差 1,表示斜率變化太接近，二個 index 
-                     * 都不採納，跳過。
+                    /* 二個 index 值差 N 以內,表示斜率變化太接近，要跳過不正確的 index。
                      */
                     i++;
                 }
@@ -238,9 +237,9 @@ namespace stock
                     lipHipDataList.Add(lipHipDataArray[i]);
                 }
             }
-            /* 最後一點和前一點斜率差 1 以上，要再加入到 indexList 中(要先檢查 lipHipDataArray 中至少二點才可以) */
-            if ((lipHipDataArray.Length >= 2) && 
-                ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) != 1))
+            /* 最後一點和前一點斜率差 N 以上，要再加入到 indexList 中(要先檢查 lipHipDataArray 中至少二點才可以) */
+            if ((lipHipDataArray.Length >= 2) &&
+                ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) > N))
             {
                 lipHipDataList.Add(lipHipDataArray[lipHipDataArray.Length - 1]);
             }
@@ -327,7 +326,7 @@ namespace stock
             msg = msg + "\r\n";
             
             /* 找尋轉折點 */
-            List<LipHipData> lipHipDataListChangePoint = findLipHipDataStage2(averageHistoryDataArray);
+            List<LipHipData> lipHipDataListChangePoint = findLipHipDataStage2(averageHistoryDataArray, N);
             
             for (var i = 0; i < lipHipDataListChangePoint.Count(); i++)
             {
