@@ -218,6 +218,8 @@ namespace stock
                     LipHipData lipHipData = new LipHipData();
                     lipHipData.type = prevSlopeIsPositive;
                     lipHipData.index = i;
+                    lipHipData.date = dateStringToDateTime(averageHistoryDataArray[i].t);
+                    lipHipData.value = averageHistoryDataArray[i].c;
                     lipHipDataList.Add(lipHipData);
                     prevSlopeIsPositive = slopeIsPositive;
                 }
@@ -228,8 +230,39 @@ namespace stock
             {
                 if ((lipHipDataArray[i + 1].index - lipHipDataArray[i].index) <= N)
                 {
-                    /* 二個 index 值差 N 以內,表示斜率變化太接近，要跳過不正確的 index。
+                    /* 二個 index 值差 N 以內,表示斜率變化太接近，
+                     * 要跳過不正確的 index。
+                     * 在要跳過的那幾點中，找到正確的那點。
+                     * 例如，目前是上升(index=i)轉下降(index=i+1)，若排除這二點，
+                     * 則上升變成 index=i+2，要核對是 index=i 和 index=i+2 那一點的
+                     * 極大值較高，以決定是要排除那一點。
+                     * 不能直接跳過 i 及 i+1 這二點。
                      */
+                    // i++;
+                    if (lipHipDataArray[i].type)
+                    {
+                        /* 上升波段 */
+                        if (((i + 2) <= lipHipDataArray.Length - 1) && (lipHipDataArray[i].value > lipHipDataArray[i + 2].value))
+                        {
+                            /* 如果 index=i 比 index=i+2 更高，用 i 資料替換 i+2 資料 */
+                            lipHipDataArray[i + 2].value = lipHipDataArray[i].value;
+                            lipHipDataArray[i + 2].index = lipHipDataArray[i].index;
+                            lipHipDataArray[i + 2].date = lipHipDataArray[i].date;
+                            /* type 應該相等 */
+                        }
+                    }
+                    else
+                    {
+                        /* 下降波段 */
+                        if (((i + 2) <= lipHipDataArray.Length - 1) && (lipHipDataArray[i].value < lipHipDataArray[i + 2].value))
+                        {
+                            /* 如果 index=i 比 index=i+2 更低，用 i 資料替換 i+2 資料 */
+                            lipHipDataArray[i + 2].value = lipHipDataArray[i].value;
+                            lipHipDataArray[i + 2].index = lipHipDataArray[i].index;
+                            lipHipDataArray[i + 2].date = lipHipDataArray[i].date;
+                            /* type 應該相等 */
+                        }
+                    }
                     i++;
                 }
                 else
@@ -315,7 +348,7 @@ namespace stock
             /* 計算 5 天平均值 */
             int N = 5;
             HistoryData[] averageHistoryDataArray = findLipHipDataStage1(historyDataArray, N);
-            
+            /*
             for (var i = 0; i < averageHistoryDataArray.Length; i++)
             {
                 msg = msg + i +
@@ -324,10 +357,10 @@ namespace stock
                     "\r\n";
             }
             msg = msg + "\r\n";
-            
+            */
             /* 找尋轉折點 */
             List<LipHipData> lipHipDataListChangePoint = findLipHipDataStage2(averageHistoryDataArray, N);
-            
+            /*
             for (var i = 0; i < lipHipDataListChangePoint.Count(); i++)
             {
                 LipHipData lipHipData = lipHipDataListChangePoint[i];
@@ -337,9 +370,10 @@ namespace stock
                     "\r\n";
             }
             msg = msg + "\r\n";
-            
+            */
             /* 利用轉折點找尋極值 */
             List<LipHipData> lipHipDataList = findLipHipDataStage3(historyDataArray, lipHipDataListChangePoint, N);
+            /*
             for (var i = 0; i < lipHipDataList.Count(); i++)
             {
                 LipHipData lipHipData = lipHipDataList[i];
@@ -351,19 +385,8 @@ namespace stock
                     "\r\n";
             }
             msg = msg + "\r\n";
-            /*
-            String msg = "";
-            for (var i = 0; i < lipHipDataList.Count(); i++)
-            {
-                msg = msg + lipHipDataList[i].index + 
-                    "\t" + lipHipDataList[i].type +
-                    "\t" + lipHipDataList[i].value +
-                    "\t" + lipHipDataList[i].date.ToString("yyy/MM/dd") +
-                    "\r\n";
-            }
             new MessageWriter().showMessage(msg);
             */
-            new MessageWriter().showMessage(msg);
             return lipHipDataList;
         }
         /*

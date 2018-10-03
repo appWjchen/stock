@@ -533,7 +533,7 @@ namespace stock
         }
         private void button10_Click(object sender, EventArgs e)
         {
-            
+            /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             Company company = stockDatabase.getCompany("1227");
             company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
@@ -588,7 +588,8 @@ namespace stock
                 }
             }
             new MessageWriter().appendMessage(msgText, true);
-            /*
+            */
+            
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             lipAnalysis.findAllLipHipDataList();
             lipAnalysis.findAllWaveDataList();
@@ -707,7 +708,7 @@ namespace stock
             }
             new MessageWriter().showMessage(msgText);
             enableAllButtons();
-            */
+            
             /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
             HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
