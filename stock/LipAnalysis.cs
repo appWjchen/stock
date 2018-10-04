@@ -333,6 +333,29 @@ namespace stock
                     lipHipDataList.Add(lipHipData);
                 }
             }
+            /* 二極值點太接近可以去除 */
+            LipHipData[] lipHipDataArray = lipHipDataList.ToArray();
+            lipHipDataList = new List<LipHipData>();
+            for (var i = 0; i < (lipHipDataArray.Length - 1); i++)
+            {
+                if ((lipHipDataArray[i + 1].index - lipHipDataArray[i].index) < (N - 2))
+                {
+                    /* 二個極值點去接近 index 值差 N 以內,表示波段太接近，
+                     * 可以直接去掉這個波段(二個極值)。
+                     */
+                    i++;
+                }
+                else
+                {
+                    lipHipDataList.Add(lipHipDataArray[i]);
+                }
+            }
+            /* 最後一點和前一點差 N 以上，要再加入到 indexList 中(要先檢查 lipHipDataArray 中至少二點才可以) */
+            if ((lipHipDataArray.Length >= 2) &&
+                ((lipHipDataArray[lipHipDataArray.Length - 1].index - lipHipDataArray[lipHipDataArray.Length - 2].index) >= (N - 2)))
+            {
+                lipHipDataList.Add(lipHipDataArray[lipHipDataArray.Length - 1]);
+            }
             return lipHipDataList;
         }
         /*

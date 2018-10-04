@@ -535,7 +535,7 @@ namespace stock
         {
             /*
             LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            Company company = stockDatabase.getCompany("1227");
+            Company company = stockDatabase.getCompany("1786");
             company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
             var lipHipDataList = company.lipHipDataList;
             var msgText = "";
