@@ -70,6 +70,7 @@
             this.button17 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
+            this.button19 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -224,9 +225,9 @@
             // 
             this.button8.Location = new System.Drawing.Point(7, 30);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(165, 23);
+            this.button8.Size = new System.Drawing.Size(123, 23);
             this.button8.TabIndex = 14;
-            this.button8.Text = "分析及篩選(双重二次攻撃法)";
+            this.button8.Text = "双重攻撃分析(短線)";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -463,11 +464,22 @@
             this.label7.Size = new System.Drawing.Size(235, 29);
             this.label7.TabIndex = 29;
             // 
+            // button19
+            // 
+            this.button19.Location = new System.Drawing.Point(136, 30);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(103, 23);
+            this.button19.TabIndex = 30;
+            this.button19.Text = "均線分析(長線)";
+            this.button19.UseVisualStyleBackColor = true;
+            this.button19.Click += new System.EventHandler(this.button19_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1223, 658);
+            this.Controls.Add(this.button19);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.button18);
             this.Controls.Add(this.button17);
@@ -553,6 +565,7 @@
         private System.Windows.Forms.ColumnHeader maxPrice;
         private System.Windows.Forms.ColumnHeader maxPriceDate;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button19;
     }
 }
 

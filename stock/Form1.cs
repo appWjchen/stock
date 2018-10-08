@@ -116,6 +116,7 @@ namespace stock
             button16.Enabled = false;
             button17.Enabled = false;
             button18.Enabled = false;
+            button19.Enabled = false;
         }
         private void enableAllButtons()
         {
@@ -137,7 +138,7 @@ namespace stock
             button16.Enabled = true;
             button17.Enabled = true;
             button18.Enabled = true;
-
+            button19.Enabled = true;
             button10.Focus();
         }
         private void clearMessage()
@@ -533,235 +534,237 @@ namespace stock
         }
         private void button10_Click(object sender, EventArgs e)
         {
-            /*
-            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            Company company = stockDatabase.getCompany("1786");
-            company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
-            var lipHipDataList = company.lipHipDataList;
-            var msgText = "";
-            msgText = msgText + company.name + "(" + company.id + ")極值搜尋:\r\n";
-            for (var i = 0; i < lipHipDataList.Count(); i++)
+            int test = 3;
+            if (test == 1)
             {
-                LipHipData oneLipHitData = lipHipDataList[i];
-                if (oneLipHitData.type)
+                /* 此段程式用來檢查單一公司的波段搜尋結果是否正確 */
+                LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+                Company company = stockDatabase.getCompany("1786");
+                company.lipHipDataList = lipAnalysis.findLipHipData(company.getRealHistoryDataArray("m"), 60);
+                var lipHipDataList = company.lipHipDataList;
+                var msgText = "";
+                msgText = msgText + company.name + "(" + company.id + ")極值搜尋:\r\n";
+                for (var i = 0; i < lipHipDataList.Count(); i++)
                 {
-                    // 波段高點 
-                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,高點 = " + oneLipHitData.value +
-                        "\r\n";
+                    LipHipData oneLipHitData = lipHipDataList[i];
+                    if (oneLipHitData.type)
+                    {
+                        // 波段高點 
+                        msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
+                            " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                            " ,高點 = " + oneLipHitData.value +
+                            "\r\n";
+                    }
+                    else
+                    {
+                        // 波段低點 
+                        msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
+                            " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
+                            " ,低點 = " + oneLipHitData.value +
+                            "\r\n";
+                    }
                 }
-                else
+                company.waveDataList = lipAnalysis.findWaveDataList(company.lipHipDataList);
+                for (var i = 0; i < company.waveDataList.Count(); i++)
                 {
-                    // 波段低點 
-                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,低點 = " + oneLipHitData.value +
-                        "\r\n";
+                    WaveData oneWavedata = company.waveDataList[i];
+                    if (oneWavedata.type)
+                    {
+                        // 波段上漲
+                        msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
+                    else
+                    {
+                        // 波段下跌
+                        msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
                 }
+                new MessageWriter().appendMessage(msgText, true);
             }
-            company.waveDataList = lipAnalysis.findWaveDataList(company.lipHipDataList);
-            for (var i = 0; i < company.waveDataList.Count(); i++)
+            else if (test == 2)
             {
-                WaveData oneWavedata = company.waveDataList[i];
-                if (oneWavedata.type)
+                /* 
+                 * 此段程式用來做所有股票波段上漲及下跌幅度的統計 
+                 * 20181004 結果
+                 * 所有個股波幅統計:
+                 *      上漲波幅最大百分比=17862.96%
+                 *      上漲波幅最小百分比=6.81%
+                 *      上漲波幅平均百分比=239.27%
+                 *      上漲波幅最長時間=3013天
+                 *      上漲波幅最短時間=86天
+                 *      上漲波幅平均時間=503天
+                 *      下跌波幅最大百分比=99.85%
+                 *      下跌波幅最小百分比=7.75%
+                 *      下跌波幅平均百分比=60.23%
+                 *      下跌波幅最長時間=3167天
+                 *      下跌波幅最短時間=85天
+                 *      下跌波幅平均時間=578天
+                 *      最長上漲時間公司是：佳格(1227)
+                 *      最短上漲時間公司是：三芳(1307)
+                 *      最大上漲幅度公司是：欣巴巴(9906)
+                 *      最小上漲幅度公司是：台新戊特(2887E)
+                 *      最長下跌時間公司是：怡華(1456)
+                 *      最短下跌時間公司是：永裕(1323)
+                 *      最大下跌幅度公司是：吉祥全(2491)
+                 *      最小下跌幅度公司是：士電(1503)
+                 */
+                LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+                lipAnalysis.findAllLipHipDataList();
+                lipAnalysis.findAllWaveDataList();
+                lipAnalysis.findAllWaveStatisticInformation();
+                String msgText = "大盤漲幅搜尋:\r\n";
+                for (var i = 0; i < stockDatabase.waveDataList.Count(); i++)
                 {
-                    // 波段上漲
-                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    WaveData oneWavedata = stockDatabase.waveDataList[i];
+                    if (oneWavedata.type)
+                    {
+                        // 波段上漲
+                        msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
+                    else
+                    {
+                        // 波段下跌
+                        msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
                 }
-                else
+                msgText = msgText + "大盤波幅統計:\r\n";
+                if (stockDatabase.waveStatisticInformation.totalUpCount > 0)
                 {
-                    // 波段下跌
-                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.waveStatisticInformation.maxUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.waveStatisticInformation.minUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.waveStatisticInformation.averageUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.waveStatisticInformation.maxUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.waveStatisticInformation.minUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.waveStatisticInformation.averageUpDiffDate.ToString("f0") + "天\r\n";
                 }
-            }
-            new MessageWriter().appendMessage(msgText, true);
-            */
-            
-            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            lipAnalysis.findAllLipHipDataList();
-            lipAnalysis.findAllWaveDataList();
-            lipAnalysis.findAllWaveStatisticInformation();
-            String msgText = "大盤漲幅搜尋:\r\n";
-            for (var i = 0; i < stockDatabase.waveDataList.Count(); i++)
-            {
-                WaveData oneWavedata = stockDatabase.waveDataList[i];
-                if (oneWavedata.type)
+                if (stockDatabase.waveStatisticInformation.totalDownCount > 0)
                 {
-                    // 波段上漲
-                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.waveStatisticInformation.maxDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.waveStatisticInformation.minDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.waveStatisticInformation.averageDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.waveStatisticInformation.maxDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.waveStatisticInformation.minDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.waveStatisticInformation.averageDownDiffDate.ToString("f0") + "天\r\n";
                 }
-                else
+                Company company = stockDatabase.companies[0];
+                msgText = msgText + company.name + "漲幅搜尋:\r\n";
+                for (var i = 0; i < company.waveDataList.Count(); i++)
                 {
-                    // 波段下跌
-                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    WaveData oneWavedata = company.waveDataList[i];
+                    if (oneWavedata.type)
+                    {
+                        // 波段上漲
+                        msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
+                    else
+                    {
+                        // 波段下跌
+                        msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
+                            " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
+                            " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
+                            " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
+                            " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
+                            " ,時間 = " + oneWavedata.diffDays + " 天" +
+                            "\r\n";
+                    }
                 }
-            }
-            msgText = msgText + "大盤波幅統計:\r\n";
-            if (stockDatabase.waveStatisticInformation.totalUpCount > 0)
-            {
-                msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.waveStatisticInformation.maxUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.waveStatisticInformation.minUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.waveStatisticInformation.averageUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.waveStatisticInformation.maxUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.waveStatisticInformation.minUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.waveStatisticInformation.averageUpDiffDate.ToString("f0") + "天\r\n";
-            }
-            if (stockDatabase.waveStatisticInformation.totalDownCount > 0)
-            {
-                msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.waveStatisticInformation.maxDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.waveStatisticInformation.minDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.waveStatisticInformation.averageDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.waveStatisticInformation.maxDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.waveStatisticInformation.minDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.waveStatisticInformation.averageDownDiffDate.ToString("f0") + "天\r\n";
-            }
-            Company company = stockDatabase.companies[0];
-            msgText = msgText + company.name + "漲幅搜尋:\r\n";
-            for (var i = 0; i < company.waveDataList.Count(); i++)
-            {
-                WaveData oneWavedata = company.waveDataList[i];
-                if (oneWavedata.type)
+                msgText = msgText + "個股波幅統計:\r\n";
+                if (company.waveStatisticInformation.totalUpCount > 0)
                 {
-                    // 波段上漲
-                    msgText = msgText + "\t波段上漲， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,漲幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    msgText = msgText + "\t上漲波幅最大百分比=" + company.waveStatisticInformation.maxUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最小百分比=" + company.waveStatisticInformation.minUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅平均百分比=" + company.waveStatisticInformation.averageUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最長時間=" + company.waveStatisticInformation.maxUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅最短時間=" + company.waveStatisticInformation.minUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅平均時間=" + company.waveStatisticInformation.averageUpDiffDate.ToString("f0") + "天\r\n";
                 }
-                else
+                if (company.waveStatisticInformation.totalDownCount > 0)
                 {
-                    // 波段下跌
-                    msgText = msgText + "\t波段下跌， 起始日期=" + oneWavedata.startDate.ToString("yyyy/MM/dd") +
-                        " ,起始價格 = " + oneWavedata.startPrice.ToString("f2") +
-                        " ,結束日期 = " + oneWavedata.endDate.ToString("yyyy/MM/dd") +
-                        " ,結束價格 = " + oneWavedata.endPrice.ToString("f2") +
-                        " ,跌幅 = " + oneWavedata.diffPercent.ToString("f2") +
-                        " ,時間 = " + oneWavedata.diffDays + " 天" +
-                        "\r\n";
+                    msgText = msgText + "\t下跌波幅最大百分比=" + company.waveStatisticInformation.maxDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最小百分比=" + company.waveStatisticInformation.minDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅平均百分比=" + company.waveStatisticInformation.averageDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最長時間=" + company.waveStatisticInformation.maxDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅最短時間=" + company.waveStatisticInformation.minDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅平均時間=" + company.waveStatisticInformation.averageDownDiffDate.ToString("f0") + "天\r\n";
                 }
-            }
-            msgText = msgText + "個股波幅統計:\r\n";
-            if (company.waveStatisticInformation.totalUpCount > 0)
-            {
-                msgText = msgText + "\t上漲波幅最大百分比=" + company.waveStatisticInformation.maxUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最小百分比=" + company.waveStatisticInformation.minUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅平均百分比=" + company.waveStatisticInformation.averageUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最長時間=" + company.waveStatisticInformation.maxUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅最短時間=" + company.waveStatisticInformation.minUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅平均時間=" + company.waveStatisticInformation.averageUpDiffDate.ToString("f0") + "天\r\n";
-            }
-            if (company.waveStatisticInformation.totalDownCount > 0)
-            {
-                msgText = msgText + "\t下跌波幅最大百分比=" + company.waveStatisticInformation.maxDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最小百分比=" + company.waveStatisticInformation.minDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅平均百分比=" + company.waveStatisticInformation.averageDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最長時間=" + company.waveStatisticInformation.maxDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅最短時間=" + company.waveStatisticInformation.minDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅平均時間=" + company.waveStatisticInformation.averageDownDiffDate.ToString("f0") + "天\r\n";
-            }
-            msgText = msgText + "所有個股波幅統計:\r\n";
-            if (stockDatabase.waveStatisticInformationAllCompany.totalUpCount > 0)
-            {
-                msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.waveStatisticInformationAllCompany.maxUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.waveStatisticInformationAllCompany.minUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.waveStatisticInformationAllCompany.averageUpDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.waveStatisticInformationAllCompany.maxUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.waveStatisticInformationAllCompany.minUpDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.waveStatisticInformationAllCompany.averageUpDiffDate.ToString("f0") + "天\r\n";
-            }
-            if (stockDatabase.waveStatisticInformationAllCompany.totalDownCount > 0)
-            {
-                msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.waveStatisticInformationAllCompany.maxDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.waveStatisticInformationAllCompany.minDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.waveStatisticInformationAllCompany.averageDownDiffPercent.ToString("f2") + "%\r\n";
-                msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.waveStatisticInformationAllCompany.maxDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.waveStatisticInformationAllCompany.minDownDiffDate.ToString("f0") + "天\r\n";
-                msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.waveStatisticInformationAllCompany.averageDownDiffDate.ToString("f0") + "天\r\n";
-            }
-            new MessageWriter().showMessage(msgText);
-            enableAllButtons();
-            
-            /*
-            LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
-            HistoryData[] monthHistoryDataArray = stockDatabase.getMonthHistoryData();
-            // 呼叫 findLipHipData 找出各波段最高及最低價， indexDiff 表示一個波段最少 indexDiff 個月 
-            List<LipHipData> lipHipDataList = 
-                lipAnalysis.findLipHipData(monthHistoryDataArray, 48);
-            String msgText = "大盤極值搜尋:\r\n";
-            for (var i = 0; i < lipHipDataList.Count(); i++)
-            {
-                LipHipData oneLipHitData=lipHipDataList[i];
-                if (oneLipHitData.type)
+                msgText = msgText + "所有個股波幅統計:\r\n";
+                if (stockDatabase.waveStatisticInformationAllCompany.totalUpCount > 0)
                 {
-                    // 波段高點 
-                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,高點 = " + oneLipHitData.value +
-                        "\r\n";
+                    msgText = msgText + "\t上漲波幅最大百分比=" + stockDatabase.waveStatisticInformationAllCompany.maxUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最小百分比=" + stockDatabase.waveStatisticInformationAllCompany.minUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅平均百分比=" + stockDatabase.waveStatisticInformationAllCompany.averageUpDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t上漲波幅最長時間=" + stockDatabase.waveStatisticInformationAllCompany.maxUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅最短時間=" + stockDatabase.waveStatisticInformationAllCompany.minUpDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t上漲波幅平均時間=" + stockDatabase.waveStatisticInformationAllCompany.averageUpDiffDate.ToString("f0") + "天\r\n";
                 }
-                else
+                if (stockDatabase.waveStatisticInformationAllCompany.totalDownCount > 0)
                 {
-                    // 波段低點 
-                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,低點 = " + oneLipHitData.value +
-                        "\r\n";
+                    msgText = msgText + "\t下跌波幅最大百分比=" + stockDatabase.waveStatisticInformationAllCompany.maxDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最小百分比=" + stockDatabase.waveStatisticInformationAllCompany.minDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅平均百分比=" + stockDatabase.waveStatisticInformationAllCompany.averageDownDiffPercent.ToString("f2") + "%\r\n";
+                    msgText = msgText + "\t下跌波幅最長時間=" + stockDatabase.waveStatisticInformationAllCompany.maxDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅最短時間=" + stockDatabase.waveStatisticInformationAllCompany.minDownDiffDate.ToString("f0") + "天\r\n";
+                    msgText = msgText + "\t下跌波幅平均時間=" + stockDatabase.waveStatisticInformationAllCompany.averageDownDiffDate.ToString("f0") + "天\r\n";
                 }
+                new MessageWriter().showMessage(msgText);
+                enableAllButtons();
             }
-            monthHistoryDataArray = stockDatabase.getCompany("2317").getHistoryDataArray("m");
-            lipHipDataList =
-                lipAnalysis.findLipHipData(monthHistoryDataArray, 36);
-            msgText = msgText + "鴻海(2317)極值搜尋:\r\n";
-            for (var i = 0; i < lipHipDataList.Count(); i++)
+            else if (test == 3)
             {
-                LipHipData oneLipHitData = lipHipDataList[i];
-                if (oneLipHitData.type)
+                /* 此段程式用來做長期買點分析演算法的統計 */
+                disableAllButtons();
+                /* (1) 用極值搜尋找出大盤及各公司的波段極值 */
+                LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
+                lipAnalysis.findAllLipHipDataList();
+                lipAnalysis.findAllWaveDataList();
+                lipAnalysis.findAllWaveStatisticInformation();
+                /* (2.1) 找出至少4個波段的股票，第一個極值是極大值的股票，且第二個波段下跌達 70% 的股票 */
+                // Boolean[] needAnalysis = new Boolean[stockDatabase.companies.Length];
+                for (var i = 0; i < stockDatabase.companies.Length; i++)
                 {
-                    // 波段高點 
-                    msgText = msgText + "\t波段高點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,高點 = " + oneLipHitData.value +
-                        "\r\n";
+                    Company company = stockDatabase.companies[i];
+                    // needAnalysis[i] = false;
+                    if ((company.waveDataList.Count() >= 4) && 
+                        (company.waveDataList[0].type == true) && 
+                        (company.waveDataList[1].diffPercent > 70))
+                    {
+                        // 尋找買點，由下降波段極小值點，向後尋找第一個轉折點(斜率由負轉正)。
+                        // needAnalysis[i] = true;
+
+                    }
                 }
-                else
-                {
-                    // 波段低點 
-                    msgText = msgText + "\t波段低點， index = " + oneLipHitData.index +
-                        " ,日期 = " + oneLipHitData.date.ToString("yyyy/MM/dd") +
-                        " ,低點 = " + oneLipHitData.value +
-                        "\r\n";
-                }
+                enableAllButtons();
             }
-            new MessageWriter().showMessage(msgText);
-            */
         }
         /* 
         // 列出10 天內連續二次攻擊的股票
@@ -1001,6 +1004,13 @@ namespace stock
                 listView1.Items[traceCompany.id].SubItems[6].Font = new Font(listView1.Items[traceCompany.id].SubItems[6].Font,
                     listView1.Items[traceCompany.id].SubItems[6].Font.Style | FontStyle.Bold);
             }
+            enableAllButtons();
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            disableAllButtons();
+
             enableAllButtons();
         }
     }

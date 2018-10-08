@@ -854,6 +854,7 @@ namespace stock
             stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent = 0;
             stockDatabase.waveStatisticInformationAllCompany.totalDownCount = 0;
             /* ↓ 除錯用資訊 */
+            
             Company maxUpDiffDate = null;
             Company minUpDiffDate = null;
             Company maxDownDiffDate = null;
@@ -862,7 +863,7 @@ namespace stock
             Company minUpDiffPercent = null;
             Company maxDownDiffPercent = null;
             Company minDownDiffPercent = null;
-            /* ↑ 除錯用資訊 */
+            
             for (var i = 0; i < stockDatabase.companies.Length; i++)
             {
                 Company company = stockDatabase.companies[i];
@@ -944,7 +945,7 @@ namespace stock
             stockDatabase.waveStatisticInformationAllCompany.averageDownDiffPercent =
                 stockDatabase.waveStatisticInformationAllCompany.totalDownDiffPercent /
                 stockDatabase.waveStatisticInformationAllCompany.totalDownCount;
-            /* ↓ 除錯用資訊 */
+            /*
             String msg = "";
             msg = msg + "最長上漲時間公司是：" + maxUpDiffDate.name + "(" + maxUpDiffDate.id + ")\r\n";
             msg = msg + "最短上漲時間公司是：" + minUpDiffDate.name + "(" + minUpDiffDate.id + ")\r\n";
@@ -955,6 +956,7 @@ namespace stock
             msg = msg + "最大下跌幅度公司是：" + maxDownDiffPercent.name + "(" + maxDownDiffPercent.id + ")\r\n";
             msg = msg + "最小下跌幅度公司是：" + minDownDiffPercent.name + "(" + minDownDiffPercent.id + ")\r\n";
             new WarningWriter().showMessage(msg);
+            */
             /* ↑ 除錯用資訊 */
         }
     }
