@@ -743,6 +743,7 @@ namespace stock
             {
                 /* 此段程式用來做長期買點分析演算法的統計 */
                 disableAllButtons();
+                var printText = "";
                 /* (1) 用極值搜尋找出大盤及各公司的波段極值 */
                 LipAnalysis lipAnalysis = new LipAnalysis(stockDatabase);
                 lipAnalysis.findAllLipHipDataList();
@@ -760,9 +761,23 @@ namespace stock
                     {
                         // 尋找買點，由下降波段極小值點，向後尋找第一個轉折點(斜率由負轉正)。
                         // needAnalysis[i] = true;
-
+                        var dateMin = company.waveDataList[1].endDate;
+                        for (var k = 0; k < company.lipHipDataList.Count(); k++)
+                        {
+                            var lipPoint = company.lipHipDataList[k];
+                            var dateLip = lipPoint.date;
+                            if (dateLip > dateMin)
+                            {
+                                // 買點?!
+                                printText = printText +
+                                    "\t" + company.name +
+                                    "\t(" + company.id + ")" +
+                                    "\r\n";
+                            }
+                        }
                     }
                 }
+                new MessageWriter().showMessage(printText);
                 enableAllButtons();
             }
         }
