@@ -467,7 +467,7 @@ namespace stock
                 printText = printText + stockDatabase.companies[i].name + "\r\n";
             }
              * */
-            Company company = stockDatabase.getCompany("9934");
+            Company company = stockDatabase.getCompany("1227");
             company.createInfomationDatabase(
                 () =>
                 {

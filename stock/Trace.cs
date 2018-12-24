@@ -707,6 +707,8 @@ namespace stock
                 int upCount = 0;
                 int successfulCount = 0;
                 int failCount = 0;
+                String upList = "";
+                String downList = "";
                 for (var i = 0; i < saveDataSplit.Length; i++)
                 {
                     String oneTraceData = saveDataSplit[i];
@@ -785,6 +787,11 @@ namespace stock
                             {
                                 /* 計算目前追踪股票是否上漲，並統計總數 */
                                 upCount++;
+                                upList = upList + traceCompany.name + "(" + traceCompany.id + ")\n";
+                            }
+                            else
+                            {
+                                downList = downList + traceCompany.name + "(" + traceCompany.id + ")\n";
                             }
                             /*
                             if (traceCompany.startScore > traceCompany.score)
@@ -877,6 +884,8 @@ namespace stock
                 this.labelOutMessage.Text = "追踪上漲 " + upCount + " 家，下跌 " + (saveDataSplit.Length - upCount) + " 家\r\n";
                 this.labelOutMessage.Text = this.labelOutMessage.Text + "追踪二個月成功 " + successfulCount
                     + " 家，失敗 " + failCount + " 家";
+                new FileHelper().WriteText(@"up.lst", upList);
+                new FileHelper().WriteText(@"down.lst", downList);
             }
         }
     }

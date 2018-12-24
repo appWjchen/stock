@@ -200,7 +200,6 @@
             this.button7.TabIndex = 11;
             this.button7.Text = "測試";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Visible = false;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // textBox3
@@ -472,6 +471,7 @@
             this.button19.TabIndex = 30;
             this.button19.Text = "均線分析(長線)";
             this.button19.UseVisualStyleBackColor = true;
+            this.button19.Visible = false;
             this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
             // Form1
